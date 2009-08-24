@@ -2,6 +2,7 @@
 
 ###########################################################################
 
+appname=skycastle
 version=`cat version`
 builddir=build
 webstartdir=$builddir/skycastle-$version-webstart
@@ -20,7 +21,7 @@ echo "### Copying contents of $webstartdir to $deploypath"
 cp -v $webstartdir/* $deploypath
 
 echo "### Setting webstart jnlp mime type to the correct value using svn properties"
-svn propset svn:mime-type application/x-java-jnlp-file $deploypath/flowpaint.jnlp 
+svn propset svn:mime-type application/x-java-jnlp-file $deploypath/$appname.jnlp 
 
 echo "### Done.  Remember to check in the files in $deploypath"
 
