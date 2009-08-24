@@ -2,8 +2,9 @@
 
 ###########################################################################
 
-version=`cat VERSION`
-webstartdir=skycastle-$version-webstart
+version=`cat version`
+builddir=build
+webstartdir=$builddir/skycastle-$version-webstart
 
 echo "### Deploying webstart package of $webstartdir.  First we copy the webstart package to the correct SVN directory, after that you should still check in the changes yourself.  Assumes that you checked out flowpaint from the directory above trunk, so that the webstart directory is included."
 

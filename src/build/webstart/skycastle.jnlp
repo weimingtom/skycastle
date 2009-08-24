@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp spec="1.0+"
-      codebase="http://skycastle.googlecode.com/svn/webstart/stable/"
+      codebase="http://skycastle.googlecode.com/svn/webstart/unstable/"
       href="skycastle.jnlp">
   <information>
     <title>Skycastle</title>
