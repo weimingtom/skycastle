@@ -4,15 +4,6 @@ import com.sun.sgs.app.{ClientSession, AppListener}
 import java.util.logging.Logger
 import java.util.Properties
 
-/**
- * Logging holder
- */
-object SkycastleServerLogger {
-
-  val logger = Logger.getLogger( "org.skycastle.server.SkycastleServer" )
-}
-
-
 
 /**
  * Server side entrypoint for server initialization & connecting users
@@ -29,7 +20,7 @@ class SkycastleServer extends AppListener  {
    */
   def initialize(props: Properties) = {
 
-    SkycastleServerLogger.logger.info( "Skycastle Server Started" )
+    ServerLogger.logger.info( "Skycastle Server Started" )
 
   }
 

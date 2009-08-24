@@ -11,11 +11,10 @@ import javax.swing.{JLabel, JFrame}
  */
 
 object SkycastleClient {
-  val logger = Logger.getLogger("org.skycastle.client.SkycastleClient")
 
   def main( argv: Array[String]) {
 
-    logger.info( "Skycastle Client Started" )
+    ClientLogger.logger.info( "Skycastle Client Started" )
 
     val frame = new JFrame()
     frame.setTitle("Skycastle Client")
