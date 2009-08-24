@@ -1,0 +1,33 @@
+<assembly>
+  <id>executable</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory></outputDirectory>
+      <outputFileNameMapping></outputFileNameMapping>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+      <includes>
+
+        <include>org.scala-lang:scala-library</include>
+        <include>trove:trove</include>
+        <include>jpen:jpen</include>
+        <include>j3d-org:j3d-org-java3d-all</include>
+        <include>browserlauncher2:browserlauncher2</include>
+        <include>com.miglayout:miglayout</include>
+        <include>janino:janino</include>
+
+      </includes>
+    </dependencySet>
+  </dependencySets>
+  <fileSets>
+    <fileSet>
+      <directory>target/classes</directory>
+      <outputDirectory></outputDirectory>
+    </fileSet>
+  </fileSets>
+</assembly>
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0+"
+      codebase="http://skycastle.googlecode.com/svn/webstart/stable/"
+      href="skycastle.jnlp">
+  <information>
+    <title>Skycastle</title>
+    <vendor>Skycastle Project</vendor>
+    <homepage href="http://www.skycastle.org"/>
+
+    <description>Skycastle</description>
+    <description kind="short">Multiplayer Game.</description>
+    <!--
+        <icon href="icon.gif"/>
+        <icon kind="splash" href="splash.gif"/>
+    -->
+    <offline-allowed/>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+  <resources>
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6+" initial-heap-size="64m" max-heap-size ="256m"/>
+    <jar href="skycastle.jar"/>
+  </resources>
+
+  <resources os="Windows">
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6+" initial-heap-size="64m" max-heap-size ="256m" />
+    <nativelib href="native-win32.jar"/>
+    <!--
+        <jar href="lib/jogl-win32.jar"/>
+        <nativelib href="lib/jogl-win32-native.jar"/>
+    -->
+  </resources>
+  <resources os="Linux">
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6+" initial-heap-size="64m" max-heap-size ="256m"/>
+    <nativelib href="native-linux.jar"/>
+    <!--
+        <jar href="lib/jogl-linux.jar"/>
+        <nativelib href="lib/jogl-linux-native.jar"/>
+    -->
+  </resources>
+  <resources os="Mac OS">
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6+" initial-heap-size="64m" max-heap-size ="256m"/>
+    <nativelib href="native-osx.jar"/>
+    <!--
+        <jar href="lib/jogl-macos.jar"/>
+        <nativelib href="lib/jogl-macos-native.jar"/>
+    -->
+  </resources>
+  <application-desc/>
+</jnlp>
