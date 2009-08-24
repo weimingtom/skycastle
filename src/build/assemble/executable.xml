@@ -20,6 +20,16 @@
         <include>com.miglayout:miglayout</include>
         <include>janino:janino</include>
 
+        <include>jme:jme</include>
+        <include>com.projectdarkstar.client:sgs-client-api</include>
+        <include>org.lwjgl:lwjgl</include>
+        <include>org.lwjgl:lwjgl_util_applet</include>
+        <include>org.lwjgl:lwjgl_util</include>
+        <include>net.java.dev.jogl:jogl</include>
+        <include>net.java.dev.jinput:jinput</include>
+        <include>jorbis:jorbis</include>
+
+
       </includes>
     </dependencySet>
   </dependencySets>
