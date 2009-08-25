@@ -8,7 +8,8 @@ import util.{MathUtils, Description, Properties}
  * 
  * @author Hans Haggstrom
  */
-
+@serializable
+@SerialVersionUID( 1 )
 class TilemapArchetype(id : ArchetypeId, parameters : Properties) extends Archetype(id, parameters) {
 
   def update(updateType: String, parameters: Properties) = null

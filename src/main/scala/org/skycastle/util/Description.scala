@@ -6,7 +6,8 @@ package org.skycastle.util
  * 
  * @author Hans Haggstrom
  */
-
+@serializable
+@SerialVersionUID( 1 )
 case class Description( name : String, description : String ) {
   override def toString = name
 }

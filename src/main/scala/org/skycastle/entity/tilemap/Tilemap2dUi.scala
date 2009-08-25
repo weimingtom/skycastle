@@ -9,8 +9,7 @@ import ui.Ui
  * 
  * @author Hans Haggstrom
  */
-
-class Tilemap2dUi extends Ui {
+class Tilemap2dUi(tilemap : TilemapEntity) extends Ui {
 
   protected def createView() = {
     

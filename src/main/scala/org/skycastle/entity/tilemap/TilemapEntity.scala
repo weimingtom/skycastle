@@ -8,7 +8,8 @@ import util.{MathUtils, Properties}
  * 
  * @author Hans Haggstrom
  */
-
+@serializable
+@SerialVersionUID( 1 )
 class TilemapEntity( archetype : ArchetypeId, sizeX : Int, sizeY : Int, sizeZ : Int )
         extends Entity( archetype : ArchetypeId ) {
 
@@ -23,16 +24,18 @@ class TilemapEntity( archetype : ArchetypeId, sizeX : Int, sizeY : Int, sizeZ : 
 
   def invoke(actionName: String, parameters: Properties) = null
 
-  def createUi(parameters: Properties) = null
+  def createUi(parameters: Properties) = {
+    new Tilemap2dUi(this)
+  }
 
   def addEntity( entityId : EntityId ) {
     entities = entityId :: entities
-    // TODO: Update client side version
+    // TODO: Notify listeners
   }
 
   def removeEntity( entityId : EntityId ) {
     entities = entities.remove( _ == entityId )
-    // TODO: Update client side version
+    // TODO: Notify listeners
   }
 
   private def index( x : Int, y : Int, z : Int ) : Int = {
@@ -72,6 +75,7 @@ class TilemapEntity( archetype : ArchetypeId, sizeX : Int, sizeY : Int, sizeZ : 
    */
   def setTileAt( x : Int, y : Int, z : Int, tileType : ArchetypeId ) {
     mapData( index(x, y, z) ) = getTileCode( tileType )
+    // TODO: Notify listeners
   }
 
   /**
@@ -85,5 +89,6 @@ class TilemapEntity( archetype : ArchetypeId, sizeX : Int, sizeY : Int, sizeZ : 
   def getEntities() = entities
 
 }
+
 
 

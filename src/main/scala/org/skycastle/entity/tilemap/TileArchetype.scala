@@ -9,7 +9,8 @@ import util.{Properties, Description}
  * 
  * @author Hans Haggstrom
  */
-
+@serializable
+@SerialVersionUID( 1 )
 class TileArchetype( id : ArchetypeId, parameters : Properties )  extends Archetype( id , parameters )  {
 
   val textureName = parameters.getString( 'textureName, "blank" )
