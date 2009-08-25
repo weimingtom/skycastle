@@ -41,6 +41,8 @@ class SkycastleServer extends AppListener  {
    */
   def loggedIn(session: ClientSession) {
 
+    // Create player entity, add to map, set to listen to map changes?
+    // Send map etc to player
     
   }
 
