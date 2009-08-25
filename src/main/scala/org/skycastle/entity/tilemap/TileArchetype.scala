@@ -1,7 +1,7 @@
 package org.skycastle.entity.tilemap
 
 
-import util.{Properties, Description}
+import util.{Parameters, Description}
 
 
 /**
@@ -11,13 +11,12 @@ import util.{Properties, Description}
  */
 @serializable
 @SerialVersionUID( 1 )
-class TileArchetype( id : ArchetypeId, parameters : Properties )  extends Archetype( id , parameters )  {
+class TileArchetype( parameters : Parameters )  extends Archetype( parameters )  {
 
   val textureName = parameters.getString( 'textureName, "blank" )
 
-  def update(updateType: String, parameters: Properties) = null
+  def update(updateType: String, parameters: Parameters) = null
 
-  def branch(newId: String, description: Description) = null
-  
+  def branch() = null
 }
 

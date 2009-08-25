@@ -1,7 +1,7 @@
 package org.skycastle.entity.tilemap
 
 
-import util.{MathUtils, Properties}
+import util.{MathUtils, Parameters}
 
 /**
  * 
@@ -22,9 +22,9 @@ class TilemapEntity( archetype : ArchetypeId, sizeX : Int, sizeY : Int, sizeZ : 
   val tileTypes = new Array[ArchetypeId]( MAX_NR_OF_TILETYPES )
   var nextFreeTileType = 0
 
-  def invoke(actionName: String, parameters: Properties) = null
+  def invoke(actionName: String, parameters: Parameters) = null
 
-  def createUi(parameters: Properties) = {
+  def createUi(parameters: Parameters) = {
     new Tilemap2dUi(this)
   }
 

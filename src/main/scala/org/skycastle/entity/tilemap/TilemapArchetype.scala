@@ -1,7 +1,7 @@
 package org.skycastle.entity.tilemap
 
 
-import util.{MathUtils, Description, Properties}
+import util.{MathUtils, Description, Parameters}
 
 /**
  * 
@@ -10,13 +10,13 @@ import util.{MathUtils, Description, Properties}
  */
 @serializable
 @SerialVersionUID( 1 )
-class TilemapArchetype(id : ArchetypeId, parameters : Properties) extends Archetype(id, parameters) {
+class TilemapArchetype(parameters : Parameters) extends Archetype(parameters) {
 
-  def update(updateType: String, parameters: Properties) = null
+  def update(updateType: String, parameters: Parameters) = null
 
-  def branch(newId: String, description: Description) = null
+  def branch() = null
 
-  override def createEntity(parameters: Properties) = {
+  override def createEntity(parameters: Parameters) : TilemapEntity = {
 
     val sizeX = MathUtils.clamp( parameters.getInt( 'sizeX, 8 ), 1, 100)
     val sizeY = MathUtils.clamp( parameters.getInt( 'sizeY, 8 ), 1, 100)

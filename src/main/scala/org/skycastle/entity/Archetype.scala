@@ -3,7 +3,7 @@ package org.skycastle.entity
 
 import com.sun.sgs.app.ManagedObject
 import java.io.Serializable
-import util.{Properties, Description}
+import util.{Parameters, Description}
 /**
  * Specifies a basic entity type to start from, and the operations to do to it to get to the final entity.
  * May take parameters that are used when applying the operations.
@@ -78,23 +78,25 @@ but updates sent to clients from server
  */
 @serializable
 @SerialVersionUID( 1 )
-abstract case class Archetype( id : ArchetypeId, parameters : Properties )  {
+abstract case class Archetype( parameters : Parameters )  {
 
-  val defaultProperties : Properties = new Properties()
+  var id : ArchetypeId = null
 
-  def createEntity( parameters : Properties ) : Entity = null
+  val defaultProperties : Parameters = new Parameters()
+
+  def createEntity( parameters : Parameters ) : Entity = null
 
   def getDefaultProperty( id : Symbol, default : Serializable) : Serializable = defaultProperties.get( id, default )
 
   /**
    * Create a new revision of this Archetype, a copy of this one with the specified update applied.
    */
-  def update( updateType : String, parameters : Properties ) : Archetype
+  def update( updateType : String, parameters : Parameters ) : Archetype
 
   /**
    * Create a new Archetype that is a branch / copy of this one.
    */
-  def branch( newId : String, description : Description ) : Archetype
+  def branch( ) : Archetype
   
 }
 

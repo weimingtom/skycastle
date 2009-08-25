@@ -2,7 +2,7 @@ package org.skycastle.server
 
 
 import entity.{Archetype, ArchetypeId}
-import util.Properties
+import util.Parameters
 
 /**
  * Handles messages received from a connected user.
@@ -15,16 +15,16 @@ abstract class ServerSideMessageHandler {
 
   def requestArchetypeRevision( archetypeId : ArchetypeId )
 
-  def createArchetype( id : String, archetypeKind : String, parameters : Properties )
+  def createArchetype( id : String, archetypeKind : String, parameters : Parameters )
 
-  def updateArchetype( id : String, updateType : String, parameters : Properties )
+  def updateArchetype( id : String, updateType : String, parameters : Parameters )
 
   def branchArchetype( id : String, copyId : String )
 
   def removeArchetype( id : String )
 
 
-  def invokeEntityAction( entityId : Long, actionId : String, parameters : Properties )
+  def invokeEntityAction( entityId : Long, actionId : String, parameters : Parameters )
 
 }
 

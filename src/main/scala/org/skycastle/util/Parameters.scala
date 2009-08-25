@@ -12,7 +12,7 @@ import java.io.Serializable
  */
 @serializable
 @SerialVersionUID( 1 )
-case class Properties(var properties: Map[Symbol, Serializable]) {
+case class Parameters(var properties: Map[Symbol, Serializable]) {
 
   def this() = this( Map() )
 
@@ -45,7 +45,7 @@ case class Properties(var properties: Map[Symbol, Serializable]) {
     properties = properties + entry
   }
 
-  def update( newValues : Properties) {
+  def update( newValues : Parameters) {
     properties = properties ++ newValues.properties 
   }
 }

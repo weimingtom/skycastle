@@ -7,9 +7,9 @@ package org.skycastle.entity
  */
 @serializable
 @SerialVersionUID( 1 )
-final case class EntityId( id : Long ) {
-
-  override def toString = "Entity-" + id
+final case class EntityId( id : String ) {
+  def managedObjectName = id
+  override def toString = managedObjectName
 
 }
 

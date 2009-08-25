@@ -8,6 +8,7 @@ package org.skycastle.entity
 @serializable
 @SerialVersionUID( 1 )
 final case class ArchetypeId( id : String, revision : Long ) {
-  override def toString = "Archetype " + id + "(r"+revision+")"
+  def managedObjectName = id + "-r"+revision
+  override def toString = managedObjectName
 }
 
