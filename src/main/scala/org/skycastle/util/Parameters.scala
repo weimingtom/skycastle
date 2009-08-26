@@ -10,34 +10,46 @@ import java.io.Serializable
  *
  * @author Hans Haggstrom
  */
-@serializable
 @SerialVersionUID( 1 )
-case class Parameters(var properties: Map[Symbol, Serializable]) {
+case class Parameters(var properties: Map[Symbol, Serializable]) extends Serializable{
 
   def this() = this( Map() )
 
-  def get(id: Symbol, defaultValue: Serializable) = properties.getOrElse(id, defaultValue)
+  def contains( id : Symbol ) : Boolean = properties.contains( id )
+  
+  def get[T](id: Symbol, defaultValue: T) : T = properties.getOrElse(id, defaultValue).asInstanceOf[T]
+
+  def getAs[T](id: Symbol, defaultValue: T) : T = {
+    val value = properties.getOrElse(id, defaultValue)
+    if (value != null && value.isInstanceOf[T])
+      value.asInstanceOf[T]
+    else defaultValue
+  }
 
   def getInt(id: Symbol, defaultValue: Int) : Int = {
     val value = properties.getOrElse(id, defaultValue)
-    if (value.isInstanceOf[Number]) value.asInstanceOf[Number].intValue
+    if (value == null) defaultValue
+    else if (value.isInstanceOf[Number]) value.asInstanceOf[Number].intValue
     else defaultValue
   }
 
   def getFloat(id: Symbol, defaultValue: Float) : Float= {
     val value = properties.getOrElse(id, defaultValue)
-    if (value.isInstanceOf[Number]) value.asInstanceOf[Number].floatValue
+    if (value == null) defaultValue
+    else if (value.isInstanceOf[Number]) value.asInstanceOf[Number].floatValue
     else defaultValue
   }
   
   def getBoolean(id: Symbol, defaultValue: Boolean ) : Boolean = {
     val value = properties.getOrElse(id, defaultValue)
-    if (value.isInstanceOf[Boolean]) value.asInstanceOf[Boolean]
+    if (value == null) defaultValue
+    else if (value.isInstanceOf[Boolean]) value.asInstanceOf[Boolean]
     else defaultValue
   }
 
   def getString(id: Symbol, defaultValue: String) : String = {
-    properties.getOrElse(id, defaultValue).toString
+    val s = properties.getOrElse(id, defaultValue)
+    if (s == null) defaultValue else s.toString
   }
 
   def set(id: Symbol, value: Serializable) {
@@ -48,4 +60,6 @@ case class Parameters(var properties: Map[Symbol, Serializable]) {
   def update( newValues : Parameters) {
     properties = properties ++ newValues.properties 
   }
+
+  override def toString = properties.mkString( "{", ", ", "}")
 }

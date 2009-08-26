@@ -2,6 +2,7 @@ package org.skycastle.entity
 
 
 import com.sun.sgs.app.ManagedObject
+import javax.swing.JComponent
 import ui.Ui
 import util.Parameters
 

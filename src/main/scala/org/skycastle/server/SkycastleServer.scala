@@ -1,49 +1,58 @@
 package org.skycastle.server
 
-import com.sun.sgs.app.{ManagedReference, AppContext, ClientSession, AppListener}
+import com.sun.sgs.app._
 import entity.Entity
 import entity.tilemap.{TilemapEntity, TilemapArchetype}
-import java.util.logging.Logger
+import java.util.logging.{Level, Logger}
 import java.util.Properties
-import util.Parameters
+import skycastle.util.Parameters
 
 
 /**
  * Server side entrypoint for server initialization & connecting users
- * 
+ *
  * @author Hans Haggstrom
  */
-@SerialVersionUID( 1 )
+@SerialVersionUID(1)
 @serializable
-class SkycastleServer extends AppListener  {
-
-  var currentMap : ManagedReference[ManagedEntity] = null
+class SkycastleServer extends AppListener {
+  var currentMap: ManagedReference[ManagedEntity] = null
 
 
   /**
    * This is called to initialize the server
    */
-  def initialize(props: Properties)  {
+  def initialize(properties: Properties) {
 
-    ServerLogger.logger.info( "Skycastle Server Started" )
+    ServerLogger.logger.info("Skycastle Server Started")
 
     val archetype: TilemapArchetype = new TilemapArchetype(new Parameters())
-    new ManagedArchetype( archetype ) // Stores a managed reference to the archetype and initializes its id.
+    new ManagedArchetype(archetype) // Stores a managed reference to the archetype and initializes its id.
 
     val tilemap: TilemapEntity = archetype.createEntity(new Parameters())
 
-    currentMap = AppContext.getDataManager.createReference( new ManagedEntity( tilemap ) )
+    currentMap = AppContext.getDataManager.createReference(new ManagedEntity(tilemap))
 
   }
 
   /**
    * This is called when a user connects
    */
-  def loggedIn(session: ClientSession) {
+  def loggedIn(session: ClientSession) : ClientSessionListener  = {
 
-    // Create player entity, add to map, set to listen to map changes?
-    // Send map etc to player
+    // Get or create user
+    val user = User.logUserIn( session )
+
+    // Get or create entity that presents the server options for the user
+    // (if the user has admin status the screen can be different / provide additional options)
     
+
+    // Send user the server main screen
+
+
+    user
   }
 
+
 }
+
