@@ -1,4 +1,4 @@
-package org.skycastle.entity
+package org.skycastle.entity.script
 
 
 import util.Parameters
@@ -16,7 +16,7 @@ import util.Parameters
 @SerialVersionUID( 1 )
 trait Script {
 
-  def apply( targetEntity : Entity, parameters : Parameters )
+  def run( hostEntity : Entity, parameters : Parameters )
 
 }
 

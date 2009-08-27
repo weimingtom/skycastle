@@ -1,4 +1,4 @@
-package org.skycastle.entity
+package org.skycastle.entity.script
 
 
 import util.Parameters
@@ -11,12 +11,12 @@ import util.Parameters
 @serializable
 @SerialVersionUID( 1 )
 final case class ActionSequenceScript( actions : List[ActionCall] ) extends Script {
-  def apply(targetEntity: Entity, parameters: Parameters) {
-    if (targetEntity != null && actions != null ) {
-      actions foreach { action : ActionCall =>
-        targetEntity.invoke( action.actionId, action.parameters )
-      }
+
+  def run(hostEntity: Entity, parameters: Parameters) {
+    if (hostEntity != null && actions != null ) {
+      actions foreach { _.call(hostEntity) }
     }
   }
+
 }
 

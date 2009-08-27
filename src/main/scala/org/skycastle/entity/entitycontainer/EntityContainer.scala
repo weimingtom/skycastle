@@ -1,6 +1,7 @@
 package org.skycastle.entity.entitycontainer
 
 
+import script.ActionCall
 import util.Parameters
 
 /**
@@ -26,7 +27,13 @@ trait EntityContainer {
   /**
    * Used to invoke an action of an entity, with some specified parameters.
    */
-  def callEntityAction( calledId : CallerId, entityId : EntityId, actionCall : ActionCall )
+  // TODO: Do not allow outside calls.  Instead allow clients and servers to create proxy entities within each other, that behave like normal entities in the container.
+  // The client creates an entity for the server inside itself when connecting to the server, and can thus control what the server is allowed to do in the client side EntityContainer.
+  // The server likewise creates an entity for the user when it connects to the game, and can control what access rights the user gets to which entities.
+  // Different games could also create proxy entities for players, that allow the players to interact and receive perceptions from the gameworld.
+  // Each game would then have its own EntityContainer that it runs in, but could also have a proxy entity in the hosting gameworld that can observe it (e.g. for games like in-game football played with normal game characters, a football proxy game could observe the playfield and count scores)
+  @deprecated
+  def callEntityAction( callerId : EntityId, entityId : EntityId, actionCall : ActionCall )
 
   // Make removal of an entity a special action on it, allowing easier administration of it.
   /* *

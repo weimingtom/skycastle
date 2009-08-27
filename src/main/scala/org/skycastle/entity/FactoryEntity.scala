@@ -10,8 +10,8 @@ import annotations.ActionMethod
  */
 class FactoryEntity extends Entity {
 
-  @ActionMethod
   def createEntity()
 
+  // TODO
 }
 

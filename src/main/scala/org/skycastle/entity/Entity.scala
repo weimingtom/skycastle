@@ -1,11 +1,15 @@
 package org.skycastle.entity
 
 
+
+
+import accesscontrol.{Role, RoleMember, Capability}
 import annotations.ActionMethod
 import collection.mutable.{MultiMap, HashMap}
 import com.sun.sgs.app.ManagedObject
 import entitycontainer.CallerId
 import javax.swing.JComponent
+import script.Script
 import ui.Ui
 import util.Parameters
 
@@ -13,52 +17,148 @@ import util.Parameters
  * Represents some object in the game (server or client or both sides).
  *
  * Mutable, can be updated with the update method (usually used for server to client updated).
- * 
+ *
  * @author Hans Haggstrom
  */
 @serializable
-@SerialVersionUID( 1 )
+@SerialVersionUID(1)
 abstract class Entity {
 
-  var id : EntityId = null
+  /**
+   * Identifier of this Entity.
+   * Should only be modified by the framework (TODO: Can we use scala to indicate that somehow?  E.g. private[entitycontainer]?)
+   */
+  var id: EntityId = null
 
-  val properties = new Parameters()
+  /**
+   * Key-value properties stored in this Entity
+   */
+  lazy val properties = new Parameters()
 
-  val actions = Map[String, Action]()
+  /**
+   * Any scripted actions added to this Entity
+   */
+  private val dynamicActions: Map[String, Script] = Map()
 
-  // TODO: Use something more compact than a multimap, or initialize it to small default sizes.
-  lazy val capabilities : MultiMap[CallerId, Capability] = new HashMap[CallerId, scala.collection.mutable.Set[Capability]]() with MultiMap[CallerId, Capability]
+  /**
+   * The roles for role based security access control to the actions of this Entity.
+   */
+  private var roles : List[Role] = Nil
+
+  // TODO: Maybe add RoleMember that is a check if caller id is in some collection in a property -> use some collections of entity id:s in properties as role members?
+  // Complex cases could be e.g. Organization maintenance, handling different guild functions, etc.
 
   /**
    * Update the properties of this Entity
    */
-  @ActionMethod
-  def updateProperties( updatedProperties : Parameters ) {
-    properties.update( updatedProperties )
+  def updateProperties(updatedProperties: Parameters) {
+    properties.update(updatedProperties)
   }
 
+  def getRoles : List[Role] = roles
+
+  def getRole( roleId : String ) : Option[Role] = roles.find( _.roleId == roleId )
+
+  def addRole( roleId : String ) {
+    // TODO: Check role id syntax?  No special chars, java style identifier?
+    if (roleId != null) {
+      getRole(roleId) match {
+        case Some(role) => // TODO: Overlap, can not add.  Some error?  Or just a log message?
+        case None => roles = roles ::: List( new Role( roleId ) )
+      }
+    }
+  }
+
+  def removeRole( roleId : String ) {
+    roles = roles.remove( _.roleId == roleId )
+  }
+
+  def addRoleMember( roleId : String, member : RoleMember ) {
+    getRole(roleId) match {
+      case Some(role:Role) => role.addMember( member )
+      case None => // TODO: Logg warning?
+    }
+  }
+
+  def removeRoleMember( roleId : String, member : RoleMember ) {
+    getRole(roleId) match {
+      case Some(role:Role) => role.removeMember( member )
+      case None => // TODO: Logg warning?
+    }
+  }
+
+  def addRoleCapability( roleId : String, capability : Capability ) {
+    getRole(roleId) match {
+      case Some(role:Role) => role.addCapability( capability )
+      case None => // TODO: Logg warning?
+    }
+  }
+
+  def removeRoleCapability( roleId : String, capability : Capability ) {
+    getRole(roleId) match {
+      case Some(role:Role) => role.removeCapability( capability )
+      case None => // TODO: Logg warning?
+    }
+  }
 
   // Special actions:
   // * Remove self
-  // * Add / remove capabilities to specific callerId
-  // * Update properties
   // * Add / remove / change action
 
 
-
   /**
-   * Invoke an action available in this entity.
+   * Call an action available in this entity.
    */
-  def invoke( caller : CallerId, actionName : String, parameters : Parameters ) {
-    
+  def call(caller: EntityId, actionId: String, parameters: Parameters) {
+
+    // Check access rights.  By default allow any call by this entity itself.
+    // (the identity or privilegies of original caller are not retained when an action invokes another action,
+    // instead the identity of the entity that contains the calling action is used.)
+    if ( caller == id || roles.exists( _.allowsCall( caller, actionId ) )) {
+      // Try to handle with default entity actions
+      if (!callBuiltinEntityAction(actionId, parameters)) {
+        // Try to handle with builtin actions from inheriting classes
+        if (!callHardcodedAction(actionId, parameters)) {
+            // Try to handle with dynamic actions
+            val action: Script = dynamicActions.getOrElse(actionId, null)
+            if (action != null) {
+              action.run( this, parameters)
+            }
+            else {
+              // TODO: Logg action not found
+            }
+          }
+      }
+    }
+    else {
+      // TODO: Logg action not allowed
+    }
   }
 
+  /**
+   * Allows for use of a simple switch clause to invoke any custom actions provided by decendant Entities.
+   * Return true if the action was handled, false if not.
+   */
+  protected def callHardcodedAction(actionName: String, parameters: Parameters): Boolean
 
-  /* *
+  /**
+   * Handles default actions provided for all entities.
+   * Return true if the action was handled, false if not.
+   */
+  private def callBuiltinEntityAction(actionName: String, parameters: Parameters): Boolean = {
+    actionName match {
+      case "addRole" => addRole( parameters.getAs[String]('roleId, null )  ) ; true
+      case "removeRole" => removeRole( parameters.getAs[String]('roleId, null )  ) ; true
+      // TODO: The rest
+      case _ => false
+    }
+  }
+
+  /* * TODO: This is somewhat special case, maybe could be removed from Entity?
    * Creates an user interface for viewing / invoking actions of this Entity.
    * The parameters can provide additional configuration information for the UI.
    */
-//  def createUi( parameters : Parameters ) : Ui
+  //  def createUi( parameters : Parameters ) : Ui
 
 }
 
