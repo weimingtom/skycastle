@@ -1,8 +1,6 @@
 package org.skycastle.entity.entitycontainer
 
 
-import script.ActionCall
-
 /**
  * Something that can contain and manage entities.
  *
@@ -31,8 +29,8 @@ trait EntityContainer {
   // The server likewise creates an entity for the user when it connects to the game, and can control what access rights the user gets to which entities.
   // Different games could also create proxy entities for players, that allow the players to interact and receive perceptions from the gameworld.
   // Each game would then have its own EntityContainer that it runs in, but could also have a proxy entity in the hosting gameworld that can observe it (e.g. for games like in-game football played with normal game characters, a football proxy game could observe the playfield and count scores)
-  @deprecated
-  def callEntityAction( callerId : EntityId, entityId : EntityId, actionCall : ActionCall )
+//  @deprecated
+//  def callEntityAction( callerId : EntityId, entityId : EntityId, actionCall : ActionCall )
 
   // Make removal of an entity a special action on it, allowing easier administration of it.
   /* *
