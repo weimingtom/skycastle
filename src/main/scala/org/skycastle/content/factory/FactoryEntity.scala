@@ -1,7 +1,8 @@
-package org.skycastle.entity
+package org.skycastle.content.factory
 
 
 import annotations.ActionMethod
+import entity.Entity
 import util.Parameters
 
 /**
