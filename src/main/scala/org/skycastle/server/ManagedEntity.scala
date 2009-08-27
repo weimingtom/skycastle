@@ -2,7 +2,7 @@ package org.skycastle.server
 
 
 import com.sun.sgs.app.{AppContext, ManagedObject}
-import entity.{EntityId, ArchetypeId, Entity}
+import entity.{EntityId, Entity}
 /**
  * ManagedObject wrapper for an Entity
  * 
@@ -10,7 +10,7 @@ import entity.{EntityId, ArchetypeId, Entity}
  */
 @serializable
 @SerialVersionUID( 1 )
-case class ManagedEntity( entity : Entity ) extends ManagedObject {
+case class ManagedEntity[T <: Entity]( entity : T ) extends ManagedObject {
 
   initialize()
 

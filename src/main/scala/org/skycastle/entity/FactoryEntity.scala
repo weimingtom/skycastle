@@ -2,6 +2,7 @@ package org.skycastle.entity
 
 
 import annotations.ActionMethod
+import util.Parameters
 
 /**
  * An entity that is used for creating other entities of a particular type.
@@ -10,8 +11,11 @@ import annotations.ActionMethod
  */
 class FactoryEntity extends Entity {
 
-  def createEntity()
+  def createEntity() : Entity = {
+    null
+  }
 
   // TODO
+
 }
 

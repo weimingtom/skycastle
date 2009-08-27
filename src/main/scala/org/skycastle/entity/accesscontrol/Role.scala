@@ -1,7 +1,6 @@
 package org.skycastle.entity.accesscontrol
 
 
-import accesscontrol.Capability
 
 /**
  * Used in role based access control to Entity Actions.

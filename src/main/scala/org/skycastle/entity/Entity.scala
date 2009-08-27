@@ -7,7 +7,6 @@ import accesscontrol.{Role, RoleMember, Capability}
 import annotations.ActionMethod
 import collection.mutable.{MultiMap, HashMap}
 import com.sun.sgs.app.ManagedObject
-import entitycontainer.CallerId
 import javax.swing.JComponent
 import script.Script
 import ui.Ui
@@ -48,6 +47,7 @@ abstract class Entity {
   // TODO: Maybe add RoleMember that is a check if caller id is in some collection in a property -> use some collections of entity id:s in properties as role members?
   // Complex cases could be e.g. Organization maintenance, handling different guild functions, etc.
 
+  
   /**
    * Update the properties of this Entity
    */
@@ -116,9 +116,9 @@ abstract class Entity {
     // instead the identity of the entity that contains the calling action is used.)
     if ( caller == id || roles.exists( _.allowsCall( caller, actionId ) )) {
       // Try to handle with default entity actions
-      if (!callBuiltinEntityAction(actionId, parameters)) {
+      if (!callDefaultAction(actionId, parameters)) {
         // Try to handle with builtin actions from inheriting classes
-        if (!callHardcodedAction(actionId, parameters)) {
+        if (!callBuiltinAction(actionId, parameters)) {
             // Try to handle with dynamic actions
             val action: Script = dynamicActions.getOrElse(actionId, null)
             if (action != null) {
@@ -139,13 +139,13 @@ abstract class Entity {
    * Allows for use of a simple switch clause to invoke any custom actions provided by decendant Entities.
    * Return true if the action was handled, false if not.
    */
-  protected def callHardcodedAction(actionName: String, parameters: Parameters): Boolean
+  protected def callBuiltinAction(actionName: String, parameters: Parameters): Boolean = { false }
 
   /**
    * Handles default actions provided for all entities.
    * Return true if the action was handled, false if not.
    */
-  private def callBuiltinEntityAction(actionName: String, parameters: Parameters): Boolean = {
+  private def callDefaultAction(actionName: String, parameters: Parameters): Boolean = {
     actionName match {
       case "addRole" => addRole( parameters.getAs[String]('roleId, null )  ) ; true
       case "removeRole" => removeRole( parameters.getAs[String]('roleId, null )  ) ; true

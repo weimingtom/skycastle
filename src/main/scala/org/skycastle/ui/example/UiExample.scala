@@ -13,7 +13,7 @@ import util.{SimpleFrame, Parameters}
 object UiExample {
   def main(args: Array[String]) {
 
-    val screen = new ScreenEntity(null)
+    val screen = new ScreenEntity()
 
     screen.addUiComponent( 'panel, 'root, null, Parameters( Map( 'layout -> "" ) ) )
     screen.addUiComponent( 'label, 'testlabel_1, 'root, Parameters( Map( 'text -> "Test Label 1", 'tooltip -> "Example label 1" ) ) )

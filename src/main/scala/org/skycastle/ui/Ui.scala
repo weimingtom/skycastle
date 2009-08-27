@@ -1,7 +1,6 @@
 package org.skycastle.ui
 
 
-import entity.ArchetypeId
 import javax.swing.{JLabel, JComponent}
 import util.{ErrorPrinter, Parameters}
 /**

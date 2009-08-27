@@ -10,19 +10,45 @@ import util.{MathUtils, Parameters}
  */
 @serializable
 @SerialVersionUID( 1 )
-class TilemapEntity( archetype : ArchetypeId, sizeX : Int, sizeY : Int, sizeZ : Int )
-        extends Entity( archetype : ArchetypeId ) {
+class TilemapEntity extends Entity {
 
   // Start with brute force...
   val MAX_NR_OF_TILETYPES = 255
-  val numberOfTiles = sizeX * sizeY * sizeZ
-  val mapData = new Array[Byte]( numberOfTiles )
-  val outsideTileType : ArchetypeId = null
-  var entities : List[EntityId] = List()
-  val tileTypes = new Array[ArchetypeId]( MAX_NR_OF_TILETYPES )
-  var nextFreeTileType = 0
 
-  def invoke(actionName: String, parameters: Parameters) = null
+  private var outsideTileType : EntityId = null
+  private var entities : List[EntityId] = Nil
+  private val tileTypes = new Array[EntityId]( MAX_NR_OF_TILETYPES )
+
+  private var nextFreeTileType = 1
+
+  private var sizeX = 1
+  private var sizeY = 1
+  private var sizeZ = 1
+
+  private var mapData : Array[Byte] = null
+
+  // Default map
+  reset(3, 3, 1, null)
+
+  private def numberOfTiles = sizeX * sizeY * sizeZ
+
+
+  /**
+   * Recreates the map as the specified size, clearing it at the same time.
+   */
+  def reset(sizeX_ : Int, sizeY_ : Int, sizeZ_ : Int, defaultTileType : EntityId )  {
+
+    sizeX = MathUtils.clamp( sizeX_, 1, 100)
+    sizeY = MathUtils.clamp( sizeY_, 1, 100)
+    sizeZ = MathUtils.clamp( sizeZ_, 1, 10)
+
+    mapData = new Array[Byte]( numberOfTiles )
+    outsideTileType = defaultTileType
+    tileTypes(0) = outsideTileType
+    nextFreeTileType = 1
+    entities = Nil
+  }
+
 
   def createUi(parameters: Parameters) = {
     new Tilemap2dUi(this)
@@ -48,7 +74,7 @@ class TilemapEntity( archetype : ArchetypeId, sizeX : Int, sizeY : Int, sizeZ : 
   /**
    * Return the code for the specified tile type, if not found it adds it, if no space for more tile types 0 is returned.
    */
-  private def getTileCode( tileType : ArchetypeId  )  : Byte = {
+  private def getTileCode( tileType : EntityId )  : Byte = {
 
     var tileIndex = tileTypes.findIndexOf( _ == tileType )
     if (tileIndex < 0) {
@@ -66,14 +92,14 @@ class TilemapEntity( archetype : ArchetypeId, sizeX : Int, sizeY : Int, sizeZ : 
   /**
    * Returns the TileArchetype id of the tile at the specified location
    */
-  def getTileAt( x : Int, y : Int, z : Int ) : ArchetypeId = {
+  def getTileAt( x : Int, y : Int, z : Int ) : EntityId = {
     tileTypes( mapData( index(x, y, z) ) )
   }
 
   /**
    * Sets the TileArchetype id of the tile at the specified location
    */
-  def setTileAt( x : Int, y : Int, z : Int, tileType : ArchetypeId ) {
+  def setTileAt( x : Int, y : Int, z : Int, tileType : EntityId ) {
     mapData( index(x, y, z) ) = getTileCode( tileType )
     // TODO: Notify listeners
   }
@@ -81,7 +107,7 @@ class TilemapEntity( archetype : ArchetypeId, sizeX : Int, sizeY : Int, sizeZ : 
   /**
    * Returns the entities in the specified tile 
    */
-  def getEntitiesAt( x : Int, y : Int, z : Int ) : List[ EntityId ] = List()
+  def getEntitiesAt( x : Int, y : Int, z : Int ) : List[ EntityId ] = Nil // TODO
 
   /**
    * Returns the entities on the map

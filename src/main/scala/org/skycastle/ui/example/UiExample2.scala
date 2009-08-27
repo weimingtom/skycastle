@@ -1,8 +1,8 @@
 package org.skycastle.ui.example
 
 
-import entity.script.{ActionCall, ActionCall, ActionSequenceScript, ActionSequenceScript}
-import entity.{ActionSequenceScript, ActionCall, EntityInitializationScript, EntityId}
+import entity.script.{ActionCall, ActionSequenceScript}
+import entity.EntityId
 import util.{Parameters, SimpleFrame}
 /**
  * 
@@ -49,9 +49,8 @@ object UiExample2 {
       ) )
     
 
-    val archetype = new ScreenArchetype( Parameters( Map( 'entityInitializationScript -> initializationScript ) ) )
-
-    val screen = archetype.createEntity( new Parameters() )
+    val screen = new ScreenEntity
+    initializationScript.run( screen, new Parameters() )
 
     val view = screen.getView
 

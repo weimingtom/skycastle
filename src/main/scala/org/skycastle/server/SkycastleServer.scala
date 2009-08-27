@@ -2,7 +2,7 @@ package org.skycastle.server
 
 import com.sun.sgs.app._
 import entity.Entity
-import entity.tilemap.{TilemapEntity, TilemapArchetype}
+import entity.tilemap.{TilemapEntity}
 import java.util.logging.{Level, Logger}
 import java.util.Properties
 import skycastle.util.Parameters
@@ -16,7 +16,7 @@ import skycastle.util.Parameters
 @SerialVersionUID(1)
 @serializable
 class SkycastleServer extends AppListener {
-  var currentMap: ManagedReference[ManagedEntity] = null
+  var currentMap: ManagedReference[ManagedEntity[TilemapEntity]] = null
 
 
   /**
@@ -26,10 +26,7 @@ class SkycastleServer extends AppListener {
 
     ServerLogger.logger.info("Skycastle Server Started")
 
-    val archetype: TilemapArchetype = new TilemapArchetype(new Parameters())
-    new ManagedArchetype(archetype) // Stores a managed reference to the archetype and initializes its id.
-
-    val tilemap: TilemapEntity = archetype.createEntity(new Parameters())
+    val tilemap = new TilemapEntity()
 
     currentMap = AppContext.getDataManager.createReference(new ManagedEntity(tilemap))
 

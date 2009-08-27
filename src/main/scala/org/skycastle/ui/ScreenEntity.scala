@@ -2,7 +2,7 @@ package org.skycastle.ui
 
 
 import components.{ButtonUi, PanelUi, LabelUi}
-import entity.{EntityId, ArchetypeId, Entity}
+import entity.{EntityId, Entity}
 import javax.swing.{JLabel, JComponent}
 import util.{ErrorPrinter, Parameters}
 /**
@@ -12,10 +12,13 @@ import util.{ErrorPrinter, Parameters}
  */
 @serializable
 @SerialVersionUID(1)
-class ScreenEntity(archetype: ArchetypeId) extends Entity(archetype) {
+class ScreenEntity extends Entity {
 
   private var uiComponents : Map[Symbol, Ui] = Map[Symbol, Ui]()
-  
+
+
+
+
   def addUiComponent(componentType: Symbol, id: Symbol, parent: Symbol, parameters: Parameters) {
     //UiLogger.logger.fine( "Adding UI component of type " + componentType+ " with id "+id+", parent "+parent+", and parameters " + parameters )
 
@@ -85,30 +88,29 @@ class ScreenEntity(archetype: ArchetypeId) extends Entity(archetype) {
   }
 
 
-  def invoke(actionName: String, parameters: Parameters) {
-    UiLogger.logger.fine( "invoking action " + actionName + " with parameters " + parameters )
+  protected override def callBuiltinAction(actionName: String, parameters: Parameters) : Boolean = {
     actionName match {
-
       case "addUiComponent" => {
         val componentType = parameters.getAs[Symbol]('componentType, null)
         val id = parameters.getAs[Symbol]('id, null)
         val parentId = parameters.getAs[Symbol]('parent, null)
         addUiComponent( componentType, id, parentId, parameters )
+        true
       }
       case "updateUiComponent" => {
         val id = parameters.getAs[Symbol]('id, null)
         updateUiComponent( id, parameters )
+        true
       }
       case "removeUiComponent" => {
         val id = parameters.getAs[Symbol]('id, null)
         removeUiComponent( id )
+        true
       }
       case _ => {
-        UiLogger.logger.warning( "Action '"+actionName+"' not found when trying to invoke an action in " +this +".  Ignoring the action call." )
+        false
       }
     }
-
-
   }
 
   def createUi(parameters: Parameters) : Ui = {
