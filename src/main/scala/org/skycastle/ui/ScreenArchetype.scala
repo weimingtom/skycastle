@@ -1,7 +1,7 @@
 package org.skycastle.ui
 
 
-import entity.Archetype
+import entity.{EntityInitializationScript, Archetype}
 import util.Parameters
 
 /**
@@ -16,9 +16,14 @@ class ScreenArchetype(parameters : Parameters ) extends Archetype(parameters ) {
 
   def branch() = null
 
+  override def createEntity(creationParameters: Parameters) : ScreenEntity = {
+    val screen = new ScreenEntity( id )
+    val script = parameters.getAs[EntityInitializationScript]( 'entityInitializationScript, null )
+    if (script != null) {
+      script.run( screen )
+    }
 
-  override def createEntity(parameters: Parameters) : ScreenEntity = {
-    new ScreenEntity( id )
+    screen
   }
 }
 

@@ -38,7 +38,7 @@ abstract case class Ui(childrenSupported : Boolean) {
 
   final def addChild(child: Ui, components: Map[Symbol, Ui]) {
     if (childrenSupported) {
-      if (!children.contains(child.id)) children = child.id :: children
+      if (!children.contains(child.id)) children = children ::: List( child.id )
 
       if (view != null) {
 

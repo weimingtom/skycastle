@@ -8,10 +8,12 @@ import java.io.Serializable
  *
  * Mutable, but not a managed object.
  *
+ * NOTE: All parameter contents should be serializable
+ *
  * @author Hans Haggstrom
  */
 @SerialVersionUID( 1 )
-case class Parameters(var properties: Map[Symbol, Serializable]) extends Serializable{
+case class Parameters(var properties: Map[Symbol, Object]) extends Serializable{
 
   def this() = this( Map() )
 
