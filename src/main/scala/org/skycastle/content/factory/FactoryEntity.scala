@@ -1,10 +1,7 @@
 package org.skycastle.content.factory
 
 
-import annotations.ActionMethod
 import entity.Entity
-import util.Parameters
-
 /**
  * An entity that is used for creating other entities of a particular type.
  * 
