@@ -1,6 +1,7 @@
 package org.skycastle.entity
 
 
+import _root_.org.skycastle.entity.entitycontainer.EntityContainer
 import accesscontrol.{Role, RoleMember, Capability}
 import script.Script
 import util.Parameters
@@ -18,9 +19,17 @@ abstract class Entity {
 
   /**
    * Identifier of this Entity.
-   * Should only be modified by the framework (TODO: Can we use scala to indicate that somehow?  E.g. private[entitycontainer]?)
+   * Initialized when the entity is added to an EntityContainer.
+   * (TODO: Can we use scala to indicate that it should only be changed by the entity container somehow?  E.g. private[entitycontainer]?)
    */
   var id: EntityId = null
+
+  /**
+   * Used for accessing operations involving the system that keeps track and stores all entities.
+   * Initialized when the Entity is added to an EntityContainer.
+   * (TODO: Can we use scala to indicate that it should only be changed by the entity container somehow?  E.g. private[entitycontainer]?)
+   */
+  var container : EntityContainer = null
 
   /**
    * Key-value properties stored in this Entity

@@ -6,12 +6,47 @@ package org.skycastle.entity.entitycontainer
  *
  * Typically a server and client each have one of these.
  *
- * This interface is used by some user of the entity container.  The methods may or may not be allowed depending on the access rights of the user
- * to the different entities and their actions.
+ * This interface is used by entities contained inside the container,
+ * as well as for programmatic direct access to the container.
  * 
  * @author Hans Haggstrom
  */
 trait EntityContainer {
+
+  /**
+   * Returns the entity with the specified id, or None if no such entity was found.
+   * Use this if the entity is likely not going to be modified.
+   */
+  def getEntity( entityId : EntityId ) : Option[Entity]
+
+  /**
+   * Returns the entity with the specified id, or None if no such entity was found.
+   * Use this if the entity is going to be modified.
+   */
+  def getEntityForUpdate( entityId : EntityId ) : Option[Entity]
+
+  /**
+   * Indicates that the specified entity will be modified.
+   */
+  def markForUpdate( entity : Entity )
+
+  /**
+   * Stores the entity to the EntityContainer if it isn't already, and returns its id.
+   */
+  def storeEntity( entity : Entity ) : EntityId
+
+  /**
+   * Removes the entity from the EntityContainer.
+   */
+  def removeEntity( entityId : EntityId )
+
+
+  // TODO: Add interfaces for scheduled action callbacks etc.
+
+
+
+
+
 
   // Do entity creation also by calling an entity factory action on a built-in entity with a fixed name.
   // That way object creation is also possible to administer easily

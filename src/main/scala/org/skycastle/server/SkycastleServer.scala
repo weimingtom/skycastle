@@ -1,6 +1,8 @@
 package org.skycastle.server
 
+import _root_.org.skycastle.entity.EntityId
 import com.sun.sgs.app._
+import entity.entitycontainer.darkstar.DarkstarEntityContainer
 import entity.tilemap.{TilemapEntity}
 import java.util.Properties
 
@@ -13,7 +15,9 @@ import java.util.Properties
 @SerialVersionUID(1)
 @serializable
 class SkycastleServer extends AppListener {
-  var currentMap: ManagedReference[ManagedEntity[TilemapEntity]] = null
+  //var currentMap: ManagedReference[ManagedEntity[TilemapEntity]] = null
+
+  var currentMapId : EntityId = null
 
 
   /**
@@ -23,9 +27,13 @@ class SkycastleServer extends AppListener {
 
     ServerLogger.logger.info("Skycastle Server Started")
 
+    // Create testworld
     val tilemap = new TilemapEntity()
 
-    currentMap = AppContext.getDataManager.createReference(new ManagedEntity(tilemap))
+    // Store testworld and retain its id
+    currentMapId = DarkstarEntityContainer.storeEntity( tilemap )
+
+    //currentMap = AppContext.getDataManager.createReference(new ManagedEntity(tilemap))
 
   }
 

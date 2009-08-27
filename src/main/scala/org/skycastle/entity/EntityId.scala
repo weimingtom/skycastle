@@ -11,6 +11,7 @@ import accesscontrol.RoleMember
 @serializable
 @SerialVersionUID( 1 )
 final case class EntityId( id : String ) extends RoleMember {
+
   def managedObjectName = id
   override def toString = managedObjectName
   
