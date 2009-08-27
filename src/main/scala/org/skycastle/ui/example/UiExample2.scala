@@ -1,7 +1,7 @@
 package org.skycastle.ui.example
 
 
-import entity.{ActionInvocation, EntityInitializationScript, EntityId}
+import entity.{ActionSequenceScript, ActionCall, EntityInitializationScript, EntityId}
 import util.{Parameters, SimpleFrame}
 /**
  * 
@@ -12,28 +12,28 @@ import util.{Parameters, SimpleFrame}
 object UiExample2 {
   def main(args: Array[String]) {
 
-    val initializationScript = EntityInitializationScript( List(
-      ActionInvocation( "addUiComponent", Parameters( Map(
+    val initializationScript = ActionSequenceScript( List(
+      ActionCall( "addUiComponent", Parameters( Map(
       'componentType -> 'panel,
       'id -> 'root,
       'parent -> null,
       'layout -> ""
       ) ) ),
-      ActionInvocation( "addUiComponent", Parameters( Map(
+      ActionCall( "addUiComponent", Parameters( Map(
       'componentType -> 'label,
       'id -> 'testLabel1,
       'parent -> 'root,
       'text -> "Test label 1",
       'tooltip -> "A test label"
       ) ) ),
-      ActionInvocation( "addUiComponent", Parameters( Map(
+      ActionCall( "addUiComponent", Parameters( Map(
       'componentType -> 'label,
       'id -> 'testLabel2,
       'parent -> 'root,
       'text -> "Test label 2",
       'tooltip -> "A test label"
       ) ) ),
-      ActionInvocation( "addUiComponent", Parameters( Map(
+      ActionCall( "addUiComponent", Parameters( Map(
       'componentType -> 'button,
       'id -> 'testbutton_1,
       'parent -> 'root,
@@ -42,10 +42,11 @@ object UiExample2 {
       'invokedEntity -> EntityId("entity-432455"),
       'invokedMethod -> "testAction"
       ) ) ),
-      ActionInvocation( "removeUiComponent", Parameters( Map(
+      ActionCall( "removeUiComponent", Parameters( Map(
       'id -> 'testLabel1
       ) ) )
       ) )
+    
 
     val archetype = new ScreenArchetype( Parameters( Map( 'entityInitializationScript -> initializationScript ) ) )
 

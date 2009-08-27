@@ -7,10 +7,10 @@ package org.skycastle.entity
  */
 @serializable
 @SerialVersionUID( 1 )
-case class EntityInitializationScript( actions : List[ActionInvocation] ) {
+case class EntityInitializationScript( actions : List[ActionCall] ) {
   def run( entity : Entity) {
-    actions foreach { a : ActionInvocation =>
-      entity.invoke( a.actionId, a.parameters )
+    actions foreach { a : ActionCall =>
+      entity.invoke(  a.actionId, a.parameters )
     }
   }
 }

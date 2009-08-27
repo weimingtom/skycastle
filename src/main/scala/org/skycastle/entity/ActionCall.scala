@@ -10,4 +10,4 @@ import util.Parameters
  */
 @serializable
 @SerialVersionUID( 1 )
-final case class ActionInvocation( actionId : String, parameters : Parameters ) 
+final case class ActionCall( actionId : String, parameters : Parameters )
