@@ -1,7 +1,7 @@
 package org.skycastle.entity.tilemap
 
 
-import javax.swing.{JComponent, JPanel}
+import javax.swing.JComponent
 import ui.Ui
 import util.Parameters
 

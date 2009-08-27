@@ -1,10 +1,9 @@
 package org.skycastle.client
 
 
-import java.awt.Dimension
-import java.util.logging.Logger
-import javax.swing.{JLabel, JFrame}
+import javax.swing.JLabel
 import util.SimpleFrame
+
 /**
  * Client side entrypoint 
  * 

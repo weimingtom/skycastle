@@ -1,11 +1,8 @@
 package org.skycastle.server
 
 import com.sun.sgs.app._
-import entity.Entity
 import entity.tilemap.{TilemapEntity}
-import java.util.logging.{Level, Logger}
 import java.util.Properties
-import skycastle.util.Parameters
 
 
 /**

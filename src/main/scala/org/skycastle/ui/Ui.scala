@@ -1,7 +1,7 @@
 package org.skycastle.ui
 
 
-import javax.swing.{JLabel, JComponent}
+import javax.swing.JComponent
 import util.{ErrorPrinter, Parameters}
 /**
  * 

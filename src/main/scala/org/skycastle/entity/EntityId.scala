@@ -2,7 +2,6 @@ package org.skycastle.entity
 
 
 import accesscontrol.RoleMember
-import java.io.Serializable
 
 /**
  * 

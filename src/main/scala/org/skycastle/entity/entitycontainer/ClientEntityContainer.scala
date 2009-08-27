@@ -2,8 +2,7 @@ package org.skycastle.entity.entitycontainer
 
 
 import collection.mutable.HashMap
-import script.{ActionCall, Script}
-import util.Parameters
+import script.ActionCall
 
 /**
  * 

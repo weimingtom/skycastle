@@ -2,7 +2,6 @@ package org.skycastle.ui.example
 
 
 import entity.EntityId
-import javax.swing.JFrame
 import util.{SimpleFrame, Parameters}
 /**
  * 

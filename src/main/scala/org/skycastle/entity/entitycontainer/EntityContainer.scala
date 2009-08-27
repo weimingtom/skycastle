@@ -2,7 +2,6 @@ package org.skycastle.entity.entitycontainer
 
 
 import script.ActionCall
-import util.Parameters
 
 /**
  * Something that can contain and manage entities.
