@@ -16,11 +16,17 @@ import entity.{EntityId, Entity}
 case class ManagedEntity[T <: Entity]( entity : T ) extends ManagedObject with EntityContainer {
 
   // Fordward the requests to the DarkstarEntityContainer singleton
+
   def storeEntity(entity: Entity) : EntityId                  = DarkstarEntityContainer.storeEntity(entity)
   def markForUpdate( entity : Entity )                        = DarkstarEntityContainer.markForUpdate(entity)
   def getEntity(entityId: EntityId) : Option[Entity]          = DarkstarEntityContainer.getEntity( entityId )
   def getEntityForUpdate(entityId: EntityId) : Option[Entity] = DarkstarEntityContainer.getEntityForUpdate(entityId)
   def removeEntity(entityId: EntityId)                        = DarkstarEntityContainer.removeEntity(entityId)
+
+  def bindName(name: String, entity: Entity)                  = DarkstarEntityContainer.bindName( name, entity )
+  def getNamedEntity(name: String)                            = DarkstarEntityContainer.getNamedEntity( name )
+  def getNamedEntityForUpdate(name: String)                   = DarkstarEntityContainer.getNamedEntityForUpdate( name )
+  def removeBinding(name: String)                             = DarkstarEntityContainer.removeBinding( name )
 
 }
 

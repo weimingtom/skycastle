@@ -2,6 +2,7 @@ package org.skycastle.client
 
 
 import entity.entitycontainer.{SimpleEntityContainer, EntityContainer}
+import entity.{EntityId, Entity}
 import javax.swing.JLabel
 import util.SimpleFrame
 
@@ -13,25 +14,52 @@ import util.SimpleFrame
 
 object SkycastleClient {
 
-  val container : EntityContainer = new SimpleEntityContainer()
+  private var entityContainer : EntityContainer = null
+
+  private val clientControllerName = "clientController"
 
   def main( argv: Array[String]) {
 
     ClientLogger.logger.info( "Skycastle Client Started" )
 
-    // Load player configured client side object from specified file if available
+    entityContainer = loadOrCreateEntityContainer
+
+    val clientController = getClientController( entityContainer  )
+
+    clientController.createUi()
+  }
+
+  private def loadOrCreateEntityContainer : EntityContainer = {
+    // Load user configured client container from specified file if available
     // TODO
 
-    // If not found, create default client side object
-    // TODO
+    // Otherwise create empty container
+    new SimpleEntityContainer()
+  }
 
-    // When connecting to a server, call an action that creates an Entity to represent the server and for communiction.
-
-    // Create UI for the main client side entrypoint
-    // TODO
-    
-    new SimpleFrame("Skycastgle Client", new JLabel( "Skycastle Client Test" ) )
+  private def getClientController(container : EntityContainer ) : ClientControllerEntity = {
+    // Get the client controller stored in client configuration, or create a new one if not found or if it is the wrong type
+    container.getNamedEntityForUpdate( clientControllerName ) match {
+      case Some( controller ) => {
+        if (controller.isInstanceOf[ClientControllerEntity] ) controller.asInstanceOf[ClientControllerEntity]
+        else {
+          container.removeBinding( clientControllerName )
+          createClientController( container )
+        }
+      }
+      case None => createClientController( container )
+    }
   }
 
 
+  private def createClientController( container : EntityContainer ) : ClientControllerEntity = {
+
+    val controller = new ClientControllerEntity()
+
+    container.bindName( clientControllerName, controller )
+
+    controller
+  }
+
 }
+

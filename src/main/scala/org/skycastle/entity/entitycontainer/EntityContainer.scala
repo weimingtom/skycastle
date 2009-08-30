@@ -31,7 +31,8 @@ trait EntityContainer {
   def markForUpdate( entity : Entity )
 
   /**
-   * Stores the entity to the EntityContainer if it isn't already, and returns its id.
+   * Stores the entity to the EntityContainer, and returns its id.
+   * The entity should not already be stored.
    */
   def storeEntity( entity : Entity ) : EntityId
 
@@ -40,6 +41,11 @@ trait EntityContainer {
    */
   def removeEntity( entityId : EntityId )
 
+
+  def bindName( name : String, entity : Entity )
+  def getNamedEntity( name : String ) : Option[Entity]
+  def getNamedEntityForUpdate( name : String ) : Option[Entity]
+  def removeBinding( name : String )
 
   // TODO: Add interfaces for scheduled action callbacks etc.
 

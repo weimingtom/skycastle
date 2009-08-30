@@ -3,7 +3,8 @@ package org.skycastle.ui
 
 import components.{LabelUi, PanelUi, ButtonUi}
 import entity.Entity
-import javax.swing.{JComponent}
+import java.awt.Dimension
+import javax.swing.{JLabel, JFrame, JComponent}
 import util.{Parameters}
 
 /**
@@ -16,6 +17,8 @@ import util.{Parameters}
 class ScreenEntity extends Entity {
   private var uiComponents: Map[Symbol, Ui] = Map[Symbol, Ui]()
 
+  @transient
+  private var frame : JFrame = null
 
   def addUiComponent(componentType: Symbol, id: Symbol, parent: Symbol, parameters: Parameters) {
     //UiLogger.logger.fine( "Adding UI component of type " + componentType+ " with id "+id+", parent "+parent+", and parameters " + parameters )
@@ -111,16 +114,45 @@ class ScreenEntity extends Entity {
     }
   }
 
-  def createUi(parameters: Parameters): Ui = {
-    val rootUiId = parameters.get[Symbol]('rootComponentId, 'root)
-
-    uiComponents.getOrElse(rootUiId, null)
+  def getRootUi : Ui = {
+    uiComponents.getOrElse('root, null)
   }
 
   def getView(): JComponent = {
 
-    val ui: Ui = createUi(properties)
-    ui.getView(uiComponents)
+    val ui: Ui = getRootUi
+    if (ui == null) new JLabel( "No root UI found." )
+    else ui.getView(uiComponents)
+  }
+
+  def showFrame() {
+
+    if (frame != null)
+    {
+        frame.setVisible(true)
+    }
+    else {
+      frame = new JFrame()
+
+      val rootUi = getRootUi
+      if (rootUi != null) {
+        frame.setTitle( rootUi.parameters.getString( 'text, "Skycastle" ) )
+        // TODO: Icon
+      }
+  
+      // TODO: Listen to close, possibly ask for permission, then shutdown the client
+      frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE )
+
+      frame.getContentPane.add( getView() )
+
+      // TODO: Get default size as parameter?
+      // TODO: Also add set / reset / toggle fullscreen options, callable on the client entity.
+      frame.setPreferredSize( new Dimension( 1200, 800 ) )
+
+      frame.pack
+
+      frame.setVisible( true )
+    }
   }
 
 }

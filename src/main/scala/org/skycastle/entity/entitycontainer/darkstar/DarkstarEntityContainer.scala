@@ -64,4 +64,52 @@ object DarkstarEntityContainer extends EntityContainer {
 
   }
 
+
+  def bindName(name: String, entity: Entity) {
+    // TODO: Log and ignore instead??
+    if (entity == null) throw new IllegalArgumentException("Entity should not be null")
+    if (name== null) throw new IllegalArgumentException("Name should not be null")
+
+    val dataManager : DataManager = AppContext.getDataManager
+
+    val id = if (entity.id != null) entity.id
+             else storeEntity( entity )
+
+    val managedEntity = AppContext.getDataManager.getBinding( id.managedObjectName )
+
+    dataManager.setBinding( getBindingName( name ), managedEntity )
+  }
+
+  def getNamedEntity(name: String) : Option[Entity] = {
+    if (name == null) return None
+    else try {
+      Some[Entity]( AppContext.getDataManager.getBinding( getBindingName( name ) ).asInstanceOf[ManagedEntity[Entity]].entity )
+    } catch {
+      case e : NameNotBoundException => None
+      case e : ClassCastException => None
+    }
+  }
+
+  def getNamedEntityForUpdate(name: String) : Option[Entity] = {
+    if (name == null) return None
+    else try {
+      Some[Entity]( AppContext.getDataManager.getBindingForUpdate( getBindingName( name ) ).asInstanceOf[ManagedEntity[Entity]].entity )
+    } catch {
+      case e : NameNotBoundException => None
+      case e : ClassCastException => None
+    }
+  }
+
+  def removeBinding(name: String)  {
+    val dataManager : DataManager = AppContext.getDataManager
+    
+    try {
+      dataManager.removeBinding( getBindingName( name ))
+    } catch {
+      case e : NameNotBoundException => // Ignore if no such object exists
+    }
+  }
+
+  private def getBindingName( name : String ) = "namedEntity-" + name
+
 }

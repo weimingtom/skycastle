@@ -7,7 +7,6 @@ import java.util.logging.Logger
  *
  * @author Hans Haggstrom
  */
-
 object ClientLogger {
 
   val logger = Logger.getLogger( "org.skycastle.client" )
