@@ -13,16 +13,23 @@ import util.SimpleFrame
 
 object SkycastleClient {
 
-  var container : EntityContainer = null
+  val container : EntityContainer = new SimpleEntityContainer()
 
   def main( argv: Array[String]) {
 
     ClientLogger.logger.info( "Skycastle Client Started" )
 
+    // Load player configured client side object from specified file if available
+    // TODO
 
-    container = new SimpleEntityContainer()
+    // If not found, create default client side object
+    // TODO
 
+    // When connecting to a server, call an action that creates an Entity to represent the server and for communiction.
 
+    // Create UI for the main client side entrypoint
+    // TODO
+    
     new SimpleFrame("Skycastgle Client", new JLabel( "Skycastle Client Test" ) )
   }
 
