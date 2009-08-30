@@ -11,10 +11,9 @@ import util.Parameters
  */
 class ClientControllerEntity extends Entity {
 
-  private var clientUiId : EntityId = null
-
   def createUi() {
 
+    val clientUiId = properties.getAs[EntityId]( 'uiId, null )
     val screen : ScreenEntity = container.getEntity( clientUiId ) match {
       case Some( screen : ScreenEntity ) => screen
       case _ => buildClientScreen()
@@ -36,7 +35,8 @@ class ClientControllerEntity extends Entity {
 
     container.storeEntity( screen )
 
-    clientUiId = screen.id
+    properties.set( 'uiId, screen.id )
+
     screen
   }
 
