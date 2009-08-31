@@ -2,6 +2,7 @@ package org.skycastle.ui
 
 
 import components.{LabelUi, PanelUi, ButtonUi}
+import entity.accesscontrol.ActionCapability
 import entity.Entity
 import java.awt.Dimension
 import javax.swing.{JLabel, JFrame, JComponent}
@@ -88,6 +89,12 @@ class ScreenEntity extends Entity {
     }
   }
 
+  def createUiEditorRole() {
+    addRole( "uiEditor" )
+    addRoleCapability( "uiEditor", ActionCapability( "addUiComponent" ) )
+    addRoleCapability( "uiEditor", ActionCapability( "updateUiComponent" ) )
+    addRoleCapability( "uiEditor", ActionCapability( "removeUiComponent" ) )
+  }
 
   protected override def callBuiltinAction(actionName: String, parameters: Parameters): Boolean = {
     actionName match {
