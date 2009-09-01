@@ -4,10 +4,10 @@
 # This is a shell script for generating a package for a release for a java project
 
 # Application specific variables:
-version=`cat version`
-revision=`svnversion -n`
+version=$(cat version)
+revision=$(svnversion -n)
 builddir=build
-releaseDate=`date +"%d %B %Y"`
+releaseDate=$(date +"%d %B %Y")
 userReadableName=Skycastle
 appName=skycastle
 binDirName=$appName-$version-bin
@@ -28,7 +28,7 @@ appProperties=src/main/resources/META-INF/app.properties
 homepage=www.skycastle.org
 bugReportUrl=http://code.google.com/p/skycastle/issues/entry?template=Defect%20report%20from%20user
 featureRequestUrl=http://code.google.com/p/skycastle/issues/entry?template=Feature%20request%20from%20user
-oneLineDescription=`cat short-description.txt`
+oneLineDescription=$(cat short-description.txt)
 credits="Programmed by Hans H&auml;ggstr&ouml;m ( zzorn @ iki.fi )"
 license="GPL v2"
 documentationUrl=http://skycastle.googlecode.com/svn/wiki/Documentation.wiki
