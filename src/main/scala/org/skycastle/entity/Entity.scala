@@ -7,15 +7,13 @@ import script.Script
 import util.Parameters
 
 /**
- * Represents some object in the game (server or client or both sides).
- *
- * Mutable, can be updated with the update method (usually used for server to client updated).
+ * Represents some mutable object in the game (server or client).
  *
  * @author Hans Haggstrom
  */
 @serializable
 @SerialVersionUID(1)
-abstract class Entity {
+class Entity {
 
   /**
    * Identifier of this Entity.
@@ -34,7 +32,7 @@ abstract class Entity {
   /**
    * Key-value properties stored in this Entity
    */
-  lazy val properties = new Parameters()
+  val properties = new Parameters()
 
   /**
    * Any scripted actions added to this Entity

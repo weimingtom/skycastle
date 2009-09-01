@@ -54,7 +54,7 @@ case class Parameters(var properties: Map[Symbol, Object]) extends Serializable{
     if (s == null) defaultValue else s.toString
   }
 
-  def set(id: Symbol, value: Serializable) {
+  def set(id: Symbol, value: Object) {
     val entry = (id, value)
     properties = properties + entry
   }
