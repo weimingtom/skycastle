@@ -25,6 +25,8 @@
         <include>com.projectdarkstar.ext.com.jmonkeyengine:jme</include>
         <include>com.projectdarkstar.ext.com.jmonkeyengine:jme-terrain</include>
 
+        <include>com.vividsolutions:jts</include>
+
 <!--
         <include>jme:jme</include>
 -->
