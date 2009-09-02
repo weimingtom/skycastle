@@ -1,11 +1,12 @@
 package org.skycastle.client
 
 
+import com.jme.app.AbstractGame
 import entity.entitycontainer.{SimpleEntityContainer, EntityContainer}
 import entity.{EntityId, Entity}
 import javax.swing.JLabel
-import util.SimpleFrame
-
+import rendering.{MainGameLoop, VisibleEntity}
+import util.{SimpleFrame, ResourceLoader}
 /**
  * Client side entrypoint 
  * 
@@ -27,6 +28,14 @@ object SkycastleClient {
     val clientController = getClientController( entityContainer  )
 
     clientController.createUi()
+
+    // Testing 3D UI:
+    val logoUrl = ResourceLoader.getResourceURL( "images/skycastle-logo.png" )
+    val renderer = new MainGameLoop("Skycastle 3D Test", null )
+    renderer.setConfigShowMode(  AbstractGame.ConfigShowMode.AlwaysShow, logoUrl   )
+
+    renderer.start();
+
   }
 
   private def loadOrCreateEntityContainer : EntityContainer = {

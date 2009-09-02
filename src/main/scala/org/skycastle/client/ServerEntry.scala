@@ -29,7 +29,7 @@ class ServerEntry extends Entity {
     if (screenId == null) throw new IllegalArgumentException("Screen ID can not be null")
 
     container.getEntity( screenId ) match {
-      case Null =>throw new IllegalArgumentException("No screen with id "+screenId+" found")
+      case None =>throw new IllegalArgumentException("No screen with id "+screenId+" found")
       case Some(screen : ScreenEntity) => {
 
         val connection = new UserConnection()

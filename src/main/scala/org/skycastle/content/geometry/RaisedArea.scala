@@ -1,6 +1,7 @@
 package org.skycastle.content.geometry
 
 
+import com.jme.scene.{Node, Spatial}
 import entity.Entity
 
 /**
@@ -19,29 +20,32 @@ case class RaisedArea extends GeoEntity {
   var floorZ : Double = 0
   var height : Double = 2
 
-  def create3dView() {
+  def create3dView() : Spatial = {
 
-    if (geometry == null || geometry.getDimension < 2 )
+    val node = new Node()
+
+    if (geometry != null && geometry.getDimension >= 2 )
     {
-      // TODO: Return empty 3D representation
-    }
+      val edges = geometry.getBoundary
+      var n = edges.getNumGeometries
 
-    val edges = geometry.getBoundary
-    var n = edges.getNumGeometries
+      while ( n > 0) {
+        n -= 1
 
-    while ( n > 0) {
-      n -= 1
+        val geo = edges.getGeometryN( n )
+        if (geo.getDimension >= 2 ) {
+          // TODO: Get the exterior ring.  Maybe even take into account internal holes?
 
-      val geo = edges.getGeometryN( n )
-      if (geo.getDimension >= 2 ) {
-        // TODO: Get the exterior ring.  Maybe even take into account internal holes?
+          // Generate 3D shape using the outline
+          // TODO
 
-        // Generate 3D shape using the outline
-        // TODO
+          
+        }
+
       }
-
     }
 
+    node
   }
 
 }

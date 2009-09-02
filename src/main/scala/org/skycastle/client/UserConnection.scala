@@ -14,7 +14,11 @@ import entity.Entity
  */
 class UserConnection extends Entity {
 
-  def connect()
+  def connect() {
+    
+  }
+
+  
   
 }
 

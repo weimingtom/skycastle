@@ -11,6 +11,6 @@ import entity.Entity
  */
 class GeoEntity extends Entity {
 
-  var geometry : Geometry
+  var geometry : Geometry = null
 
 }
