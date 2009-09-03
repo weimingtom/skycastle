@@ -9,6 +9,7 @@ import entity.Entity
  * 
  * @author Hans Haggstrom
  */
+// TODO: Could this be made a ModelPart instead?  Or some kind of Space / Map Part instead?
 class GeoEntity extends Entity {
 
 //  var geometry : Geometry = null
