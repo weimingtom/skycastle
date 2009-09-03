@@ -22,7 +22,7 @@ class ScreenEntity extends CompositeEntity {
   private var frame : JFrame = null
 
   type COMPONENT = Ui
-  type RESULT = JComponent
+  type VIEW = JComponent
 
   override protected def createComponentOfType(componentType: String, componentId: Symbol) : COMPONENT = {
     componentType match {

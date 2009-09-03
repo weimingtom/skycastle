@@ -34,8 +34,8 @@ class CompositeEntity extends Entity {
 
   private var components: Map[Symbol, COMPONENT] = Map[Symbol, COMPONENT]()
 
-  type COMPONENT <: CompositeComponent
-  type RESULT
+  type COMPONENT <: CompositePart
+  type VIEW
 
   createEditorRole()
   
@@ -75,7 +75,7 @@ class CompositeEntity extends Entity {
 
       // Add to parent
       components.get(parent) match {
-        case Some(parentComponent : CompositeComponent) => {
+        case Some(parentComponent : CompositePart) => {
           parentComponent.addChild(component, this)
         }
         case None => {
@@ -89,7 +89,7 @@ class CompositeEntity extends Entity {
 
   def updateComponent( id: Symbol, parameters: Parameters ) {
     components.get(id) match {
-      case Some(component : CompositeComponent) => {
+      case Some(component : CompositePart) => {
         component.update(parameters, this)
       }
       case None => {
@@ -100,7 +100,7 @@ class CompositeEntity extends Entity {
 
   def removeComponent( id: Symbol ) {
     components.get(id) match {
-      case Some(component : CompositeComponent) => {
+      case Some(component : CompositePart) => {
         component.remove(this)
         components = components - id
       }

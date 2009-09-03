@@ -3,8 +3,9 @@ package org.skycastle
 
 import java.util.logging.Logger
 import util.{LogUtil, LogMethods}
+
 /**
- *
+ * Logging helper
  *
  * @author Hans Haggstrom
  */

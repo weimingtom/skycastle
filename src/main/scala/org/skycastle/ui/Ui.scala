@@ -1,7 +1,7 @@
 package org.skycastle.ui
 
 
-import content.composite.{CompositeComponent, CompositeEntity}
+import content.composite.{CompositePart, CompositeEntity}
 import javax.swing.JComponent
 import util.{ErrorPrinter, Parameters}
 /**
@@ -11,7 +11,7 @@ import util.{ErrorPrinter, Parameters}
  */
 @serializable
 @SerialVersionUID(1)
-abstract class Ui extends CompositeComponent {
+abstract class Ui extends CompositePart {
 
 
 
@@ -24,7 +24,7 @@ abstract class Ui extends CompositeComponent {
   private var view: ViewType =  null.asInstanceOf[ViewType]
 
 
-  override def onChildAdded(child: CompositeComponent, composite: CompositeEntity) {
+  override def onChildAdded(child: CompositePart, composite: CompositeEntity) {
     if (view != null) {
 
       // Get or create child view, and add it to this component
@@ -35,7 +35,7 @@ abstract class Ui extends CompositeComponent {
     }
   }
 
-  override def onChildRemoved(child: CompositeComponent, composite: CompositeEntity) {
+  override def onChildRemoved(child: CompositePart, composite: CompositeEntity) {
 
     if (view != null && child.asInstanceOf[Ui].hasView) {
       // Detach child ui

@@ -12,6 +12,7 @@ import java.io.Serializable
  *
  * @author Hans Haggstrom
  */
+// TODO: Convert to immutable, and have a separate mutable properties class?
 @SerialVersionUID( 1 )
 case class Parameters(var properties: Map[Symbol, Object]) extends Serializable{
 

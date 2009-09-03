@@ -8,7 +8,7 @@ import util.{ErrorPrinter, Parameters}
  * 
  * @author Hans Haggstrom
  */
-class CompositeComponent {
+class CompositePart {
 
   /**
    * Whether child componets can be added to this component.   Override if necessary.
@@ -42,12 +42,12 @@ class CompositeComponent {
   /**
    * Called when a child component has been added.
    */
-  def onChildAdded(child: CompositeComponent, composite : CompositeEntity) {}
+  def onChildAdded(child: CompositePart, composite : CompositeEntity) {}
 
   /**
    * Called before a child component is removed.
    */
-  def onChildRemoved(child: CompositeComponent, composite : CompositeEntity) {}
+  def onChildRemoved(child: CompositePart, composite : CompositeEntity) {}
 
 
 
@@ -67,7 +67,7 @@ class CompositeComponent {
   final def getChildren = children
 
 
-  final def addChild(child: CompositeComponent, composite : CompositeEntity) {
+  final def addChild(child: CompositePart, composite : CompositeEntity) {
     if (!childrenSupported) {
       composite.logWarning( "Could not add child '"+child.id+"' to component '"+id+"' - it doesn't accept children." )
     }
@@ -88,7 +88,7 @@ class CompositeComponent {
     }
   }
 
-  final def removeChild(child: CompositeComponent, composite : CompositeEntity) {
+  final def removeChild(child: CompositePart, composite : CompositeEntity) {
     if (childrenSupported && children.contains(child.id)) {
 
       try {
