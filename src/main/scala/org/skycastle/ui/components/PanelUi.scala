@@ -11,15 +11,17 @@ import util.Parameters
  * @author Hans Haggstrom
  */
 
-class PanelUi extends Ui(true) {
+class PanelUi extends Ui {
 
   type ViewType = JPanel
+  
+  override val childrenSupported = true
 
   lazy val layout = new MigLayout()
 
   def createOwnView() = new JPanel(layout)
 
-  def onUpdate(view: ViewType, changedParameters: Parameters) {
+  protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
     if (changedParameters.contains('layout))
       layout.setLayoutConstraints(changedParameters.getString('layout, ""))
 

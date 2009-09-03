@@ -15,7 +15,7 @@ import entity.Entity
  * 
  * @author Hans Haggstrom
  */
-case class RaisedArea extends GeoEntity {
+class RaisedArea extends GeoEntity {
 
 /*
   var floorZ : Double = 0

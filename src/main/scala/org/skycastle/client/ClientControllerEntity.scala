@@ -37,7 +37,7 @@ class ClientControllerEntity extends Entity {
     // and then connect to the server, specifying username and password, or logging in with an account creation login
     // if the user doesn't have any login yet.
     val screen = new ScreenEntity()
-    screen.addUiComponent( 'label, 'root, null, Parameters(Map( 'text -> "Welcome to the Skycastle Client" )) )
+    screen.addComponent( "label", 'root, null, Parameters(Map( 'text -> "Welcome to the Skycastle Client" )) )
 
     container.storeEntity( screen )
 

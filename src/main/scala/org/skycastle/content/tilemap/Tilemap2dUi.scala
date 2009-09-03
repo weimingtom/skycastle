@@ -10,11 +10,12 @@ import util.Parameters
  * 
  * @author Hans Haggstrom
  */
-class Tilemap2dUi(tilemap : TilemapEntity) extends Ui(false) {
+class Tilemap2dUi(tilemap : TilemapEntity) extends Ui {
   type ViewType = JComponent
 
   def createOwnView() = null
 
-  def onUpdate(view: ViewType, changedParameters: Parameters) = null
+  protected def updateViewProperties(view: ViewType, changedParameters: Parameters) = null
+
 }
 

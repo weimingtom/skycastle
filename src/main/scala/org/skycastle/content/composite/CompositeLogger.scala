@@ -1,12 +1,14 @@
 package org.skycastle.content.composite
 
 
-import util.LazyLogger
-
+import java.util.logging.Logger
+import util.{LogUtil, LogMethods}
 /**
  * 
  * 
  * @author Hans Haggstrom
  */
 
-object CompositeLogger extends LazyLogger( "org.skycastle.composite" )
+object CompositeLogger extends LogUtil("org.skycastle.content.composite")
+
+

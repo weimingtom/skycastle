@@ -1,6 +1,7 @@
 package org.skycastle.ui
 
 
+import content.composite.{CompositeComponent, CompositeEntity}
 import javax.swing.JComponent
 import util.{ErrorPrinter, Parameters}
 /**
@@ -10,91 +11,77 @@ import util.{ErrorPrinter, Parameters}
  */
 @serializable
 @SerialVersionUID(1)
-abstract case class Ui(childrenSupported : Boolean) {
+abstract class Ui extends CompositeComponent {
+
+
 
   /**
    * Define in child classes as the type of JComponent used.
    */
   type ViewType <: JComponent
 
-  var id: Symbol = null
-  var parent: Symbol = null
-  var parameters: Parameters = null
-
-  private var children: List[Symbol] = Nil
-
   @transient
   private var view: ViewType =  null.asInstanceOf[ViewType]
 
-  final def init( id_ : Symbol, parent_ : Symbol, parameters_ : Parameters) {
-    id = id_
-    parent = parent_
-    parameters = parameters_
-    onInit()
-  }
 
-  final def getChildren = children
+  override def onChildAdded(child: CompositeComponent, composite: CompositeEntity) {
+    if (view != null) {
 
-  final def addChild(child: Ui, components: Map[Symbol, Ui]) {
-    if (childrenSupported) {
-      if (!children.contains(child.id)) children = children ::: List( child.id )
+      // Get or create child view, and add it to this component
+      val childView = child.asInstanceOf[Ui].getView(composite)
 
-      if (view != null) {
-
-        // Get or create child view, and add it to this component
-        val childView = child.getView(components)
-        
-        view.add(childView)
-        view.validate
-      }
+      view.add(childView)
+      view.validate
     }
   }
 
-  final def removeChild(child: Ui, components: Map[Symbol, Ui]) {
-    if (childrenSupported) {
-      if (children.contains(child.id)) {
-        children = children.remove(_ == child.id)
+  override def onChildRemoved(child: CompositeComponent, composite: CompositeEntity) {
 
-        if (view != null && child.hasView) {
-          // Detach child ui
-          view.remove( child.getView(components) )
-          view.validate
-        }
-      }
+    if (view != null && child.asInstanceOf[Ui].hasView) {
+      // Detach child ui
+      view.remove( child.asInstanceOf[Ui].getView(composite) )
+      view.validate
+    }
+  }
+
+  override def onUpdate(changedParameters: Parameters, composite: CompositeEntity) {
+    if (view != null) {
+      updateCommonSwingProperties( view, changedParameters )
+      updateViewProperties( view, changedParameters )
     }
   }
 
 
   final def hasView = view != null
 
-  final def getView(components: Map[Symbol, Ui]): ViewType = {
+  final def getView(composite: CompositeEntity): ViewType = {
     if (view == null) {
-      view = createView(components)
+      view = createView(composite)
     }
 
     view
   }
 
-  private final def createView(components: Map[Symbol, Ui]): ViewType = {
+  private final def createView(composite: CompositeEntity): ViewType = {
     // Create self
     val view : ViewType = try {
       createOwnView()
     } catch {
       case e : Exception => {
-        UiLogger.logger.warning( "Error when creating Ui component.  Component: " + id + " ("+this+"),  parameters: " + parameters + ", error: " + e )
+        composite.logWarning( "Error when creating Ui component.  Component: " + id + " ("+this+"),  parameters: " + parameters + ", error: " + e )
         null.asInstanceOf[ViewType]
       }
     }
 
     if (view != null) {
       // Update it with the initial parameters
-      updateProperties( view, parameters )
+      updateViewProperties( view, parameters )
 
       // Create children
-      children foreach { c =>
-        components.get(c) match {
-          case Some(childComponent) => {
-            val childView = childComponent.getView(components)
+      getChildren foreach { c =>
+        composite.getComponent(c) match {
+          case Some(childComponent : Ui) => {
+            val childView = childComponent.getView(composite)
             view.add( childView )
           }
           case None =>
@@ -106,70 +93,20 @@ abstract case class Ui(childrenSupported : Boolean) {
   }
 
 
-  final def update(changedParameters: Parameters) {
-    parameters.update(changedParameters)
-
-    if (view != null) {
-      updateProperties( view, changedParameters )
-    }
-  }
-
-
-  final def remove(components: Map[Symbol, Ui]) {
-
-    onRemove()
-
-    // Remove the child components
-    children foreach { c =>
-      components.get(c) match {
-        case Some(childComponent) => childComponent.remove(components)
-        case None =>
-      }
-    }
-
-    // Remove this from parent
-    components.get(parent) match {
-      case Some(parentComponent) => parentComponent.removeChild(this, components)
-      case None =>
-    }
-
-    children = Nil
-    parameters = null
-  }
-
-  private final def updateProperties(component : ViewType, changedParameters: Parameters){
-    try {
-      updateCommonSwingProperties( component, changedParameters )
-      onUpdate(component, changedParameters)
-    } catch {
-      case e : Exception => UiLogger.logger.warning( ErrorPrinter.prettyPrint("Error when updating parameters for Ui component.  Update partially applied.  Component: " + id + " ("+component+"),  updated parameters: " + changedParameters, e ) )
-    }
-  }
-
-  private final def updateCommonSwingProperties( component : ViewType, changedParameters: Parameters ) {
-
-    component.setToolTipText( changedParameters.getString( 'tooltip, component.getToolTipText ) )
-
-  }
-
-  /**
-   * Called after a Ui is created, but before the view has been created.
-   */
-  def onInit() {}
-
   /**
    * Called to create a swing component for a Ui.  The onUpdate is called afterwards for applying the initial properties.
    */
   def createOwnView() : ViewType
 
   /**
-   *  Called when a component has been created with the initial parameters, and whenever it is updated with the changed parameters.
+   * Called when the view properties should be updated
    */
-  def onUpdate( view : ViewType, changedParameters: Parameters )
+  protected def updateViewProperties(view : ViewType, changedParameters: Parameters)
 
-  /**
-   * Called before a component is removed.
-   */
-  def onRemove() {}
+
+  private final def updateCommonSwingProperties( component : ViewType, changedParameters: Parameters ) {
+    component.setToolTipText( changedParameters.getString( 'tooltip, component.getToolTipText ) )
+  }
+
 }
 

@@ -3,7 +3,7 @@ package org.skycastle.client
 
 import com.jme.app.AbstractGame
 import entity.entitycontainer.{SimpleEntityContainer, EntityContainer}
-import entity.{EntityId, Entity}
+import entity.{EntityId, Entity, EntityLogger}
 import javax.swing.JLabel
 import rendering.{MainGameLoop, VisibleEntity}
 import skycastle.rendering.Screen3DEntity
@@ -28,15 +28,15 @@ object SkycastleClient {
 
     val clientController = getClientController( entityContainer  )
 
-//    clientController.createUi()
+    clientController.createUi()
 
     // Testing 3D UI:
     val screen3D = new Screen3DEntity()
-    screen3D.showScreen
+//    screen3D.showScreen
 /*
     val logoUrl = ResourceLoader.getResourceURL( "images/skycastle-logo.png" )
 */
-
+    null
   }
 
   private def loadOrCreateEntityContainer : EntityContainer = {

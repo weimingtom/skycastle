@@ -1,12 +1,14 @@
 package org.skycastle.server
 
 
-import util.LazyLogger
-
+import java.util.logging.Logger
+import util.{LogUtil, LogMethods}
 /**
  * Logging helper.
  * 
  * @author Hans Haggstrom
  */
 
-object ServerLogger  extends LazyLogger("org.skycastle.server")
+object ServerLogger  extends LogUtil("org.skycastle.server")
+
+

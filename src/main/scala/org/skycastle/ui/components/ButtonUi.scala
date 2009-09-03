@@ -12,7 +12,7 @@ import util.Parameters
  * @author Hans Haggstrom
  */
 
-class ButtonUi extends Ui( false ){
+class ButtonUi extends Ui {
   type ViewType = JButton
 
   var invokedEntity : EntityId = null
@@ -31,7 +31,8 @@ class ButtonUi extends Ui( false ){
     view
   }
 
-  def onUpdate(view: ViewType, changedParameters: Parameters) {
+
+  protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
     if (changedParameters.contains('text))
       view.setText( changedParameters.getString('text, "") )
 

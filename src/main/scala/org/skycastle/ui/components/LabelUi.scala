@@ -10,13 +10,13 @@ import util.Parameters
  * @author Hans Haggstrom
  */
 
-class LabelUi extends Ui(false) {
+class LabelUi extends Ui {
 
   type ViewType = JLabel
 
   def createOwnView() = new JLabel()
 
-  def onUpdate(view: ViewType, changedParameters: Parameters) {
+  protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
 
     if (changedParameters.contains('text)) {
       view.setText( parameters.getString( 'text, "") )

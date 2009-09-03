@@ -38,8 +38,7 @@ class ServerEntry extends Entity {
         container.storeEntity( connection )
 
         // Make sure the UserConnection can update its UI:
-        screen.createUiEditorRole()
-        screen.addRoleMember( "uiEditor", connection.id )
+        screen.addRoleMember( "editor", connection.id )
 
         connection.connect()
 

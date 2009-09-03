@@ -75,7 +75,7 @@ class CompositeEntity extends Entity {
 
       // Add to parent
       components.get(parent) match {
-        case Some(parentComponent : COMPONENT) => {
+        case Some(parentComponent : CompositeComponent) => {
           parentComponent.addChild(component, this)
         }
         case None => {
@@ -89,7 +89,7 @@ class CompositeEntity extends Entity {
 
   def updateComponent( id: Symbol, parameters: Parameters ) {
     components.get(id) match {
-      case Some(component : COMPONENT) => {
+      case Some(component : CompositeComponent) => {
         component.update(parameters, this)
       }
       case None => {
@@ -100,7 +100,7 @@ class CompositeEntity extends Entity {
 
   def removeComponent( id: Symbol ) {
     components.get(id) match {
-      case Some(component : COMPONENT) => {
+      case Some(component : CompositeComponent) => {
         component.remove(this)
         components = components - id
       }
@@ -110,7 +110,7 @@ class CompositeEntity extends Entity {
     }
   }
   
-  private def createComponentOfType(componentType: String, componentId : Symbol): COMPONENT = {
+  protected def createComponentOfType(componentType: String, componentId : Symbol): COMPONENT = {
     // Try to find the classname from the specified approved classnames or paths
     // TODO
 

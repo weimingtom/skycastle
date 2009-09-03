@@ -5,7 +5,7 @@ import _root_.org.skycastle.entity.entitycontainer.EntityContainer
 import accesscontrol.{Role, RoleMember, Capability}
 import java.util.logging.{Logger, Level}
 import script.Script
-import util.{LogMethods, LazyLogger, Parameters}
+import util.{LogMethods, Parameters}
 /**
  * Represents some mutable object in the game (server or client).
  *
@@ -183,16 +183,12 @@ class Entity extends LogMethods {
   def logger : Logger = EntityLogger.logger
 
   def log( level : Level, message : => String , exception : => Throwable ) {
-
-    if (level.intValue() >= logger.getLevel.intValue && logger.getLevel.intValue != Level.OFF.intValue ) {
+    if (logger != null && logger.isLoggable(level) )
+    {
       val e = exception
-      val logPrefix = "Entity " + id + " of type " + getClass.getName + ": "
-      if (e == null) {
-        logger.log( level, logPrefix + message )
-      }
-      else {
-        logger.log( level, logPrefix + message, e )
-      }
+      val prefixedMessage = "Entity " + id + " of type " + getClass.getName + ": " + message
+
+      logger.log( level, prefixedMessage, e )
 
       // Send log feedback also to the caller, if it is authorized.  Useful for rapid debugging by developers and client scripters
       // Avoid infinite loops of error messages by not sending log messages if we are processing an incoming log message.
@@ -210,7 +206,8 @@ class Entity extends LogMethods {
                 'calledEntityType -> getClass.getName,
                 'calledAction -> currentAction,
                 'logLevel -> level.getName,
-                'logMessage -> message )) )
+                'logMessage -> message,
+                'exception -> e.getMessage )) )
               
             }
           }

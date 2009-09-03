@@ -23,7 +23,7 @@ case class Parameters(var properties: Map[Symbol, Object]) extends Serializable{
 
   def getAs[T](id: Symbol, defaultValue: T) : T = {
     val value = properties.getOrElse(id, defaultValue)
-    if (value != null && value.isInstanceOf[T])
+    if (value != null)
       value.asInstanceOf[T]
     else defaultValue
   }
