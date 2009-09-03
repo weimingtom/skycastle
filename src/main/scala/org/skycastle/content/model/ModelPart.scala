@@ -1,4 +1,4 @@
-package org.skycastle.content.shape
+package org.skycastle.content.model
 
 import composite.CompositePart
 

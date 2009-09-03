@@ -1,4 +1,4 @@
-package org.skycastle.content.shape
+package org.skycastle.content.model
 
 import com.jme.scene.Spatial
 import composite.CompositeEntity
