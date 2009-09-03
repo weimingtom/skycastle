@@ -2,6 +2,7 @@ package org.skycastle.ui
 
 
 import java.util.logging.Logger
+import util.LazyLogger
 
 /**
  * Logging helper
@@ -9,8 +10,4 @@ import java.util.logging.Logger
  * @author Hans Haggstrom
  */
 
-object UiLogger {
-  val logger = Logger.getLogger( "org.skycastle.ui" )
-
-}
-
+object UiLogger extends LazyLogger( "org.skycastle.ui" )

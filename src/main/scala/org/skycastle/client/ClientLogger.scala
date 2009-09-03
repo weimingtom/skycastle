@@ -1,15 +1,11 @@
 package org.skycastle.client
 
-import java.util.logging.Logger
+import util.LazyLogger
 
 /**
  * Logging helper.
  *
  * @author Hans Haggstrom
  */
-object ClientLogger {
-
-  val logger = Logger.getLogger( "org.skycastle.client" )
-}
-
+object ClientLogger extends LazyLogger("org.skycastle.client")
 

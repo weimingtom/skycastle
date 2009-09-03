@@ -12,6 +12,8 @@ import entity.Entity
  * 
  * @author Hans Haggstrom
  */
+@serializable
+@SerialVersionUID(1)
 class UserConnection extends Entity {
 
   def connect() {

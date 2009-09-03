@@ -13,6 +13,8 @@ import ui.ScreenEntity
  *
  * @author Hans Haggstrom
  */
+@serializable
+@SerialVersionUID(1)
 class ServerEntry extends Entity {
 
   /**

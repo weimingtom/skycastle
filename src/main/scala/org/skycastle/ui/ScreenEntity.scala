@@ -84,7 +84,7 @@ class ScreenEntity extends Entity {
         uiComponents = uiComponents - id
       }
       case None => {
-        UiLogger.logger.warning("Component not found '" + id + "' when trying to remove a component in " + this + ".  Ignoring the remove.")
+        logWarning("Component not found '" + id + "' when trying to remove a component in " + this + ".  Ignoring the remove.")
       }
     }
   }

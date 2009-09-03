@@ -17,6 +17,7 @@ import entity.Entity
  */
 case class RaisedArea extends GeoEntity {
 
+/*
   var floorZ : Double = 0
   var height : Double = 2
 
@@ -47,6 +48,7 @@ case class RaisedArea extends GeoEntity {
 
     node
   }
+*/
 
 }
 

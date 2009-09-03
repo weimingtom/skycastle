@@ -1,7 +1,7 @@
 package org.skycastle.server
 
 
-import java.util.logging.Logger
+import util.LazyLogger
 
 /**
  * Logging helper.
@@ -9,7 +9,4 @@ import java.util.logging.Logger
  * @author Hans Haggstrom
  */
 
-object ServerLogger {
-
-  val logger = Logger.getLogger( "org.skycastle.server" )
-}
+object ServerLogger  extends LazyLogger("org.skycastle.server")

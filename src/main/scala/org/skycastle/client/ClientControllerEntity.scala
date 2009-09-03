@@ -9,7 +9,13 @@ import util.Parameters
  * 
  * @author Hans Haggstrom
  */
+@serializable
+@SerialVersionUID(1)
 class ClientControllerEntity extends Entity {
+
+  
+
+
 
   def createUi() {
 

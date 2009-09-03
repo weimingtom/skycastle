@@ -1,7 +1,7 @@
 package org.skycastle.content.geometry
 
 
-import com.vividsolutions.jts.geom.Geometry
+//mport com.vividsolutions.jts.geom.Geometry
 import entity.Entity
 
 /**
@@ -11,6 +11,6 @@ import entity.Entity
  */
 class GeoEntity extends Entity {
 
-  var geometry : Geometry = null
+//  var geometry : Geometry = null
 
 }
