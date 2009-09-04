@@ -1,7 +1,7 @@
 package org.skycastle.ui
 
 
-import components.{LabelUi, PanelUi, ButtonUi}
+import components.{FieldUi, LabelUi, PanelUi, ButtonUi}
 import content.composite.CompositeEntity
 import entity.accesscontrol.ActionCapability
 import entity.Entity
@@ -29,6 +29,7 @@ class ScreenEntity extends CompositeEntity {
       case "label" => new LabelUi()
       case "panel" => new PanelUi()
       case "button" => new ButtonUi()
+      case "field" => new FieldUi()
       case _ => null.asInstanceOf[COMPONENT]
     }
 

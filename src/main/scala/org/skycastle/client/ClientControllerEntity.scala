@@ -1,6 +1,7 @@
 package org.skycastle.client
 
 
+import entity.accesscontrol.ActionCapability
 import entity.{EntityId, Entity}
 import ui.{ScreenEntity, Ui}
 import util.Parameters
@@ -13,8 +14,8 @@ import util.Parameters
 @SerialVersionUID(1)
 class ClientControllerEntity extends Entity {
 
-  
-
+  addRole( "connect" )
+  addRoleCapability( "connect", ActionCapability( "connectToServer" ) )
 
 
   def createUi() {
@@ -37,14 +38,21 @@ class ClientControllerEntity extends Entity {
     // and then connect to the server, specifying username and password, or logging in with an account creation login
     // if the user doesn't have any login yet.
     val screen = new ScreenEntity()
-    screen.addComponent( "label", 'root, null, Parameters(Map( 'text -> "Welcome to the Skycastle Client" )) )
+    screen.addComponent( "panel", 'root, null, Parameters(Map( 'text -> "test client" )) )
+    screen.addComponent( "label", 'label01, 'root, Parameters(Map( 'text -> "specify server to logon to" )) )
+    screen.addComponent( "field", 'serverField, 'root, Parameters( Map( 'text -> "testserver", 'tooltip -> "The server to connect to" ) ) )
+    screen.addComponent( "button", 'login, 'root, Parameters( Map( 'text -> "Login", 'calledEntity -> id, 'calledAction -> "connectToServer", 'actionParameters -> Map( 'url -> 'serverField ) ) ) )
+
 
     container.storeEntity( screen )
 
     properties.set( 'uiId, screen.id )
+    addRoleMember( "connect", screen.id )
 
     screen
   }
+
+
 
   /**
    * Creates a new client side entity representing the specified server, and initiates a connection.
@@ -54,8 +62,19 @@ class ClientControllerEntity extends Entity {
    */
   // TODO: Refactor connection to a separate client side server representation object,
   // and have the connection take username etc as parameters
-  def connectToServer( url : String, port : String, ownName : String, uiContainerForServer : Ui ) {
+  override protected def callBuiltinAction(actionName: String, parameters: Parameters) = {
 
+    actionName match {
+      case "connectToServer" => connectToServer( parameters.getAs[String]('url, null ), parameters.getAs[String]('port, null ), parameters.getAs[String]('userName, null ), null  ) ; true
+
+      case _ => false
+    }
+    
+  }
+
+  def connectToServer( url : String, port : String, userName : String, uiContainerForServer : Ui ) {
+    // TODO
+    println( "TODO: Connect to server "+url+":"+port+" as user "+ userName  )
   }
 }
 

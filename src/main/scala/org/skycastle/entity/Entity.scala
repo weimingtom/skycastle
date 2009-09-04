@@ -223,13 +223,7 @@ class Entity extends LogMethods {
 
 
   def callOtherEntity( targetEntityId : EntityId, actionName : String, parameters : Parameters ) {
-
-    val callerId = id
-
-    // TODO: Send call asyncronously
-
-    null
-
+    container.call( id, targetEntityId, actionName, parameters )
   }
 }
 

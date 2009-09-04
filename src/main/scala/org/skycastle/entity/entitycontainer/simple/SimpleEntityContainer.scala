@@ -2,6 +2,7 @@ package org.skycastle.entity.entitycontainer
 
 
 import collection.mutable.HashMap
+import util.Parameters
 /**
  * A straightforward single-threaded, non-persistent EntityContainer.
  * 
@@ -12,6 +13,7 @@ class SimpleEntityContainer extends EntityContainer {
   private val entities = new HashMap[EntityId, Entity]()
   private val namedEntities = new HashMap[String, EntityId]()
   private var nextFreeId : Long = 1L
+  private var queuesActionCalls : List[ActionCall] = Nil
 
   private def nextId() : Long = {
     val id = nextFreeId
@@ -64,6 +66,41 @@ class SimpleEntityContainer extends EntityContainer {
 
   def removeBinding(name: String) = {
     if (name != null) namedEntities.removeKey( name )
+  }
+
+
+  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: String, parameters: Parameters)  {
+    queuesActionCalls = queuesActionCalls ::: List(ActionCall( callingEntity, calledEntity, actionName, parameters ))
+  }
+
+
+  /**
+   * Should be called regularily to execute queued action calls and tasks.
+   */
+  def update( currentTime_ms : Long ) {
+
+    // Only process the actions that have collected before this update
+    val actionsToDo = queuesActionCalls
+    queuesActionCalls = Nil
+
+    // Execute all calls
+    actionsToDo foreach { call : ActionCall =>
+      getEntityForUpdate( call.calledEntity ) match {
+        case Some(entity : Entity) => entity.call( call.callingEntity, call.actionName, call.parameters )
+        case _ => EntityLogger.logDebug( "Can not process action call " +call+ ", entity "+call.calledEntity+" not found." )
+      }
+    }
+  }
+
+  /**
+   * A main game loop that calls update at regular intervalls.
+   */
+  def start() {
+    while (true ) {
+      update( System.currentTimeMillis )
+
+      Thread.sleep( 10 )
+    }
   }
 
 }

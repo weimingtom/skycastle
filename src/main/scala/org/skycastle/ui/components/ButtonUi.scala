@@ -1,6 +1,7 @@
 package org.skycastle.ui.components
 
 
+import content.composite.{CompositePart, CompositeEntity}
 import entity.EntityId
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing.JButton
@@ -11,24 +12,47 @@ import util.Parameters
  * 
  * @author Hans Haggstrom
  */
+// TODO: Make action parameters be some expression objects that calculate the parameter value in some way - either constant value,
+// TODO: or a value of some Ui component, or a value of a property.  Or possibly a value of a property of another entity?
 
+@serializable
+@SerialVersionUID(1)
 class ButtonUi extends Ui {
   type ViewType = JButton
 
-  var invokedEntity : EntityId = null
-  var invokedMethod : String = null
-  var parameterMapping : Map[ Symbol, Symbol ] = Map()
+  var calledEntity : EntityId = null
+  var calledAction : String = null
+  var actionParameters : Map[ Symbol, Symbol ] = Map()
 
-  def createOwnView() : ViewType = {
+
+  def createOwnView(composite: CompositeEntity) : ViewType = {
     val view = new JButton()
     view.addActionListener( new ActionListener {
       def actionPerformed(e: ActionEvent) = {
-        // TODO: Implement invocation of the correct method on the correct entity
-        println( "TODO: Should now call method " +invokedMethod+ " on entity "+invokedEntity+" with parameters mapped from ui input widgets with the map: " +parameterMapping )
+        composite.callOtherEntity( calledEntity, calledAction, collectParameters(composite) )
       }
     })
     
     view
+  }
+
+  private def collectParameters(composite: CompositeEntity) : Parameters = {
+
+    var params : Map[Symbol, Object] = Map()
+
+    actionParameters.keys foreach { key : Symbol =>
+      val sourceComponent = actionParameters(key)
+      composite.getComponent( sourceComponent ) match {
+        case Some( comp : Ui ) => {
+          val value = comp.getValue()
+          val entry = ( key, value )
+          params = params + entry
+        }
+        case _ =>
+      }
+    }
+
+    Parameters(params)
   }
 
 
@@ -36,14 +60,14 @@ class ButtonUi extends Ui {
     if (changedParameters.contains('text))
       view.setText( changedParameters.getString('text, "") )
 
-    if (changedParameters.contains('invokedEntity))
-      invokedEntity = changedParameters.getAs[EntityId]('invokedEntity, null)
+    if (changedParameters.contains('calledEntity))
+      calledEntity = changedParameters.getAs[EntityId]('calledEntity, null)
 
-    if (changedParameters.contains('invokedMethod))
-      invokedMethod = changedParameters.getString('invokedMethod, null)
+    if (changedParameters.contains('calledAction))
+      calledAction = changedParameters.getString('calledAction, null)
     
-    if (changedParameters.contains('parameterMapping))
-      parameterMapping = changedParameters.getAs[Map[Symbol,Symbol]]('parameterMapping, Map[Symbol,Symbol]())
+    if (changedParameters.contains('actionParameters))
+      actionParameters = changedParameters.getAs[Map[Symbol,Symbol]]('actionParameters, Map[Symbol,Symbol]())
 
   }
 }

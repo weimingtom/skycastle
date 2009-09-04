@@ -1,6 +1,8 @@
 package org.skycastle.entity.entitycontainer
 
 
+import util.Parameters
+
 /**
  * Something that can contain and manage entities.
  *
@@ -47,6 +49,13 @@ trait EntityContainer {
   def getNamedEntityForUpdate( name : String ) : Option[Entity]
   def removeBinding( name : String )
 
+
+  /**
+   * Asynchronously invokes the specified action on the specified entity, assuming the calling entity has the access rights for it.
+   */
+  def call( callingEntity : EntityId, calledEntity : EntityId, actionName : String, parameters : Parameters )
+  
+
   // TODO: Add interfaces for scheduled action callbacks etc.
 
 
@@ -63,7 +72,7 @@ trait EntityContainer {
 //  def createEntity( calledId : CallerId, entityId : EntityId, entityType: String, parameters : Parameters, initializationScript : Script )
 
   /**
-   * Used to invoke an action of an entity, with some specified parameters.
+   *  Used to invoke an action of an entity, with some specified parameters.
    */
   // TODO: Do not allow outside calls.  Instead allow clients and servers to create proxy entities within each other, that behave like normal entities in the container.
   // The client creates an entity for the server inside itself when connecting to the server, and can thus control what the server is allowed to do in the client side EntityContainer.

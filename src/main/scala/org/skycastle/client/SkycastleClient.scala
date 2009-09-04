@@ -16,7 +16,7 @@ import util.{SimpleFrame, ResourceLoader}
 
 object SkycastleClient {
 
-  private var entityContainer : EntityContainer = null
+  private var entityContainer : SimpleEntityContainer = null
 
   private val clientControllerName = "clientController"
 
@@ -30,8 +30,10 @@ object SkycastleClient {
 
     clientController.createUi()
 
+    entityContainer.start
+
     // Testing 3D UI:
-    val screen3D = new Screen3DEntity()
+//    val screen3D = new Screen3DEntity()
 //    screen3D.showScreen
 /*
     val logoUrl = ResourceLoader.getResourceURL( "images/skycastle-logo.png" )
@@ -39,7 +41,7 @@ object SkycastleClient {
     null
   }
 
-  private def loadOrCreateEntityContainer : EntityContainer = {
+  private def loadOrCreateEntityContainer : SimpleEntityContainer = {
     // Load user configured client container from specified file if available
     // TODO
 

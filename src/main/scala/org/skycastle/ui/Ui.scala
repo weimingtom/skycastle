@@ -52,6 +52,11 @@ abstract class Ui extends CompositePart {
   }
 
 
+  /**
+   * Returns any value being edited by this UI component, or null if none available.
+   */
+  def getValue() : Object = null
+
   final def hasView = view != null
 
   final def getView(composite: CompositeEntity): ViewType = {
@@ -65,7 +70,7 @@ abstract class Ui extends CompositePart {
   private final def createView(composite: CompositeEntity): ViewType = {
     // Create self
     val view : ViewType = try {
-      createOwnView()
+      createOwnView(composite)
     } catch {
       case e : Exception => {
         composite.logWarning( "Error when creating Ui component.  Component: " + id + " ("+this+"),  parameters: " + parameters + ", error: " + e )
@@ -96,7 +101,7 @@ abstract class Ui extends CompositePart {
   /**
    * Called to create a swing component for a Ui.  The onUpdate is called afterwards for applying the initial properties.
    */
-  def createOwnView() : ViewType
+  def createOwnView( composite: CompositeEntity ) : ViewType
 
   /**
    * Called when the view properties should be updated

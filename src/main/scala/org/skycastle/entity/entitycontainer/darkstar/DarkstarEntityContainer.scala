@@ -3,6 +3,7 @@ package org.skycastle.entity.entitycontainer.darkstar
 import _root_.org.skycastle.server.ManagedEntity
 import com.sun.sgs.app.{DataManager, NameNotBoundException, AppContext}
 import java.lang.ClassCastException
+import util.Parameters
 
 /**
  * A singleton object for accessing the DarkstarEntityContainer
@@ -112,4 +113,10 @@ object DarkstarEntityContainer extends EntityContainer {
 
   private def getBindingName( name : String ) = "namedEntity-" + name
 
+
+  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: String, parameters: Parameters) {
+
+    EntityLogger.logError( "DarkstarEntityContainer.call Not yet implemented" )
+    // TODO: handle
+  }
 }
