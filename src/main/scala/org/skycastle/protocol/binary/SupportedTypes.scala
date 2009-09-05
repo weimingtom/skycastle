@@ -8,7 +8,7 @@ import types._
 object SupportedTypes {
 
   val numberToType : Map[Byte, SerializableType] = createNumberToType()
-  val classToType : Map[Class, SerializableType] = createClassToType( numberToType )
+  val classToType : Map[Class[_], SerializableType] = createClassToType( numberToType )
 
   val OBJECT_TYPE_LEN = 1
 
@@ -19,7 +19,7 @@ object SupportedTypes {
       classToType.get( kind ) match {
         case Some( encoder : SerializableType ) => {
           buffer.put( encoder.number )
-          encoder.encode( buffer, value )
+          encoder.encode( buffer, value.asInstanceOf[encoder.T] )
         }
         case None => {
           ProtocolLogger.logWarning( "No encoder for object type '"+kind+"', substituting with null." )
@@ -33,8 +33,8 @@ object SupportedTypes {
     // Max nr of object types is 256.  If we need more, we can create an extension type.
     val objectType : Byte = buffer.get
 
-    numberToType( objectType ) match  {
-      case Some( decoder : SerializableType  ) => decoder.decode( buffer )
+    numberToType.get( objectType ) match  {
+      case Some( decoder : SerializableType  ) => decoder.decode( buffer ).asInstanceOf[Object]
       case None => {
         ProtocolLogger.logInfo( "Unknown object type '"+objectType+"', substituting with null." )
         null
@@ -47,7 +47,7 @@ object SupportedTypes {
     else {
       val kind = value.getClass
       classToType.get( kind ) match {
-        case Some( lengthCalculator : SerializableType ) => OBJECT_TYPE_LEN + lengthCalculator.length( value )
+        case Some( lengthCalculator : SerializableType ) => OBJECT_TYPE_LEN + lengthCalculator.length( value.asInstanceOf[lengthCalculator.T] )
         case None => OBJECT_TYPE_LEN
       }
     }
@@ -55,6 +55,7 @@ object SupportedTypes {
 
 
   def lenCollection( collection : Collection[Object] ) : Int = collection.foldLeft( 0 ){ _ + objectLength( _ ) }
+  def lenIterator( collection : Iterator[Object] )     : Int = collection.foldLeft( 0 ){ _ + objectLength( _ ) }
 
 
   private final def createNumberToType() = {
@@ -92,8 +93,8 @@ object SupportedTypes {
     types
   }
 
-  private final def createClassToType( numberToType : Map[Byte, SerializableType] ) = {
-    var types : Map[Class, SerializableType] = Map()
+  private def createClassToType( numberToType : Map[Byte, SerializableType] ) : Map[Class[_], SerializableType] = {
+    var types : Map[Class[_], SerializableType] = Map()
 
     def addType( t : SerializableType ) {
       val entry = ( t.kind, t )
@@ -101,6 +102,8 @@ object SupportedTypes {
     }
 
     numberToType.values foreach addType
+    
+    types
   }
 
 }

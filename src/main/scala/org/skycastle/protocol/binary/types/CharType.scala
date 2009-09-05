@@ -8,9 +8,8 @@ import java.nio.ByteBuffer
 
 object CharType extends SerializableType {
   type T = Char
-
-  val number = 8
-  val name = 'char
+  val number : Byte = 8
+  val kind = classOf[T]
 
   def encode(buffer: ByteBuffer, value: T) = buffer.putChar( value )
   def decode(buffer: ByteBuffer) = buffer.getChar

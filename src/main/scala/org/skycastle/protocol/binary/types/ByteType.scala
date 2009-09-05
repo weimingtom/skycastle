@@ -8,10 +8,9 @@ import java.nio.ByteBuffer
 
 object ByteType extends SerializableType {
 
-  val number = 2
-  val name = 'byte
-
+  val number : Byte = 2
   type T = Byte
+  val kind = classOf[T]
 
   def encode(buffer: ByteBuffer, value: T) = buffer.put( value )
 

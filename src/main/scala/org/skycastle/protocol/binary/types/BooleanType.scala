@@ -7,10 +7,9 @@ import java.nio.ByteBuffer
  */
 
 object BooleanType extends SerializableType {
+  val number :Byte = 1
   type T = Boolean
-
-  val number = 1
-  val name = 'boolean
+  val kind = classOf[T]
 
   def encode(buffer: ByteBuffer, value: T) {
     val b : Byte = if (value) 1 else 0

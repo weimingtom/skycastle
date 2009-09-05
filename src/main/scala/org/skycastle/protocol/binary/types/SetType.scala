@@ -8,9 +8,9 @@ import java.nio.ByteBuffer
 
 object SetType extends SerializableType {
 
-  val number = 13
-  val name = 'set
-  type T = Set
+  val number : Byte = 13
+  type T = Set[Object]
+  val kind = classOf[T]
 
   def encode(buffer: ByteBuffer, value: T) {
     buffer.putInt( value.size )
@@ -19,7 +19,7 @@ object SetType extends SerializableType {
 
   def decode(buffer: ByteBuffer) = {
     var numEntries = buffer.getInt()
-    var resultSet : Set = Set()
+    var resultSet : Set[Object] = Set()
     while (numEntries > 0) {
       val value = SupportedTypes.decodeObject(buffer)
       resultSet = resultSet + value

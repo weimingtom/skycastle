@@ -9,9 +9,9 @@ import java.nio.ByteBuffer
 object StringType extends SerializableType {
 
   type T = String
+  val number : Byte = 9
+  val kind = classOf[T]
 
-  val number = 9
-  val name = 'string
 
   def encode(buffer: ByteBuffer, value: T) {
     if (value.length > ProtocolConstants.MAX_STRING_LENGTH_CHARS) {

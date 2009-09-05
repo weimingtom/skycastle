@@ -7,9 +7,9 @@ import java.nio.ByteBuffer
  */
 
 object ListType extends SerializableType {
-  val number = 12
-  val name = 'list
+  val number : Byte = 12
   type T = scala.List[Object]
+  val kind = classOf[T]
 
   def encode(buffer: ByteBuffer, value: T) {
     buffer.putInt( value.size )

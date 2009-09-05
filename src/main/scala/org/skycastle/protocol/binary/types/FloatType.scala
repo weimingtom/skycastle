@@ -7,10 +7,9 @@ import java.nio.ByteBuffer
  */
 
 object FloatType extends SerializableType {
+  val number : Byte = 6
   type T = Float
-
-  val number = 6
-  val name = 'float
+  val kind = classOf[T]
 
   def encode(buffer: ByteBuffer, value: T) = buffer.putFloat( value )
   def decode(buffer: ByteBuffer) = buffer.getFloat

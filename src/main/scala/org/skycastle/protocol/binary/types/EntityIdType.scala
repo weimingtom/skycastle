@@ -8,9 +8,9 @@ import java.nio.ByteBuffer
  */
 
 object EntityIdType extends SerializableType {
-  val number = 11
-  val name = 'entityId
+  val number : Byte = 11
   type T = EntityId
+  val kind = classOf[T]
 
   def encode(buffer: ByteBuffer, value: T) = StringType.encode( buffer, value.id )
 

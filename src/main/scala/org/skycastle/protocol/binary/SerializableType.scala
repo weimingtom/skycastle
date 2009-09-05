@@ -10,8 +10,9 @@ trait SerializableType {
   type T
 
   val number : Byte
-  val name : Symbol
-  final val kind : Class = classOf[T]
+  val kind : Class[T]
+
+  final def name = kind.getName
 
   def length( value : T ) : Int
   def decode( buffer : ByteBuffer ) : T

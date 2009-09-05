@@ -8,9 +8,9 @@ import java.nio.ByteBuffer
 
 object DoubleType extends SerializableType {
   type T = Double
+  val number : Byte = 7
+  val kind = classOf[T]
 
-  val number = 7
-  val name = 'double
 
   def encode(buffer: ByteBuffer, value: T) = buffer.putDouble( value )
   def decode(buffer: ByteBuffer) = buffer.getDouble

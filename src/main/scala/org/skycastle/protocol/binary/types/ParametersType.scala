@@ -9,9 +9,9 @@ import java.nio.ByteBuffer
 
 object ParametersType  extends SerializableType {
 
-  val number = 15
-  val name = 'parameters
+  val number : Byte = 15
   type T = Parameters
+  val kind = classOf[T]
 
   def encode(buffer: ByteBuffer, value: T) {
     buffer.putInt( value.properties.size )
@@ -38,8 +38,8 @@ object ParametersType  extends SerializableType {
 
 
   def length(value: T) = IntType.INT_LEN +
-                         SupportedTypes.lenCollection( value.properties.keys ) +
-                         SupportedTypes.lenCollection( value.properties.values ) - 
+                         SupportedTypes.lenIterator( value.properties.keys ) +
+                         SupportedTypes.lenIterator( value.properties.values ) -
                          SupportedTypes.OBJECT_TYPE_LEN * value.properties.size // We know that all keys are symbols, so that need not be stored
 
 }

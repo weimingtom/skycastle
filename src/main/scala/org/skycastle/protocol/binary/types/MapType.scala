@@ -8,9 +8,9 @@ import java.nio.ByteBuffer
 
 object MapType extends SerializableType {
 
-  val number = 14
-  val name = 'map
+  val number : Byte = 14
   type T = Map[Object,Object]
+  val kind = classOf[T]
 
   def encode(buffer: ByteBuffer, value: T) {
     buffer.putInt( value.size )
@@ -36,8 +36,8 @@ object MapType extends SerializableType {
   }
 
   def length(value: T)  = IntType.INT_LEN +
-                          SupportedTypes.lenCollection( value.keys ) +
-                          SupportedTypes.lenCollection( value.values )
+                          SupportedTypes.lenIterator( value.keys ) +
+                          SupportedTypes.lenIterator( value.values )
 
 
 }
