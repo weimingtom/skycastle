@@ -31,6 +31,10 @@
         <include>jme:jme</include>
 -->
         <include>com.projectdarkstar.client:sgs-client-api</include>
+        <include>com.projectdarkstar.client:sgs-client</include>
+        <include>com.projectdarkstar.server:sgs-shared</include>
+
+
         <include>org.lwjgl:lwjgl</include>
 <!--
         <include>org.lwjgl:lwjgl_util_applet</include>

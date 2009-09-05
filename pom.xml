@@ -92,12 +92,39 @@
       <version>${darkstar.version}</version>
     </dependency>
 
+<!--
+    <dependency>
+      <groupId>com.projectdarkstar.server</groupId>
+      <artifactId>sgs-server</artifactId>
+      <version>${darkstar.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.projectdarkstar.server</groupId>
+      <artifactId>sgs-server-internal-api</artifactId>
+      <version>${darkstar.version}</version>
+    </dependency>
+-->
+
+    <dependency>
+      <groupId>com.projectdarkstar.server</groupId>
+      <artifactId>sgs-shared</artifactId>
+      <version>1.8</version>
+    </dependency>
+
     <dependency>
       <groupId>com.projectdarkstar.client</groupId>
       <artifactId>sgs-client-api</artifactId>
       <version>${darkstar.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.projectdarkstar.client</groupId>
+      <artifactId>sgs-client</artifactId>
+      <version>${darkstar.version}</version>
+    </dependency>
+
+    
     <!-- Java Monkey Engine -->
 <!--
     <dependency>

@@ -34,7 +34,7 @@ class BinaryProtocolTest extends TestCase {
                            'otherAdditions -> List( "Mustard", "Onions", "Pineapple" ) ) )
 
     val buffer = protocol.encode( order )
-    val mangledOrder = protocol.decode( buffer )
+    val mangledOrder = protocol.decode( buffer ).head
 
     assertEquals( "The message should have passed correctly through the BinaryProtocol",
                   order, mangledOrder )
