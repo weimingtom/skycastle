@@ -6,7 +6,6 @@ import binary.types.{ObjectType, StringType, ParametersType, EntityIdType}
 import java.lang.Class
 import java.nio.ByteBuffer
 
-import ProtocolConstants._
 
 /**
  * A straightforward binary protocol.
@@ -22,34 +21,33 @@ class BinaryProtocol extends Protocol {
   val protocolName = "BinaryProtocol"
   val protocolVersion = 1
 
-  def decode(receivedBytes: ByteBuffer) : Message = {
-    val calledEntityId = EntityIdType.decode( receivedBytes )
-    val actionName = StringType.decode( receivedBytes )
-    val parameters = ParametersType.decode( receivedBytes )
+  val serializer = new BinarySerializer()
 
-    Message( calledEntityId, actionName, parameters )
+  def decode(receivedBytes: ByteBuffer) : Message = {
+    val calledEntityId = serializer.decode[EntityId]( receivedBytes )
+    val action         = serializer.decode[Symbol]( receivedBytes )
+    val parameters     = serializer.decode[Parameters]( receivedBytes )
+
+    Message( calledEntityId, action, parameters )
   }
 
   def encode(message: Message) : ByteBuffer = {
-
     if (message.calledEntity == null ) throw new ProtocolException( "Can not send message "+message+" as it doesn't specify an entity to call." )
     if (message.calledAction == null ) throw new ProtocolException( "Can not send message "+message+" as it doesn't specify an action to call." )
 
-    val messageLength_bytes = EntityIdType.length( message.calledEntity ) +
-                              StringType.length( message.calledAction ) +
-                              ParametersType.length( message.parameters )
+    val messageLength_bytes = serializer.length( message.calledEntity ) +
+                              serializer.length( message.calledAction ) +
+                              serializer.length( message.parameters )
 
     val buffer = ByteBuffer.wrap( new Array[Byte]( messageLength_bytes ) );
 
-    EntityIdType.encode( buffer, message.calledEntity )
-    StringType.encode( buffer, message.calledAction )
-    ParametersType.encode( buffer, message.parameters )
+    serializer.encode( buffer, message.calledEntity )
+    serializer.encode( buffer, message.calledAction )
+    serializer.encode( buffer, message.parameters )
 
     buffer.flip()
 
     buffer
-
-
   }
 
 }

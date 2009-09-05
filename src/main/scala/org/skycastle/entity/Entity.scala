@@ -32,7 +32,7 @@ class Entity extends LogMethods {
   /**
    * Key-value properties stored in this Entity
    */
-  val properties = new Parameters()
+  val properties = Parameters()
 
   /**
    * Any scripted actions added to this Entity
@@ -200,14 +200,14 @@ class Entity extends LogMethods {
             if ( role.containsEntity( currentCaller ) ) {
 
               // Invoke a log feedback action on the other entity asynchronously
-              callOtherEntity( currentCaller, "callFeedback", Parameters(Map(
+              callOtherEntity( currentCaller, "callFeedback", Parameters(
                 'callingEntity -> currentCaller,
                 'calledEntity -> id,
                 'calledEntityType -> getClass.getName,
                 'calledAction -> currentAction,
                 'logLevel -> level.getName,
                 'logMessage -> message,
-                'exception -> e.getMessage )) )
+                'exception -> e.getMessage ) )
               
             }
           }

@@ -52,7 +52,7 @@ class ButtonUi extends Ui {
       }
     }
 
-    Parameters(params)
+    new Parameters(params)
   }
 
 

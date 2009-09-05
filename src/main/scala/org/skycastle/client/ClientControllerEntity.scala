@@ -38,10 +38,10 @@ class ClientControllerEntity extends Entity {
     // and then connect to the server, specifying username and password, or logging in with an account creation login
     // if the user doesn't have any login yet.
     val screen = new ScreenEntity()
-    screen.addComponent( "panel", 'root, null, Parameters(Map( 'text -> "test client" )) )
-    screen.addComponent( "label", 'label01, 'root, Parameters(Map( 'text -> "specify server to logon to" )) )
-    screen.addComponent( "field", 'serverField, 'root, Parameters( Map( 'text -> "testserver", 'tooltip -> "The server to connect to" ) ) )
-    screen.addComponent( "button", 'login, 'root, Parameters( Map( 'text -> "Login", 'calledEntity -> id, 'calledAction -> "connectToServer", 'actionParameters -> Map( 'url -> 'serverField ) ) ) )
+    screen.addComponent( "panel", 'root, null, Parameters( 'text -> "test client" ))
+    screen.addComponent( "label", 'label01, 'root, Parameters('text -> "specify server to logon to" ))
+    screen.addComponent( "field", 'serverField, 'root, Parameters( 'text -> "testserver", 'tooltip -> "The server to connect to" ) )
+    screen.addComponent( "button", 'login, 'root, Parameters( 'text -> "Login", 'calledEntity -> id, 'calledAction -> "connectToServer", 'actionParameters -> Map( 'url -> 'serverField ) ) )
 
 
     container.storeEntity( screen )

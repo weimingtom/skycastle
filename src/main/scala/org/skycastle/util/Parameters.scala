@@ -3,6 +3,10 @@ package org.skycastle.util
 
 import java.io.Serializable
 
+object Parameters {
+  def apply (  elems: (Symbol, Any)*) = new Parameters( Map.empty ++ elems )
+}
+
 /**
  * A set of named properties.
  *
@@ -13,10 +17,12 @@ import java.io.Serializable
  * @author Hans Haggstrom
  */
 // TODO: Convert to immutable, and have a separate mutable properties class?
+@serializable
 @SerialVersionUID( 1 )
-case class Parameters(var properties: Map[Symbol, Object]) extends Serializable{
+final class Parameters(var properties_ : Map[Symbol, Any]) {
 
-  def this() = this( Map() )
+  def properties = properties_
+  def entries = properties_
 
   def contains( id : Symbol ) : Boolean = properties.contains( id )
   
@@ -57,12 +63,22 @@ case class Parameters(var properties: Map[Symbol, Object]) extends Serializable{
 
   def set(id: Symbol, value: Object) {
     val entry = (id, value)
-    properties = properties + entry
+    properties_ = properties_ + entry
   }
 
   def update( newValues : Parameters) {
-    properties = properties ++ newValues.properties 
+    properties_ = properties_ ++ newValues.properties
   }
 
   override def toString = properties.mkString( "{", ", ", "}")
+
+  override def equals(obj: Any) = {
+    if ( obj == null ) false
+    else if ( !classOf[Parameters].isInstance( obj ) ) false
+    else properties_.equals( (obj.asInstanceOf[Parameters]).properties_ )
+  }
+
+  override def hashCode = super.hashCode ^ properties_.hashCode
+
+
 }
