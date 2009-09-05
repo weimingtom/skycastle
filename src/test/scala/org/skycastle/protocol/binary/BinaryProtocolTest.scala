@@ -24,7 +24,21 @@ class BinaryProtocolTest extends TestCase {
   }
 
   @Test
+  def testMessages {
+
+    val order = Message( EntityId( "entity-42" ), 'bake, Parameters( 'receipt -> "pizza", 'size -> 20, 'extraSauce -> true, 'otherAdditions -> List( "Mustard", "Onions", "Pineapple" ) ) )
+
+    val buffer = protocol.encode( order )
+    val mangledOrder = protocol.decode( buffer )
+
+    assertEquals( "The message should have passed correctly through the BinaryProtocol",
+                  order, mangledOrder )
+  }
+
+  @Test
   def testTypes {
+
+    asserSerializes( null)
 
     asserSerializes( true )
     asserSerializes( false )
@@ -34,21 +48,31 @@ class BinaryProtocolTest extends TestCase {
     asserSerializes( 0.byteValue )
     asserSerializes( 23.byteValue )
     asserSerializes( 127.byteValue )
+    asserSerializes( Math.MAX_BYTE )
+    asserSerializes( Math.MIN_BYTE )
 
     asserSerializes( 0.shortValue )
     asserSerializes( 893.shortValue )
     asserSerializes( (-2833).shortValue )
+    asserSerializes( Math.MAX_SHORT )
+    asserSerializes( Math.MIN_SHORT )
 
     asserSerializes( 4 )
     asserSerializes( -3 )
     asserSerializes( 0 )
     asserSerializes( 238218 )
     asserSerializes( -90393 )
+    asserSerializes( Math.MAX_INT )
+    asserSerializes( Math.MIN_INT )
 
     asserSerializes( 0L )
     asserSerializes( 8L )
+    asserSerializes( 9853L )
     asserSerializes( 58425943L )
     asserSerializes( -59405L )
+    asserSerializes( 2313234344235L )
+    asserSerializes( Math.MAX_LONG )
+    asserSerializes( Math.MIN_LONG )
 
     asserSerializes( 0.0f )
     asserSerializes( 123.0021f )
@@ -78,7 +102,6 @@ class BinaryProtocolTest extends TestCase {
     asserSerializes( " " )
     asserSerializes( "Foobar foo bar")
     asserSerializes( "AAAAaaAAAAAAAAaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaAAAAAAAAAAAA!!!!!!!1111111111")
-    asserSerializes( null )
 
     asserSerializes( 'foobar )
     asserSerializes( 'a )
@@ -105,7 +128,6 @@ class BinaryProtocolTest extends TestCase {
     asserSerializes( Map( 0 -> 1 ))
     asserSerializes( Map( 'a -> "*B*", 'c' -> 0xd, "foobar bar" -> null, 0 -> null))
 
-    asserSerializes( null)
     asserSerializes( Parameters())
     asserSerializes( Parameters( 'foo -> 1 ) )
     asserSerializes( Parameters( 'foo -> true, 'bar -> 32312L, 'zap -> 0.33f, 'zoo -> Math.POS_INF_DOUBLE, 'zapap -> Map( "a" -> 1.toShort, "b" ->(-1).toByte ) ) )
@@ -119,19 +141,26 @@ class BinaryProtocolTest extends TestCase {
 
     val buffer = ByteBuffer.wrap( new Array[Byte]( length_bytes ) )
 
+/*
     println( "Serializing "+typeName(value )+" " + value )
     println( "Length is " + length_bytes + " bytes" )
+*/
 
     serializer.encode( buffer, value )
 
     buffer.flip()
 
-    println( " = hex " + buffer.array().map( {b :Byte => String.format("%02X", java.lang.Byte.valueOf( b )) } ).mkString( " " ) )
+/*
+    println( " = bytes " + buffer.array().mkString( " " ) )
+    println( " = hex   " + buffer.array().map( {b :Byte => String.format("%02X", java.lang.Byte.valueOf( b )) } ).mkString( " " ) )
+*/
 
     val serializedValue = serializer.decode[T]( buffer )
 
+/*
     if (serializedValue == null) println ("Decoded to null\n")
     else println( "Decoded to  "+typeName(serializedValue )+" " + serializedValue + "\n")
+*/
 
     assertEquals( "The serializer for " + typeName(value )+" should encode and deoced the value correctly.",
                   value, serializedValue)
