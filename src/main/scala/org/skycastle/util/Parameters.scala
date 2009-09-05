@@ -5,10 +5,44 @@ import java.io.Serializable
 
 object Parameters {
   def apply (  elems: (Symbol, Any)*) = new Parameters( Map.empty ++ elems )
+
+  protected val KEY_VALUE_SEPARATOR = '='
+  protected val ENTRY_SEPARATOR = '\n'
+
+  /**
+   * Creates a Parameters object from a string containing key = value entries separated by the equals sign,
+   * and where the entries are separated by newlines.
+   */
+  def fromKeyValueString( keyValueList : String ) : Parameters = {
+    var properties : Map[Symbol, String] = Map()
+
+    val rows = List.fromString( keyValueList, ENTRY_SEPARATOR )
+
+    rows foreach { row : String =>
+
+      val splitIndex = row.indexOf( KEY_VALUE_SEPARATOR )
+
+      if ( splitIndex > 0 && splitIndex + 1 < row.length ) {
+
+        val key = (row.substring(0, splitIndex)).trim
+        val value = (row.substring(splitIndex + 1)).trim
+
+        if (!key.isEmpty) {
+          val entry = (Symbol(key), value)
+          properties = properties + entry
+        }
+
+      }
+    }
+
+    new Parameters( properties )
+  }
+
+
 }
 
 /**
- * A set of named properties.
+ *  A set of named properties.
  *
  * Mutable, but not a managed object.
  *
@@ -68,6 +102,21 @@ final class Parameters(var properties_ : Map[Symbol, Any]) {
 
   def update( newValues : Parameters) {
     properties_ = properties_ ++ newValues.properties
+  }
+
+  def toKeyValueString() : String = toKeyValueString( " "+Parameters.KEY_VALUE_SEPARATOR+" ",
+                                                      ""+Parameters.ENTRY_SEPARATOR )
+
+  def toKeyValueString( keyValueSeparator : String, entrySeparator : String ) : String = {
+    val s = new StringBuilder
+    properties_ foreach { case( key, value ) =>
+      s.append( key.name )
+      s.append( keyValueSeparator )
+      s.append( value.toString )
+      s.append( entrySeparator )
+    }
+
+    s.toString
   }
 
   override def toString = properties.mkString( "{", ", ", "}")

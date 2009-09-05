@@ -15,16 +15,24 @@ import java.nio.ByteBuffer
 @SerialVersionUID(1)
 class BinaryProtocol extends Protocol {
 
-  val protocolName = "BinaryProtocol"
+  val identifier = 'BinaryProtocol
 
   private val serializer = new BinarySerializer()
 
-  def decode(receivedBytes: ByteBuffer) : Message = {
-    val calledEntityId = serializer.decode[EntityId]( receivedBytes )
-    val action         = serializer.decode[Symbol]( receivedBytes )
-    val parameters     = serializer.decode[Parameters]( receivedBytes )
+  def decode(receivedBytes: ByteBuffer) : List[Message] = {
 
-    Message( calledEntityId, action, parameters )
+    var messages : List[Message] = Nil
+
+    // There may be multiple messages in the buffer, decode until it is empty
+    while ( receivedBytes.hasRemaining ) {
+      val calledEntityId = serializer.decode[EntityId]( receivedBytes )
+      val action         = serializer.decode[Symbol]( receivedBytes )
+      val parameters     = serializer.decode[Parameters]( receivedBytes )
+
+      messages = messages ::: List( Message( calledEntityId, action, parameters ) )
+    }
+
+    messages
   }
 
   def encode(message: Message) : ByteBuffer = {

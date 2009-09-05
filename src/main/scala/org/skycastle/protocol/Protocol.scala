@@ -16,7 +16,7 @@ abstract class Protocol  {
   /**
    * The name for this protocol, defined by implementing classes.
    */
-  val protocolName : String
+  val identifier : Symbol
 
   /**
    * Encodes a message to a ByteBuffer
@@ -28,7 +28,7 @@ abstract class Protocol  {
    * Decodes a message from a ByteBuffer to a Message
    * Throws an Exception if there was some problem.
    */
-  def decode( receivedBytes : ByteBuffer  ) : Message
+  def decode( receivedBytes : ByteBuffer  ) : List[Message]
   
 }
 
