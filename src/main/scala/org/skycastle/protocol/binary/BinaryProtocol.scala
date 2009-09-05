@@ -8,10 +8,9 @@ import java.nio.ByteBuffer
 /**
  * A straightforward binary protocol.
  */
-// TODO: Create one that packs commonly used Symbols with lookup tables / huffman encoding
-// TODO: Ints and Longs (and Shorts) could be packed more efficiently if they are close to zero
-// TODO: Maybe we should allocate some space for the buffer dynamically instead of first calculating the length?
+// TODO: Create one that packs commonly used Symbols with lookup tables
 // TODO: We could use a cached buffer array in each protocol that is the size of the maximum allowed size of a message?
+// TODO: Maybe we should allocate some space for the buffer dynamically instead of first calculating the length?
 @serializable
 @SerialVersionUID(1)
 class BinaryProtocol extends Protocol {
