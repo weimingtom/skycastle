@@ -3,62 +3,24 @@ package org.skycastle.protocol.binary
 import java.nio.ByteBuffer
 import types._
 /**
- * 
+ * List of types that can be encoded and decoded.
  */
+/*
+TODO: Implement these types
+  BYTE_BUFFER 16
+  COLOR_4F    17
+  COLOR_AWT   18
+  VECTOR_3F   19
+  QUATERNION  20
+  MATRIX_3D   21
+*/
 object SupportedTypes {
 
   val numberToType : Map[Byte, SerializableType] = createNumberToType()
   val classToType : Map[Class[_], SerializableType] = createClassToType( numberToType )
 
-  val OBJECT_TYPE_LEN = 1
 
-  def encodeObject( buffer: ByteBuffer, value: Object ) {
-    if (value == null) buffer.put( ProtocolConstants.NULL )
-    else {
-      val kind = value.getClass
-      classToType.get( kind ) match {
-        case Some( encoder : SerializableType ) => {
-          buffer.put( encoder.number )
-          encoder.encode( buffer, value.asInstanceOf[encoder.T] )
-        }
-        case None => {
-          ProtocolLogger.logWarning( "No encoder for object type '"+kind+"', substituting with null." )
-          buffer.put( ProtocolConstants.NULL )
-        }
-      }
-    }
-  }
-
-  def decodeObject( buffer: ByteBuffer ) : Object = {
-    // Max nr of object types is 256.  If we need more, we can create an extension type.
-    val objectType : Byte = buffer.get
-
-    numberToType.get( objectType ) match  {
-      case Some( decoder : SerializableType  ) => decoder.decode( buffer ).asInstanceOf[Object]
-      case None => {
-        ProtocolLogger.logInfo( "Unknown object type '"+objectType+"', substituting with null." )
-        null
-      }
-    }
-  }
-
-  def objectLength( value : Object ) : Int = {
-    if (value == null) OBJECT_TYPE_LEN
-    else {
-      val kind = value.getClass
-      classToType.get( kind ) match {
-        case Some( lengthCalculator : SerializableType ) => OBJECT_TYPE_LEN + lengthCalculator.length( value.asInstanceOf[lengthCalculator.T] )
-        case None => OBJECT_TYPE_LEN
-      }
-    }
-  }
-
-
-  def lenCollection( collection : Collection[Object] ) : Int = collection.foldLeft( 0 ){ _ + objectLength( _ ) }
-  def lenIterator( collection : Iterator[Object] )     : Int = collection.foldLeft( 0 ){ _ + objectLength( _ ) }
-
-
-  private final def createNumberToType() = {
+  private def createNumberToType() = {
 
     var types : Map[Byte, SerializableType] = Map()
 
@@ -67,6 +29,8 @@ object SupportedTypes {
       types = types + entry
     }
 
+    // NOTE: ObjectType not added, it can be called directly
+    
     addType( BooleanType )
 
     addType( ByteType )

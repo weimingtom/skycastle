@@ -14,14 +14,14 @@ object SetType extends SerializableType {
 
   def encode(buffer: ByteBuffer, value: T) {
     buffer.putInt( value.size )
-    value foreach { x => SupportedTypes.encodeObject( buffer, x ) }
+    value foreach { x => ObjectType.encode( buffer, x ) }
   }
 
   def decode(buffer: ByteBuffer) = {
     var numEntries = buffer.getInt()
     var resultSet : Set[Object] = Set()
     while (numEntries > 0) {
-      val value = SupportedTypes.decodeObject(buffer)
+      val value = ObjectType.decode(buffer)
       resultSet = resultSet + value
 
       numEntries -= 1
@@ -30,6 +30,6 @@ object SetType extends SerializableType {
     resultSet
   }
 
-  def length(value: T) = IntType.INT_LEN + SupportedTypes.lenCollection( value )
+  def length(value: T) = IntType.INT_LEN + lenCollection( value )
 
 }

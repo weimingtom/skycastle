@@ -1,4 +1,4 @@
-package org.skycastle.protocol.binary
+package org.skycastle.protocol.binary.types
 
 import java.nio.ByteBuffer
 

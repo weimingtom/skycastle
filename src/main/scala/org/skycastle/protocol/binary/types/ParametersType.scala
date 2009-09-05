@@ -4,9 +4,10 @@ import _root_.org.skycastle.util.Parameters
 import java.nio.ByteBuffer
 
 /**
+ * Handles Parameter objects.
  * 
+ * Can also encode and decode Parameters objects with value null.
  */
-
 object ParametersType  extends SerializableType {
 
   val number : Byte = 15
@@ -14,32 +15,43 @@ object ParametersType  extends SerializableType {
   val kind = classOf[T]
 
   def encode(buffer: ByteBuffer, value: T) {
-    buffer.putInt( value.properties.size )
-    value.properties foreach {case (key, value) =>
-      SymbolType.encode( buffer, key )
-      SupportedTypes.encodeObject( buffer, value )
+    if (value == null) buffer.putInt( -1 )
+    else {
+      buffer.putInt( value.properties.size )
+      value.properties foreach {case (key, value) =>
+        SymbolType.encode( buffer, key )
+        ObjectType.encode( buffer, value )
+      }
     }
   }
 
   def decode(buffer: ByteBuffer) = {
     var numEntries = buffer.getInt()
-    var resultMap : Map[Symbol,Object]= Map()
-    while (numEntries > 0) {
-      val key = SymbolType.decode(buffer)
-      val value = SupportedTypes.decodeObject(buffer)
-      val entry = (key, value)
-      resultMap = resultMap + entry
+    if (numEntries < 0) null
+    else {
+      var resultMap : Map[Symbol,Object]= Map()
+      while (numEntries > 0) {
+        val key = SymbolType.decode(buffer)
+        val value = ObjectType.decode(buffer)
+        val entry = (key, value)
+        resultMap = resultMap + entry
 
-      numEntries -= 1
+        numEntries -= 1
+      }
+
+      Parameters( resultMap )
     }
-
-    Parameters( resultMap )
   }
 
 
-  def length(value: T) = IntType.INT_LEN +
-                         SupportedTypes.lenIterator( value.properties.keys ) +
-                         SupportedTypes.lenIterator( value.properties.values ) -
-                         SupportedTypes.OBJECT_TYPE_LEN * value.properties.size // We know that all keys are symbols, so that need not be stored
+  def length(value: T) = {
+    if (value == null) IntType.INT_LEN
+    else {
+      IntType.INT_LEN +
+       lenIterator( value.properties.keys ) +
+       lenIterator( value.properties.values ) -
+       ObjectType.OBJECT_TYPE_LEN * value.properties.size // We know that all keys are symbols, so that need not be stored
+    }
+  }
 
 }

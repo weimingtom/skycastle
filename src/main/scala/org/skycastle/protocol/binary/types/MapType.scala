@@ -15,8 +15,8 @@ object MapType extends SerializableType {
   def encode(buffer: ByteBuffer, value: T) {
     buffer.putInt( value.size )
     value foreach {case (key, value) =>
-      SupportedTypes.encodeObject( buffer, key )
-      SupportedTypes.encodeObject( buffer, value )
+      ObjectType.encode( buffer, key )
+      ObjectType.encode( buffer, value )
     }
   }
 
@@ -24,8 +24,8 @@ object MapType extends SerializableType {
     var numEntries = buffer.getInt()
     var resultMap : Map[Object,Object]= Map()
     while (numEntries > 0) {
-      val key = SupportedTypes.decodeObject(buffer)
-      val value = SupportedTypes.decodeObject(buffer)
+      val key = ObjectType.decode(buffer)
+      val value = ObjectType.decode(buffer)
       val entry = (key, value)
       resultMap = resultMap + entry
 
@@ -36,8 +36,8 @@ object MapType extends SerializableType {
   }
 
   def length(value: T)  = IntType.INT_LEN +
-                          SupportedTypes.lenIterator( value.keys ) +
-                          SupportedTypes.lenIterator( value.values )
+                          lenIterator( value.keys ) +
+                          lenIterator( value.values )
 
 
 }
