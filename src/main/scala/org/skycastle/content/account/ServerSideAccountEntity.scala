@@ -2,7 +2,7 @@ package org.skycastle.content.account
 
 
 import entity.Entity
-import protocol.Message
+import network.Message
 
 /**
  * 

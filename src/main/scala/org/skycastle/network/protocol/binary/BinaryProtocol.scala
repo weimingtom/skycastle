@@ -1,4 +1,4 @@
-package org.skycastle.protocol.binary
+package org.skycastle.network.protocol.binary
 
 import _root_.org.skycastle.entity.EntityId
 import _root_.org.skycastle.util.Parameters

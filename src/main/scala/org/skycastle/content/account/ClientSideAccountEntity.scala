@@ -8,7 +8,7 @@ import java.nio.ByteBuffer
 import java.lang.String
 import entity.Entity
 import java.util.Properties
-import protocol.Message
+import network.Message
 
 /**
  * 

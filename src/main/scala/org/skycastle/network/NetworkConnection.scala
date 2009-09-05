@@ -1,15 +1,17 @@
 package org.skycastle.network
 
+import protocol.Protocol
 import _root_.org.skycastle.util.Parameters
 import java.nio.ByteBuffer
 import negotiator.ProtocolNegotiator
-import protocol.{Message, Protocol}
 
 /**
  * Hides protcol negotiation and message merging.
  * The status listener is notified about the negotiation progress, and should take care of closing down the
  * NetworkConnection if it fails.
  */
+@serializable
+@SerialVersionUID(1)
 class NetworkConnection( isServer : Boolean,
                          incomingMessageListener : Message => Unit,
                          outgoingDataListener : ByteBuffer => Unit,

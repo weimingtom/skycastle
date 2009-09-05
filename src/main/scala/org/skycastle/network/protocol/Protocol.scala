@@ -1,5 +1,4 @@
-package org.skycastle.protocol
-
+package org.skycastle.network.protocol
 
 import java.nio.ByteBuffer
 

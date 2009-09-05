@@ -1,4 +1,4 @@
-package org.skycastle.protocol
+package org.skycastle.network.protocol
 
 /**
  * 

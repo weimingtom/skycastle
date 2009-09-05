@@ -1,4 +1,4 @@
-package org.skycastle.protocol.binary
+package org.skycastle.network.protocol.binary
 
 import entity.EntityId
 import java.math.BigInteger
