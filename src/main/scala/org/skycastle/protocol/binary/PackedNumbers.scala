@@ -9,10 +9,10 @@ import java.nio.ByteBuffer
  * 
  * @author Hans Haggstrom
  */
-// TODO: Use the packing algorithm directly, instead of instantiating a BigInteger.
+// TODO: Implement the packing algorithm directly, instead of instantiating a BigInteger.
 object PackedNumbers {
-  val MAX_NUMBER_OF_NUMBER_BYTES = 10
 
+  private val MAX_NUMBER_OF_NUMBER_BYTES = 10
 
   /**
    * Calculates the number of bytes a given number will use when packed.
@@ -28,7 +28,7 @@ object PackedNumbers {
       if (numBytes > MAX_NUMBER_OF_NUMBER_BYTES) throw new IllegalStateException( "Problem when encoding packed number "+value+", way too big BigInteger representation." )
       else if (numBytes <= 0) throw new IllegalStateException( "Problem when encoding packed number "+value+", empty representation." )
 
-      numBytes + 1 // Indicator byte + the bytes used to store the number.
+      numBytes + 1 // The bytes used to store the number + indicator byte.
     }
   }
 

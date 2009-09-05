@@ -4,7 +4,8 @@ package org.skycastle.protocol.binary
 import java.nio.ByteBuffer
 
 /**
- * 
+ * Base class for serializers that are specialized at encoding and decoding instances of a specific class
+ * from a byte buffer.
  * 
  * @author Hans Haggstrom
  */

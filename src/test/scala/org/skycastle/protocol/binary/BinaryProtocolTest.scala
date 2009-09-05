@@ -8,7 +8,7 @@ import Assert._
 import util.Parameters
 
 /**
- * 
+ * Test binary serializers.
  * 
  * @author Hans Haggstrom
  */
@@ -26,7 +26,12 @@ class BinaryProtocolTest extends TestCase {
   @Test
   def testMessages {
 
-    val order = Message( EntityId( "entity-42" ), 'bake, Parameters( 'receipt -> "pizza", 'size -> 20, 'extraSauce -> true, 'otherAdditions -> List( "Mustard", "Onions", "Pineapple" ) ) )
+    val order = Message( EntityId( "entity-42" ), 'bake,
+                         Parameters(
+                           'receipt -> "pizza",
+                           'size -> 20,
+                           'extraSauce -> true,
+                           'otherAdditions -> List( "Mustard", "Onions", "Pineapple" ) ) )
 
     val buffer = protocol.encode( order )
     val mangledOrder = protocol.decode( buffer )
@@ -101,7 +106,7 @@ class BinaryProtocolTest extends TestCase {
     asserSerializes( "")
     asserSerializes( " " )
     asserSerializes( "Foobar foo bar")
-    asserSerializes( "AAAAaaAAAAAAAAaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaAAAAAAAAAAAA!!!!!!!1111111111")
+    asserSerializes( "AAAAaaAAAAAAAAaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaAAAAAAAAAAAA!!!!!!!1111111111")
 
     asserSerializes( 'foobar )
     asserSerializes( 'a )

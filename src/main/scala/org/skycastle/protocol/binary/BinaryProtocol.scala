@@ -6,7 +6,7 @@ import java.nio.ByteBuffer
 
 
 /**
- * A straightforward binary protocol.
+ * A binary message sending protocol.
  */
 // TODO: Create one that packs commonly used Symbols with lookup tables
 // TODO: We could use a cached buffer array in each protocol that is the size of the maximum allowed size of a message?
@@ -16,9 +16,8 @@ import java.nio.ByteBuffer
 class BinaryProtocol extends Protocol {
 
   val protocolName = "BinaryProtocol"
-  val protocolVersion = 1
 
-  val serializer = new BinarySerializer()
+  private val serializer = new BinarySerializer()
 
   def decode(receivedBytes: ByteBuffer) : Message = {
     val calledEntityId = serializer.decode[EntityId]( receivedBytes )

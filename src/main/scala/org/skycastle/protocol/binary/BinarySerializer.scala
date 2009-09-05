@@ -5,7 +5,7 @@ import java.math.BigInteger
 import java.nio.ByteBuffer
 import util.Parameters
 /**
- * List of types that can be encoded and decoded.
+ * Takes care of serializing and deserializing a set of allowed types from byte buffers.
  */
 /*
 TODO: Implement serialization for these types:
@@ -16,6 +16,7 @@ TODO: Implement serialization for these types:
   QUATERNION
   MATRIX_3D
 */
+// TODO: Maybe refactor to separate the functions of encodign and decodign objects and defining the serializers.
 class BinarySerializer {
 
   private val NULL_ID : Byte = 0
@@ -23,7 +24,7 @@ class BinarySerializer {
   private val INT_LEN = 4
   private val CHAR_LEN = 2
 
-  private val idToSerializer : Map[Byte, TypeSerializer[_]] = createIdToSerializerMap()
+  private val idToSerializer : Map[Byte, TypeSerializer[_]] = createSerializers()
 
   def getSerializer( value : Any ) : Option[TypeSerializer[_]] = idToSerializer.values.find( _.canSerialize( value ) )
 
@@ -61,7 +62,7 @@ class BinarySerializer {
     }
   }
 
-  private def createIdToSerializerMap() = {
+  private def createSerializers() = {
 
     var types : Map[Byte, TypeSerializer[_]] = Map()
 
@@ -76,10 +77,10 @@ class BinarySerializer {
       types = types + entry
     }
 
-    // NOTE: The order of these additions is important, as that is the order in which type ID:s are defined.  Do not change it!
-
     val anySerializer = this
 
+    // NOTE: The order of these additions is important, as that is the order in which type ID:s are defined.
+    // Do not change it!
 
     // Wrapped primitive types:
 
