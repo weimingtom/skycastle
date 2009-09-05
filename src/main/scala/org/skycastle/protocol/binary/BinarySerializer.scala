@@ -96,22 +96,22 @@ class BinarySerializer {
     })
 
     add( new TypeSerializer( classOf[java.lang.Short] ) {
-      def len(value: T) = lengthPackedNumber( value.longValue )
-      def enc(buffer: ByteBuffer, value: T) = encodePackedNumber( buffer, value.longValue )
-      def dec(buffer: ByteBuffer) = java.lang.Short.valueOf( decodePackedNumber( buffer ).shortValue )
+      def len(value: T) = PackedNumbers.length( value.longValue )
+      def enc(buffer: ByteBuffer, value: T) = PackedNumbers.encode( buffer, value.longValue )
+      def dec(buffer: ByteBuffer) = java.lang.Short.valueOf( PackedNumbers.decode( buffer ).shortValue )
     })
     
 
     add( new TypeSerializer( classOf[java.lang.Integer] ) {
-      def len(value: T) = lengthPackedNumber( value.longValue )
-      def enc(buffer: ByteBuffer, value: T) = encodePackedNumber( buffer, value.longValue )
-      def dec(buffer: ByteBuffer) = java.lang.Integer.valueOf( decodePackedNumber( buffer ).intValue )
+      def len(value: T) = PackedNumbers.length( value.longValue )
+      def enc(buffer: ByteBuffer, value: T) = PackedNumbers.encode( buffer, value.longValue )
+      def dec(buffer: ByteBuffer) = java.lang.Integer.valueOf( PackedNumbers.decode( buffer ).intValue )
     })
 
     add( new TypeSerializer( classOf[java.lang.Long] ) {
-      def len(value: T) = lengthPackedNumber( value.longValue )
-      def enc(buffer: ByteBuffer, value: T) = encodePackedNumber( buffer, value.longValue )
-      def dec(buffer: ByteBuffer) = java.lang.Long.valueOf( decodePackedNumber( buffer ) )
+      def len(value: T) = PackedNumbers.length( value.longValue )
+      def enc(buffer: ByteBuffer, value: T) = PackedNumbers.encode( buffer, value.longValue )
+      def dec(buffer: ByteBuffer) = java.lang.Long.valueOf( PackedNumbers.decode( buffer ) )
     })
 
     add( new TypeSerializer( classOf[java.lang.Float] ) {
@@ -332,74 +332,6 @@ class BinarySerializer {
    */
   private def lenIterator( collection : Iterator[Any] )     : Int = collection.foldLeft( 0 ){ _ + length( _ ) }
 
-
-  val MAX_NUMBER_OF_NUMBER_BYTES = 10
-
-
-  // TODO: Use the packing algorithm directly, instead of instantiating a BigInteger.
-  private def lengthPackedNumber( value : Long ) : Int = {
-    if (value > Math.MIN_BYTE + MAX_NUMBER_OF_NUMBER_BYTES && value <= Math.MAX_BYTE) {
-      // The number fits in one byte, above the number-of-bytes indicator area
-      1
-    }
-    else {
-      val bytes =  BigInteger.valueOf( value ).toByteArray
-      val numBytes = bytes.length
-      if (numBytes > MAX_NUMBER_OF_NUMBER_BYTES) throw new IllegalStateException( "Problem when encoding packed number "+value+", way too big BigInteger representation." )
-      else if (numBytes <= 0) throw new IllegalStateException( "Problem when encoding packed number "+value+", empty representation." )
-
-      numBytes + 1 // Indicator byte + the bytes used to store the number.
-    }
-  }
-
-  /**
-   * Encodes values between around -110 to 127 in one byte, and larger values in as many bytes as necessary + 1
-   */
-  // TODO: Use the packing algorithm directly, instead of instantiating a BigInteger.
-  private def encodePackedNumber( buffer : ByteBuffer, value : Long ) {
-
-    if (value > Math.MIN_BYTE + MAX_NUMBER_OF_NUMBER_BYTES && value <= Math.MAX_BYTE) {
-      // The number fits in one byte, above the number-of-bytes indicator area
-      buffer.put(value.toByte)
-    }
-    else {
-      val bytes =  BigInteger.valueOf( value ).toByteArray
-      val numBytes = bytes.length
-      if (numBytes > MAX_NUMBER_OF_NUMBER_BYTES) throw new IllegalStateException( "Problem when encoding packed number "+value+", way too big BigInteger representation." )
-      else if (numBytes <= 0) throw new IllegalStateException( "Problem when encoding packed number "+value+", empty representation." )
-
-      // Encode number of bytes used near the negative lower range of a byte
-      val indicatorByte : Byte = (Math.MIN_BYTE + numBytes).toByte
-      buffer.put( indicatorByte )
-      buffer.put( bytes )
-    }
-  }
-
-  /**
-   * Extracts an encoded packed number.
-   */
-  // TODO: Use the packing algorithm directly, instead of instantiating a BigInteger.
-  private def decodePackedNumber( buffer : ByteBuffer ) : Long = {
-    val indicatorByte : Byte = buffer.get
-
-    if (indicatorByte > Math.MIN_BYTE + MAX_NUMBER_OF_NUMBER_BYTES) {
-      // The number is small, was stored in the first byte
-      indicatorByte.toLong
-    }
-    else {
-      // Extract number of bytes in representation
-      val numBytes = (indicatorByte.toInt) - Math.MIN_BYTE
-      if (numBytes > MAX_NUMBER_OF_NUMBER_BYTES) throw new IllegalStateException( "Problem when decoding packed number, too many bytes in representation ("+numBytes+")." )
-      else if (numBytes <= 0 ) throw new IllegalStateException( "Problem when decoding packed number, no bytes in representation." )
-
-      // Read representation
-      val bytes = new Array[Byte](numBytes)
-      buffer.get( bytes )
-
-      // Initialize to big integer, and get Long value
-      new BigInteger( bytes ).longValue
-    }
-  }
 
 
 }
