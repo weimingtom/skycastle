@@ -2,7 +2,6 @@ package org.skycastle.protocol.binary
 
 import entity.EntityId
 import java.nio.ByteBuffer
-import types._
 import util.Parameters
 /**
  * List of types that can be encoded and decoded.
@@ -210,7 +209,7 @@ class BinarySerializer {
     })
 
     add( new TypeSerializer[Map[Any,Any]]( classOf[Map[Any,Any]] ) {
-      def len(value: T) = IntType.INT_LEN + lenIterator( value.keys ) + lenIterator( value.values )
+      def len(value: T) = INT_LEN + lenIterator( value.keys ) + lenIterator( value.values )
       def enc(buffer: ByteBuffer, value: T) {
         buffer.putInt( value.size )
         value foreach {case (key, value) =>
@@ -236,7 +235,7 @@ class BinarySerializer {
 
     add( new TypeSerializer[Parameters]( classOf[Parameters] ) {
       def len(value: T) = {
-        IntType.INT_LEN +
+        INT_LEN +
          lenIterator( value.entries.keys ) +
          lenIterator( value.entries.values ) -
          OBJECT_ID_LEN * value.entries.size // We know that all keys are Symbols, so that need not be stored

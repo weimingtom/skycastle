@@ -2,8 +2,6 @@ package org.skycastle.protocol.binary
 
 import _root_.org.skycastle.entity.EntityId
 import _root_.org.skycastle.util.Parameters
-import binary.types.{ObjectType, StringType, ParametersType, EntityIdType}
-import java.lang.Class
 import java.nio.ByteBuffer
 
 
