@@ -37,9 +37,9 @@ final case class Role( roleId : String ) {
       capabilities = capabilities.remove( _ == capability )
   }
 
-  def hasCallCapability( actionId : String ) : Boolean = capabilities.exists( _.allowsCall( actionId ) )
+  def hasCallCapability( actionId : Symbol ) : Boolean = capabilities.exists( _.allowsCall( actionId ) )
 
-  def allowsCall( caller : EntityId, actionId : String ) : Boolean = {
+  def allowsCall( caller : EntityId, actionId : Symbol ) : Boolean = {
     containsEntity( caller ) && hasCallCapability( actionId )
   }
 

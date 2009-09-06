@@ -21,7 +21,7 @@ class ButtonUi extends Ui {
   type ViewType = JButton
 
   var calledEntity : EntityId = null
-  var calledAction : String = null
+  var calledAction : Symbol = null
   var actionParameters : Map[ Symbol, Symbol ] = Map()
 
 
@@ -64,7 +64,7 @@ class ButtonUi extends Ui {
       calledEntity = changedParameters.getAs[EntityId]('calledEntity, null)
 
     if (changedParameters.contains('calledAction))
-      calledAction = changedParameters.getString('calledAction, null)
+      calledAction = changedParameters.getAs[Symbol]('calledAction, null)
     
     if (changedParameters.contains('actionParameters))
       actionParameters = changedParameters.getAs[Map[Symbol,Symbol]]('actionParameters, Map[Symbol,Symbol]())

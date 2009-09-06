@@ -69,9 +69,10 @@ class SimpleEntityContainer extends EntityContainer {
   }
 
 
-  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: String, parameters: Parameters)  {
+  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: Symbol, parameters: Parameters)  {
     queuesActionCalls = queuesActionCalls ::: List(ActionCall( callingEntity, calledEntity, actionName, parameters ))
   }
+
 
 
   /**

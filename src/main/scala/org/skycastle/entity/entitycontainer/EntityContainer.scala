@@ -53,7 +53,7 @@ trait EntityContainer {
   /**
    * Asynchronously invokes the specified action on the specified entity, assuming the calling entity has the access rights for it.
    */
-  def call( callingEntity : EntityId, calledEntity : EntityId, actionName : String, parameters : Parameters )
+  def call( callingEntity : EntityId, calledEntity : EntityId, actionName : Symbol, parameters : Parameters )
   
 
   // TODO: Add interfaces for scheduled action callbacks etc.

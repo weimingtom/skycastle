@@ -1,5 +1,6 @@
 package org.skycastle.network
 
+import java.lang.{IllegalStateException}
 import protocol.Protocol
 import _root_.org.skycastle.util.Parameters
 import java.nio.ByteBuffer
@@ -12,12 +13,13 @@ import negotiator.ProtocolNegotiator
  */
 @serializable
 @SerialVersionUID(1)
-class NetworkConnection( isServer : Boolean,
-                         incomingMessageListener : Message => Unit,
-                         outgoingDataListener : ByteBuffer => Unit,
-                         onProtocolNegotiationFail : (String, Parameters) => Unit,
-                         onProtocolNegotiationSuccess : Parameters => Unit ) {
+final class NetworkConnection( isServer : Boolean,
+                               incomingMessageListener : Message => Unit,
+                               outgoingDataListener : ByteBuffer => Unit,
+                               onProtocolNegotiationFail : (String, Parameters) => Unit,
+                               onProtocolNegotiationSuccess : Parameters => Unit ) {
 
+  private var networkStarted : Boolean = false
   private var sendQueue : List[Message] = Nil
   private var fail : Boolean = false
   private var protocol : Protocol = null
@@ -34,18 +36,37 @@ class NetworkConnection( isServer : Boolean,
       fail = true
       onProtocolNegotiationFail(failureReason, properties)
     } )
-  
 
+  def isStarted : Boolean = networkStarted
+  
   /**
    * Start protocol negotiations, if it is up to this party to do that.
    */
   def start() {
-    negotiator.start()
+    if (!networkStarted) {
+      networkStarted = true
+      negotiator.start()
+    }
+    else throw new IllegalStateException( "Network is already started." )
+  }
+
+  /**
+   * Stop the network.  The network may be started again later.
+   * Queued messages will be lost.
+   */
+  def stop() {
+    if ( networkStarted) {
+      negotiator.stop()
+      networkStarted = false
+      sendQueue = Nil
+      fail = false
+      protocol = null
+    }
   }
 
 
-  def incomingData( buffer : ByteBuffer ) {
-    if (fail) {} // Do nothing
+  def handleIncomingData( buffer : ByteBuffer ) {
+    if (!networkStarted || fail) {} // Do nothing
     else if ( protocol == null ) {
       // If we haven't agreed on a protocol yet, try
       negotiator.handleData( buffer )
@@ -58,7 +79,7 @@ class NetworkConnection( isServer : Boolean,
   }
 
   def sendMessage( message : Message ) {
-    if ( fail ) {} // Do nothing
+    if ( !networkStarted || fail ) {} // Do nothing
     else if (protocol == null) {
       // If we haven't yet established a protocol, queue the message
       sendQueue = sendQueue ::: List( message )

@@ -10,7 +10,7 @@ import util.Parameters
  */
 @serializable
 @SerialVersionUID( 1 )
-final case class ActionCall( actionId : String, parameters : Parameters ) {
+final case class ActionCall( actionId : Symbol, parameters : Parameters ) {
 
   def call( hostEntity : Entity ) {
     hostEntity.call( hostEntity.id, actionId, parameters )

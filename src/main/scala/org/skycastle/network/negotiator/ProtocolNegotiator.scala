@@ -43,17 +43,31 @@ class ProtocolNegotiator( isServer : Boolean,
         val version     = "0.1.0"
         val build       = "r?"
         val serverName  = "Skycastle Test Server"
+        val serverDescription  = "For testing the Skycastle Server.  May reboot at any time."
 
         send( Parameters(
-          'application -> application,
-          'version     -> version,
-          'build       -> build,
-          'serverName  -> serverName,
-          'supportedProtocols -> supportedProtocolsAsString ) )
+          'application -> stripRowSeparators( application ),
+          'version     -> stripRowSeparators( version ),
+          'build       -> stripRowSeparators( build ),
+          'name        -> stripRowSeparators( serverName ),
+          'description -> stripRowSeparators( serverDescription ),
+          'supportedProtocols -> stripRowSeparators( supportedProtocolsAsString ) ) )
       }
     }
     else {
       throw new IllegalStateException( "Negotiation is already started, but start was called on a ProtocolNegotiator." )
+    }
+  }
+
+  /**
+   * Stop protocol negotiations, allowing them to be started again later.
+   */
+  def stop() {
+    if (negotiationStarted) {
+      negotiationStarted = false
+      waitingForSelection = false
+      negotiationOver = false
+      storedServerParams = null
     }
   }
 
@@ -134,9 +148,15 @@ class ProtocolNegotiator( isServer : Boolean,
 
 
 
+  /**
+   * For avoiding mess ups if some properties happen to contain newlines.
+   */
+  private def stripRowSeparators( s : String ) : String = s.replace( "\n", "   " )
+
+
   private def send( parameters : Parameters ) {
 
-    outgoingDataListener( StringUtils.encodeString( parameters.toKeyValueString ) )
+    outgoingDataListener( StringUtils.encodeString( parameters.toKeyValueString( " = ", "\n" ) ) )
   }
 
 

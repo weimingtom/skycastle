@@ -14,27 +14,27 @@ object UiExample2 {
   def main(args: Array[String]) {
 
     val initializationScript = ActionSequenceScript( List(
-      ActionCall( "addComponent", Parameters(
+      ActionCall( 'addComponent, Parameters(
       'componentType -> "panel",
       'id -> 'root,
       'parent -> null,
       'layout -> ""
       ) ) ,
-      ActionCall( "addComponent", Parameters(
+      ActionCall( 'addComponent, Parameters(
       'componentType -> "label",
       'id -> 'testLabel1,
       'parent -> 'root,
       'text -> "Test label 1",
       'tooltip -> "A test label"
       ) ),
-      ActionCall( "addComponent", Parameters(
+      ActionCall( 'addComponent, Parameters(
       'componentType -> "label",
       'id -> 'testLabel2,
       'parent -> 'root,
       'text -> "Test label 2",
       'tooltip -> "A test label"
       ) ),
-      ActionCall( "addComponent", Parameters(
+      ActionCall( 'addComponent, Parameters(
       'componentType -> "button",
       'id -> 'testbutton_1,
       'parent -> 'root,
@@ -43,7 +43,7 @@ object UiExample2 {
       'invokedEntity -> EntityId("entity-432455"),
       'invokedMethod -> "testAction"
       ) ),
-      ActionCall( "removeComponent", Parameters(
+      ActionCall( 'removeComponent, Parameters(
       'id -> 'testLabel1
       ) ) )
       )

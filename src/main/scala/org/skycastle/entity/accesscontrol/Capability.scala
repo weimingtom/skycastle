@@ -7,15 +7,15 @@ package org.skycastle.entity.accesscontrol
  */
 
 abstract class Capability {
-  def allowsCall( action : String ) : Boolean
+  def allowsCall( action : Symbol ) : Boolean
   def allowsRoleMemberManagement( role : String ) : Boolean
 }
 
 /**
  * The capability to call a specific action on an Entity.
  */
-case class ActionCapability( actionId : String ) extends Capability {
-  def allowsCall(action: String) = action == actionId
+case class ActionCapability( actionId : Symbol ) extends Capability {
+  def allowsCall(action: Symbol) = action == actionId
   def allowsRoleMemberManagement(role: String) = false
 }
 
@@ -23,7 +23,7 @@ case class ActionCapability( actionId : String ) extends Capability {
  * The capability to call any action on the entity.
  */
 case object AllActionCapability extends Capability {
-  def allowsCall(action: String) = true
+  def allowsCall(action: Symbol) = true
   def allowsRoleMemberManagement(role: String) = false
 }
 

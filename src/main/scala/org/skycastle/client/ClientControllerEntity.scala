@@ -15,7 +15,7 @@ import util.Parameters
 class ClientControllerEntity extends Entity {
 
   addRole( "connect" )
-  addRoleCapability( "connect", ActionCapability( "connectToServer" ) )
+  addRoleCapability( "connect", ActionCapability( 'connectToServer ) )
 
 
   def createUi() {
@@ -62,10 +62,10 @@ class ClientControllerEntity extends Entity {
    */
   // TODO: Refactor connection to a separate client side server representation object,
   // and have the connection take username etc as parameters
-  override protected def callBuiltinAction(actionName: String, parameters: Parameters) = {
+  override protected def callBuiltinAction(actionName: Symbol, parameters: Parameters) = {
 
     actionName match {
-      case "connectToServer" => connectToServer( parameters.getAs[String]('url, null ), parameters.getAs[String]('port, null ), parameters.getAs[String]('userName, null ), null  ) ; true
+      case 'connectToServer => connectToServer( parameters.getAs[String]('url, null ), parameters.getAs[String]('port, null ), parameters.getAs[String]('userName, null ), null  ) ; true
 
       case _ => false
     }

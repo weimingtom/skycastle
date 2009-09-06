@@ -10,4 +10,4 @@ import util.Parameters
  */
 @serializable
 @SerialVersionUID(1)
-case class ActionCall( callingEntity : EntityId, calledEntity : EntityId, actionName : String, parameters : Parameters )
+case class ActionCall( callingEntity : EntityId, calledEntity : EntityId, actionName : Symbol, parameters : Parameters )

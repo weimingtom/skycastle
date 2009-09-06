@@ -41,9 +41,9 @@ class CompositeEntity extends Entity {
   
   private def createEditorRole() {
     addRole( "editor" )
-    addRoleCapability( "editor", ActionCapability( "addComponent" ) )
-    addRoleCapability( "editor", ActionCapability( "updateComponent" ) )
-    addRoleCapability( "editor", ActionCapability( "removeComponent" ) )
+    addRoleCapability( "editor", ActionCapability( 'addComponent ) )
+    addRoleCapability( "editor", ActionCapability( 'updateComponent ) )
+    addRoleCapability( "editor", ActionCapability( 'removeComponent ) )
   }
 
   def getComponent( id : Symbol ) : Option[COMPONENT] = components.get( id )
@@ -124,21 +124,21 @@ class CompositeEntity extends Entity {
     null.asInstanceOf[COMPONENT]
   }
 
-  protected override def callBuiltinAction(actionName: String, parameters: Parameters): Boolean = {
+  protected override def callBuiltinAction(actionName: Symbol, parameters: Parameters): Boolean = {
     actionName match {
-      case "addComponent" => {
+      case 'addComponent => {
         val componentType = parameters.getAs[String]('componentType, null)
         val id = parameters.getAs[Symbol]('id, null)
         val parentId = parameters.getAs[Symbol]('parent, null)
         addComponent(componentType, id, parentId, parameters)
         true
       }
-      case "updateComponent" => {
+      case 'updateComponent => {
         val id = parameters.getAs[Symbol]('id, null)
         updateComponent(id, parameters)
         true
       }
-      case "removeComponent" => {
+      case 'removeComponent => {
         val id = parameters.getAs[Symbol]('id, null)
         removeComponent(id)
         true

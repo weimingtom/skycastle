@@ -114,7 +114,7 @@ object DarkstarEntityContainer extends EntityContainer {
   private def getBindingName( name : String ) = "namedEntity-" + name
 
 
-  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: String, parameters: Parameters) {
+  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: Symbol, parameters: Parameters) {
 
     EntityLogger.logError( "DarkstarEntityContainer.call Not yet implemented" )
     // TODO: handle

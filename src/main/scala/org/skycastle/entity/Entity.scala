@@ -6,6 +6,8 @@ import accesscontrol.{Role, RoleMember, Capability}
 import java.util.logging.{Logger, Level}
 import script.Script
 import util.{LogMethods, Parameters}
+import network.Message
+
 /**
  * Represents some mutable object in the game (server or client).
  *
@@ -37,7 +39,7 @@ class Entity extends LogMethods {
   /**
    * Any scripted actions added to this Entity
    */
-  private val dynamicActions: Map[String, Script] = Map()
+  private val dynamicActions: Map[Symbol, Script] = Map()
 
   /**
    * The roles for role based security access control to the actions of this Entity.
@@ -54,7 +56,7 @@ class Entity extends LogMethods {
   private var currentCaller : EntityId = null
 
   @transient
-  private var currentAction : String = null
+  private var currentAction : Symbol = null
 
   // TODO: Maybe add RoleMember that is a check if caller id is in some collection in a property -> use some collections of entity id:s in properties as role members?
   // Complex cases could be e.g. Organization maintenance, handling different guild functions, etc.
@@ -121,7 +123,7 @@ class Entity extends LogMethods {
   /**
    * Call an action available in this entity.
    */
-  def call(caller: EntityId, actionId: String, parameters: Parameters) {
+  def call(caller: EntityId, actionId: Symbol, parameters: Parameters) {
 
     currentCaller = caller
     currentAction = actionId
@@ -164,16 +166,16 @@ class Entity extends LogMethods {
    * Allows for use of a simple switch clause to invoke any custom actions provided by decendant Entities.
    * Return true if the action was handled, false if not.
    */
-  protected def callBuiltinAction(actionName: String, parameters: Parameters): Boolean = { false }
+  protected def callBuiltinAction(actionName: Symbol, parameters: Parameters): Boolean = { false }
 
   /**
    * Handles default actions provided for all entities.
    * Return true if the action was handled, false if not.
    */
-  private def callDefaultAction(actionName: String, parameters: Parameters): Boolean = {
+  private def callDefaultAction(actionName: Symbol, parameters: Parameters): Boolean = {
     actionName match {
-      case "addRole" => addRole( parameters.getAs[String]('roleId, null )  ) ; true
-      case "removeRole" => removeRole( parameters.getAs[String]('roleId, null )  ) ; true
+      case 'addRole => addRole( parameters.getAs[String]('roleId, null )  ) ; true
+      case 'removeRole => removeRole( parameters.getAs[String]('roleId, null )  ) ; true
       // TODO: The rest
       case _ => false
     }
@@ -200,7 +202,7 @@ class Entity extends LogMethods {
             if ( role.containsEntity( currentCaller ) ) {
 
               // Invoke a log feedback action on the other entity asynchronously
-              callOtherEntity( currentCaller, "callFeedback", Parameters(
+              callOtherEntity( currentCaller, 'callFeedback, Parameters(
                 'callingEntity -> currentCaller,
                 'calledEntity -> id,
                 'calledEntityType -> getClass.getName,
@@ -222,8 +224,12 @@ class Entity extends LogMethods {
   }
 
 
-  def callOtherEntity( targetEntityId : EntityId, actionName : String, parameters : Parameters ) {
+  def callOtherEntity( targetEntityId : EntityId, actionName : Symbol, parameters : Parameters ) {
     container.call( id, targetEntityId, actionName, parameters )
+  }
+
+  def callOtherEntity( message : Message ) {
+    container.call( id, message.calledEntity, message.calledAction, message.parameters )
   }
 }
 

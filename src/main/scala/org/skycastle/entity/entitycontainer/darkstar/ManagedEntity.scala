@@ -30,7 +30,7 @@ case class ManagedEntity[T <: Entity]( entity : T ) extends ManagedObject with E
   def removeBinding(name: String)                             = DarkstarEntityContainer.removeBinding( name )
 
 
-  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: String, parameters: Parameters) {
+  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: Symbol, parameters: Parameters) {
     EntityLogger.logError( "ManagedEntity.call Not yet implemented" )
     // TODO: handle
   }
