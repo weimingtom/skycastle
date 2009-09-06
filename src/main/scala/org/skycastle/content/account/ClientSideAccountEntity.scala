@@ -1,6 +1,7 @@
 package org.skycastle.content.account
 
 
+import _root_.org.skycastle.client.ClientLogger
 import _root_.org.skycastle.util.Parameters
 import com.sun.sgs.client.ClientChannel
 import com.sun.sgs.client.simple.{SimpleClient, SimpleClientListener}
@@ -27,13 +28,19 @@ final class ClientSideAccountEntity extends Entity {
   private var connected : Boolean = false
   private val clientNetwork = new ClientNetwork( onMessage,  onConnected, onDisconnected, getPassword )
 
+  private val DEFAULT_PORT = "1139"
+
   def isConnected : Boolean = connected
 
   def connect() {
-    clientNetwork.connect( server, port )
+    val actualPort = if (port == null) DEFAULT_PORT else port
+
+    logInfo( "Trying to connect to server at "+server+":"+actualPort+"." )
+    clientNetwork.connect( server, actualPort )
   }
 
   def disconnect() {
+    logInfo( "Trying to disconnect from server" )
     clientNetwork.disconnect
   }
 
@@ -43,6 +50,8 @@ final class ClientSideAccountEntity extends Entity {
    */
   def onConnected( serverProperties : Parameters ) {
     connected = true
+
+    logInfo( "Connected to server.  Server properties are: " + serverProperties )
   }
 
   /**
@@ -50,6 +59,8 @@ final class ClientSideAccountEntity extends Entity {
    */
   def onDisconnected( reason : String ) {
     connected = false
+
+    logInfo( "Connection to server failed.  Reason: " + reason )
   }
 
 

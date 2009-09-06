@@ -119,7 +119,7 @@ final class Parameters(var properties_ : Map[Symbol, Any]) {
     s.toString
   }
 
-  override def toString = properties.mkString( "{", ", ", "}")
+  override def toString = "( " + toKeyValueString( "= ", ", "  ) + " )"
 
   override def equals(obj: Any) = {
     if ( obj == null ) false

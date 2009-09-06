@@ -17,6 +17,7 @@ class ClientNetwork( onMessage : Message => Unit,
                      onDisconnected : String => Unit,
                      getPassword : => PasswordAuthentication ) extends SimpleClientListener{
 
+
   private var connectionStarted : Boolean = false
 
   private val simpleClient = new SimpleClient( this )
@@ -39,15 +40,23 @@ class ClientNetwork( onMessage : Message => Unit,
     if (!connectionStarted) {
       connectionStarted = true
 
-      val connectProps = new Properties()
-      connectProps.put("host", host)
-      connectProps.put("port", port)
+      if ( host == null ) {
+        handleDisconnect( false, "host parameter was null", "" )
+      }
+      else if ( port == null ) {
+        handleDisconnect( false, "port parameter was null", "" )
+      }
+      else {
+        val connectProps = new Properties()
+        connectProps.put("host", host)
+        connectProps.put("port", port)
 
-      try {
-        simpleClient.login( connectProps )
-      } catch {
-        case e : Exception =>
-          handleDisconnect( false, "could not create connection to "+host+":"+port, e.getMessage )
+        try {
+          simpleClient.login( connectProps )
+        } catch {
+          case e : Exception =>
+            handleDisconnect( false, "could not create connection to "+host+":"+port, e.getMessage )
+        }
       }
     }
   }

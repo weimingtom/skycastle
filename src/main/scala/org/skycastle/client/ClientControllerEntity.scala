@@ -1,6 +1,7 @@
 package org.skycastle.client
 
 
+import content.account.ClientSideAccountEntity
 import entity.accesscontrol.ActionCapability
 import entity.{EntityId, Entity}
 import ui.{ScreenEntity, Ui}
@@ -41,7 +42,7 @@ class ClientControllerEntity extends Entity {
     screen.addComponent( "panel", 'root, null, Parameters( 'text -> "test client" ))
     screen.addComponent( "label", 'label01, 'root, Parameters('text -> "specify server to logon to" ))
     screen.addComponent( "field", 'serverField, 'root, Parameters( 'text -> "testserver", 'tooltip -> "The server to connect to" ) )
-    screen.addComponent( "button", 'login, 'root, Parameters( 'text -> "Login", 'calledEntity -> id, 'calledAction -> "connectToServer", 'actionParameters -> Map( 'url -> 'serverField ) ) )
+    screen.addComponent( "button", 'login, 'root, Parameters( 'text -> "Login", 'calledEntity -> id, 'calledAction -> 'connectToServer, 'actionParameters -> Map( 'url -> 'serverField ) ) )
 
 
     container.storeEntity( screen )
@@ -73,8 +74,19 @@ class ClientControllerEntity extends Entity {
   }
 
   def connectToServer( url : String, port : String, userName : String, uiContainerForServer : Ui ) {
-    // TODO
-    println( "TODO: Connect to server "+url+":"+port+" as user "+ userName  )
+
+    val account = new ClientSideAccountEntity
+
+    container.storeEntity( account )
+
+    account.server = url
+    account.port = port
+    account.accountName = userName
+    account.setPassword( "password".toCharArray )
+
+
+    println( "Trying to connect to server "+url+":"+port+" as user "+ userName  )
+    account.connect
   }
 }
 
