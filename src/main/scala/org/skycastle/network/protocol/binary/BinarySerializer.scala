@@ -6,6 +6,7 @@ import java.nio.ByteBuffer
 import util.Parameters
 /**
  * Takes care of serializing and deserializing a set of allowed types from byte buffers.
+ * @author Hans Haggstrom
  */
 /*
 TODO: Implement serialization for these types:

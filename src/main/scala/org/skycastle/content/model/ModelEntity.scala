@@ -5,6 +5,7 @@ import composite.CompositeEntity
 
 /**
  * Represents a 3D Model that can consist of various parts.
+ * @author Hans Haggstrom
  */
 @serializable
 @SerialVersionUID(1)

@@ -7,6 +7,7 @@ import java.nio.ByteBuffer
 
 /**
  * A binary message sending protocol.
+ * @author Hans Haggstrom
  */
 // TODO: Create one that packs commonly used Symbols with lookup tables
 // TODO: We could use a cached buffer array in each protocol that is the size of the maximum allowed size of a message?

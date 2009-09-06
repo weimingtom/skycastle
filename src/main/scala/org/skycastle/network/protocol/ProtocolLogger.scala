@@ -4,5 +4,6 @@ import util.LogUtil
 
 /**
  * Logging helper
+ * @author Hans Haggstrom
  */
 object ProtocolLogger  extends LogUtil("org.skycastle.protocol")

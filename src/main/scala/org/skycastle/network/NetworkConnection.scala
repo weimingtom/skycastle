@@ -10,6 +10,7 @@ import negotiator.ProtocolNegotiator
  * Hides protcol negotiation and message merging.
  * The status listener is notified about the negotiation progress, and should take care of closing down the
  * NetworkConnection if it fails.
+ * @author Hans Haggstrom
  */
 @serializable
 @SerialVersionUID(1)

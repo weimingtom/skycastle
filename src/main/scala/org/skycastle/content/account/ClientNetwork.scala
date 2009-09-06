@@ -8,10 +8,12 @@ import java.nio.ByteBuffer
 import java.lang.String
 import java.util.Properties
 import network.{Message, NetworkConnection}
-/**
- * 
- */
 
+/**
+ * Wraps the high level networking tasks on the client side, providing a clear and simple interface for the ClientSideAccountEntity
+ *
+ * @author Hans Haggstrom
+ */
 class ClientNetwork( onMessage : Message => Unit,
                      onConnected : Parameters => Unit,
                      onDisconnected : String => Unit,

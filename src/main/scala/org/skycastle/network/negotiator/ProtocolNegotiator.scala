@@ -7,6 +7,7 @@ import util.{StringUtils, Parameters}
 
 /**
  * Takes care of negotiating a protocol to use with the other party.
+ * @author Hans Haggstrom
  */
 @serializable
 @SerialVersionUID(1)
