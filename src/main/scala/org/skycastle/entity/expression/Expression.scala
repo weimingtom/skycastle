@@ -8,7 +8,9 @@ import bool.{NotSameAs, SameAs}
  * 
  * @author Hans Haggstrom
  */
-// TODO: Do simple parsing instead of 
+// TODO: Add implicit conversion from numbers to Num
+// TODO: Do simple parsing of expressions in strings instead of sending expression hierarchies over the net?
+//       more efficient network transfer, but may eat some CPU cycles  
 trait Expression {
 
   def getValue( entity : Properties ) : Any
