@@ -1,7 +1,6 @@
 package org.skycastle.entity
 
 
-import org.skycastle.entity.Expression
 import util.Parameters
 
 /**
@@ -35,8 +34,12 @@ trait Properties {
   def getReferencedEntity( referenceproperty : Symbol ) : Option[ Entity ]
   def getReferencedEntityForUpdate( referenceproperty : Symbol ) : Option[ Entity ]
 
+  def requestParameter( listener : EntityActionId, property : Symbol ) {
+    requestParameters( listener, new ParametersExpression(  ) )
+  }
+  def requestParameters( listener : EntityActionId, parameterSources : ParametersExpression )
 
-  def addListener( property : Symbol, targetEntity : EntityId, calledAction : Symbol, Map[Symbol, Expression] )
-  def addTrigger( property : Symbol,  trigger : Expression, targetEntity : EntityId, calledAction : Symbol, Map[Symbol, Expression])
+  def addListener( property : Symbol, listener : EntityActionId, parameterSources : ParametersExpression )
+  def addTrigger( property : Symbol,  trigger : Trigger, listener : EntityActionId, parameterSources : ParametersExpression)
 }
 

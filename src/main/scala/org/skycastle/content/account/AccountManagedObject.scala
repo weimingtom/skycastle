@@ -11,7 +11,7 @@ import java.nio.ByteBuffer
  * 
  */
 class AccountManagedObject( accountEntity : ServerSideAccountEntity )
-        extends ManagedEntity[ServerSideAccountEntity]( account ) with ClientSessionListener {
+        extends ManagedEntity[ServerSideAccountEntity]( accountEntity ) with ClientSessionListener {
 
   private var currentSessionRef : ManagedReference[ClientSession] = null
 
