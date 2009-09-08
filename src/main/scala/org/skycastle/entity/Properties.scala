@@ -12,7 +12,7 @@ trait Properties {
 
   def setProperties( changed : Parameters )   = { null }
   def getPropertiesAsParameters : Parameters    = { null }
-  def properties : Iterator[ Pair[Symbol,Any] ]   = { null }
+  def getProperties : Iterator[ Pair[Symbol,Any] ]   = { null }
 
   def set( property : Symbol, value : Any )   = { null }
   def get( property : Symbol ) : Option[Any]    = { null }

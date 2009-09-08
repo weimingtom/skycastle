@@ -78,8 +78,8 @@ class AccountManagedObject( accountEntity : ServerSideAccountEntity )
     accountEntity.onConnected( clientParameters )
   }
 
-  def disconnected(p1: Boolean, reason: String) {
-    handleDisconnect( false, "disconnected", reason )
+  def disconnected(graceful: Boolean) {
+    handleDisconnect( false, "disconnected", "" )
   }
 
   def markThisForUpdate {
