@@ -3,11 +3,11 @@ package org.skycastle.util
 
 import java.io.Serializable
 
-final object Parameters {
+object Parameters {
   def apply (  elems: (Symbol, Any)*) = new Parameters( Map.empty ++ elems )
 
-  final val KEY_VALUE_SEPARATOR = '='
-  final val ENTRY_SEPARATOR = '\n'
+  val KEY_VALUE_SEPARATOR = '='
+  val ENTRY_SEPARATOR = '\n'
 
   /**
    * Creates a Parameters object from a string containing key = value entries separated by the equals sign,
