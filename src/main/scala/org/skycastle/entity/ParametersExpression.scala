@@ -13,10 +13,10 @@ import util.Parameters
 @SerialVersionUID(1)
 final case class ParametersExpression( sources : Map[Symbol, Expression] )  {
 
-  def getParameters( entity : Entity ) : Parameters = {
+  def getParameters( properties : Properties ) : Parameters = {
 
     val params : Map[Symbol, Any] = Map() ++ ( sources map { case( parameter : Symbol, expression : Expression ) =>
-      ( parameter, expression.getValue( entity ) )
+      ( parameter, expression.getValue( properties ) )
     } )
 
     new Parameters( params )

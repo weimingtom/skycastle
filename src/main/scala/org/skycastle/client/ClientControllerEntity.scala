@@ -21,7 +21,7 @@ class ClientControllerEntity extends Entity {
 
   def createUi() {
 
-    val clientUiId = properties.getAs[EntityId]( 'uiId, null )
+    val clientUiId = getOrElse( 'uiId, null, classOf[EntityId] )
     val screen : ScreenEntity = container.getEntity( clientUiId ) match {
       case Some( screen : ScreenEntity ) => screen
       case _ => buildClientScreen()
@@ -47,7 +47,7 @@ class ClientControllerEntity extends Entity {
 
     container.storeEntity( screen )
 
-    properties.set( 'uiId, screen.id )
+    set( 'uiId, screen.id )
     addRoleMember( "connect", screen.id )
 
     screen

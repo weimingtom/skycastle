@@ -32,11 +32,6 @@ class Entity extends LogMethods with Properties {
   var container : EntityContainer = null
 
   /**
-   * Key-value properties stored in this Entity
-   */
-  val properties = Parameters()
-
-  /**
    * Any scripted actions added to this Entity
    */
   private val dynamicActions: Map[Symbol, Script] = Map()
@@ -61,13 +56,6 @@ class Entity extends LogMethods with Properties {
   // TODO: Maybe add RoleMember that is a check if caller id is in some collection in a property -> use some collections of entity id:s in properties as role members?
   // Complex cases could be e.g. Organization maintenance, handling different guild functions, etc.
 
-
-  /**
-   *  Update the properties of this Entity
-   */
-  def updateProperties(updatedProperties: Parameters) {
-    properties.update(updatedProperties)
-  }
 
   def getRoles : List[Role] = roles
 

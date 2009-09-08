@@ -21,6 +21,6 @@ class BoolProp(propertyName : Symbol, default : BoolExpression)  extends BoolExp
     }
   }
 
-  override def toString = propertyName.name + " [default: "+default.toString+" ]"
+  override def toString = propertyName.name + "[default: "+default.toString+" ]"
 
 }

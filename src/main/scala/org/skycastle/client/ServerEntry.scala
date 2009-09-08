@@ -24,8 +24,8 @@ class ServerEntry extends Entity {
   // TODO: Provide the password here?
   def connect( username : String, screenId : EntityId ) {
 
-    val serverUrl = properties.getString( 'serverUrl, null )
-    val serverPort = properties.getString( 'serverPort, null )
+    val serverUrl = getString( 'serverUrl, null )
+    val serverPort = getString( 'serverPort, null )
 
     if (serverUrl == null) throw new IllegalArgumentException("Server URL can not be null")
     if (screenId == null) throw new IllegalArgumentException("Screen ID can not be null")

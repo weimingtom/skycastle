@@ -24,7 +24,7 @@ final case class NumProp(propertyName : Symbol, default : NumExpression) extends
     }
   }
 
-  override def toString = propertyName.name + " [default: "+default.toString+" ]"
+  override def toString = propertyName.name + "[default: "+default.toString+" ]"
 
 
 }

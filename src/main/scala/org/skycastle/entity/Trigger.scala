@@ -1,7 +1,7 @@
 package org.skycastle.entity
 
 /**
- * Something that listens to changes to a property, and calls a listener if the trigger triggers.
+ * Something that listens to changes to a property, and can cause a call to a listener if the trigger triggers.
  * 
  * @author Hans Haggstrom
  */
@@ -10,6 +10,9 @@ trait Trigger {
 
   def init( value : Any, triggerListener : => Unit, timestamp : Long )
 
-  def valueChanged( newValue : Any, timestamp : Long )
+  /**
+   * Return true if the listener should be notified, false if not.
+   */
+  def valueChanged( newValue : Any, timestamp : Long ) : Boolean
 
 }

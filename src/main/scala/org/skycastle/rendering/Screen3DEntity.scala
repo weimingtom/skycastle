@@ -19,7 +19,7 @@ class Screen3DEntity extends Entity {
 
   def showScreen(  ) {
     if (renderingLoop == null) {
-      val title = properties.getString( 'title, "Skycastle" )
+      val title = getString( 'title, "Skycastle" )
       renderingLoop = new RenderingLoop( title )
 
       // Generate scene and attach it to the rendering loop

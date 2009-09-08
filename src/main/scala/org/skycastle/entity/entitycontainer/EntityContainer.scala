@@ -51,10 +51,17 @@ trait EntityContainer {
 
 
   /**
-   * Asynchronously invokes the specified action on the specified entity, assuming the calling entity has the access rights for it.
+   * Asynchronously invokes the specified action on the specified entity, assuming the calling entity has the access rights to make the call.
    */
   def call( callingEntity : EntityId, calledEntity : EntityId, actionName : Symbol, parameters : Parameters )
-  
+
+  /**
+   * Asynchronously invokes the specified action on the specified entity, assuming the calling entity has the access rights to make the call.
+   */
+  def call( callingEntity : EntityId, calledAction : EntityActionId, parameters : Parameters ) {
+    call( callingEntity, calledAction.entity, calledAction.action, parameters )
+  }
+
 
   // TODO: Add interfaces for scheduled action callbacks etc.
 

@@ -15,6 +15,6 @@ case class Prop( propertyName : Symbol, default : Expression ) extends Expressio
     }
   }
 
-  override def toString = propertyName.name + " [default: "+default.toString+" ]"
+  override def toString = propertyName.name + "[default: "+default.toString+" ]"
 
 }
