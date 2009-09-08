@@ -38,22 +38,22 @@ trait NumExpression extends Expression {
 }
 
 
-final case class Add( exp1 : Expression, exp2 : Expression ) extends NumExpression with BinaryExpression {
+final case class Add( exp1 : NumExpression, exp2 : NumExpression ) extends NumExpression with BinaryExpression {
   val symbol = "+"
   override def getNumber(entity: Properties) = exp1.getNumber( entity ) + exp2.getNumber( entity )
 }
 
-final case class Sub( exp1 : Expression, exp2 : Expression ) extends NumExpression with BinaryExpression {
+final case class Sub( exp1 : NumExpression, exp2 : NumExpression ) extends NumExpression with BinaryExpression {
   val symbol = "-"
   override def getNumber(entity: Properties) = exp1.getNumber( entity ) - exp2.getNumber( entity )
 }
 
-final case class Mul( exp1 : Expression, exp2 : Expression ) extends NumExpression with BinaryExpression {
+final case class Mul( exp1 : NumExpression, exp2 : NumExpression ) extends NumExpression with BinaryExpression {
   val symbol = "*"
   override def getNumber(entity: Properties) = exp1.getNumber( entity ) * exp2.getNumber( entity )
 }
 
-final case class Div( exp1 : Expression, exp2 : Expression ) extends NumExpression with BinaryExpression {
+final case class Div( exp1 : NumExpression, exp2 : NumExpression ) extends NumExpression with BinaryExpression {
   val symbol = "/"
   override def getNumber(entity: Properties) = exp1.getNumber( entity ) / exp2.getNumber( entity )
 }

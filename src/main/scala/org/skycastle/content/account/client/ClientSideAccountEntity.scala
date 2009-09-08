@@ -1,16 +1,11 @@
-package org.skycastle.content.account
+package org.skycastle.content.account.client
 
 
-import _root_.org.skycastle.client.ClientLogger
 import _root_.org.skycastle.util.Parameters
-import com.sun.sgs.client.ClientChannel
-import com.sun.sgs.client.simple.{SimpleClient, SimpleClientListener}
-import java.net.{URL, PasswordAuthentication}
-import java.nio.ByteBuffer
+import java.net.{PasswordAuthentication}
 import java.lang.String
 import entity.Entity
-import java.util.Properties
-import network.{Message, NetworkConnection}
+import network.{Message}
 
 /**
  * A client side Entity that represents an user account on a specific server.

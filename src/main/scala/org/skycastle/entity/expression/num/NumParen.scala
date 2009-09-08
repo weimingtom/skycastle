@@ -1,6 +1,5 @@
 package org.skycastle.entity.expression.num
 
-import num.NumExpression
 
 /**
 * Represents a numerical expression in parenthesis.

@@ -15,8 +15,8 @@ trait Expression {
 
   def getValue( entity : Properties ) : Any
 
-  final def != ( expression : Expression ) = NotSameAs( this, expression )
-  final def == ( expression : Expression ) = SameAs( this, expression )
+  final def notSameAs ( expression : Expression ) = NotSameAs( this, expression )
+  final def sameAs ( expression : Expression ) = SameAs( this, expression )
 
 }
 

@@ -15,7 +15,7 @@ import network.Message
  */
 @serializable
 @SerialVersionUID(1)
-class Entity extends LogMethods {
+class Entity extends LogMethods with Properties {
 
   /**
    * Identifier of this Entity.

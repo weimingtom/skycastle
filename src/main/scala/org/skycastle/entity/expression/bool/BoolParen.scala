@@ -1,7 +1,6 @@
 package org.skycastle.entity.expression.bool
 
 
-import bool.BoolExpression
 
 
 /**

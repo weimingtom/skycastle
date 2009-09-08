@@ -1,4 +1,4 @@
-package org.skycastle.content.account
+package org.skycastle.content.account.client
 
 import _root_.com.sun.sgs.client.simple.{SimpleClient, SimpleClientListener}
 import _root_.com.sun.sgs.client.{ClientChannelListener, ClientChannel}

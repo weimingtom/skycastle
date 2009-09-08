@@ -1,7 +1,7 @@
 package org.skycastle.client
 
 
-import content.account.ClientSideAccountEntity
+import content.account.client.ClientSideAccountEntity
 import entity.accesscontrol.ActionCapability
 import entity.{EntityId, Entity}
 import ui.{ScreenEntity, Ui}
