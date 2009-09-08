@@ -4,7 +4,6 @@ import _root_.scala.xml.Elem
 import java.awt.image.BufferedImage
 import java.io.{InputStreamReader, InputStream, Reader}
 import java.net.URL
-import java.util.Properties
 import javax.imageio.ImageIO
 import javax.swing.ImageIcon
 
@@ -25,10 +24,10 @@ object ResourceLoader {
         new ImageIcon(loadImage(resourcePath))
     }
 
-    def loadProperties(resourcePath: String): Properties = {
-        val properties = new Properties()
+    def loadProperties(resourcePath: String): java.util.Properties = {
+        val properties = new java.util.Properties()
 
-        loadResource[Properties](resourcePath, "Properties", (stream) => {
+        loadResource[java.util.Properties](resourcePath, "Properties", (stream) => {
             properties.load(new InputStreamReader(stream))
             properties
         }, properties)

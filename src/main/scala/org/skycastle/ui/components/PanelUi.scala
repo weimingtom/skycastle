@@ -25,13 +25,13 @@ class PanelUi extends Ui {
   def createOwnView(composite: CompositeEntity) = new JPanel(layout)
 
   protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
-    if (changedParameters.contains('layout))
+    if (changedParameters.has('layout))
       layout.setLayoutConstraints(changedParameters.getString('layout, ""))
 
-    if (changedParameters.contains('columnLayout))
+    if (changedParameters.has('columnLayout))
       layout.setLayoutConstraints(changedParameters.getString('columnLayout, ""))
 
-    if (changedParameters.contains('rowLayout))
+    if (changedParameters.has('rowLayout))
       layout.setLayoutConstraints(changedParameters.getString('rowLayout, ""))
   }
 }

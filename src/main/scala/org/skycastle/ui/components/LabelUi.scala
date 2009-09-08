@@ -21,7 +21,7 @@ class LabelUi extends Ui {
 
   protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
 
-    if (changedParameters.contains('text)) {
+    if (changedParameters.has('text)) {
       view.setText( parameters.getString( 'text, "") )
     }
 

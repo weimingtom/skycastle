@@ -3,6 +3,7 @@ package org.skycastle.entity
 
 import expression.Expression
 import util.Parameters
+import org.skycastle.util.Properties
 
 /**
  * Contains expressions for creating a Parameters object based on an Entity.

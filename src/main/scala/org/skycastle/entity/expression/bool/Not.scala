@@ -1,5 +1,6 @@
 package org.skycastle.entity.expression.bool
 
+import org.skycastle.util.Properties
 
 
 /**

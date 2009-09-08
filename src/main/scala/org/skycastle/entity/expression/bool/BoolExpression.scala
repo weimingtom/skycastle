@@ -2,6 +2,8 @@ package org.skycastle.entity.expression.bool
 
 
 import num.NumExpression
+import org.skycastle.util.Properties
+
 
 /**
  * 

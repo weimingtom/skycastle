@@ -2,6 +2,7 @@ package org.skycastle.entity.expression.bool
 
 
 
+import org.skycastle.util.Properties
 
 /**
 * Represents a boolean expression in parenthesis.

@@ -13,6 +13,7 @@ import util.{Parameters, SimpleFrame}
 object UiExample2 {
   def main(args: Array[String]) {
 
+    
     val initializationScript = ActionSequenceScript( List(
       ActionCall( 'addComponent, Parameters(
       'componentType -> "panel",

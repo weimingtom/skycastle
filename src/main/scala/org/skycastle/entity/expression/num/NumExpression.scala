@@ -2,6 +2,7 @@ package org.skycastle.entity.expression.num
 
 
 import bool.{Smaller, Greater, SmallerOrEqual, GreaterOrEqual}
+import org.skycastle.util.Properties
 
 /**
  * 

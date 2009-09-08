@@ -12,6 +12,7 @@ import util.Parameters
  * 
  * @author Hans Haggstrom
  */
+import org.skycastle.util.Properties
 
 @serializable
 @SerialVersionUID(1)
@@ -43,7 +44,7 @@ class FieldUi extends Ui {
 
   protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
 
-    if (changedParameters.contains('text)) {
+    if (changedParameters.has('text)) {
       view.setText( parameters.getString( 'text, "") )
     }
 

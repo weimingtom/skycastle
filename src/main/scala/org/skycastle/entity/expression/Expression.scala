@@ -2,6 +2,8 @@ package org.skycastle.entity.expression
 
 
 import bool.{NotSameAs, SameAs}
+import org.skycastle.util.Properties
+
 
 /**
  * Used to calculate some (usually simple) expression that is based on constants and properties of an Entity.

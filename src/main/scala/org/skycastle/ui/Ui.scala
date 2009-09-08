@@ -1,4 +1,5 @@
 package org.skycastle.ui
+import org.skycastle.util.Properties
 
 
 import content.composite.{CompositePart, CompositeEntity}
@@ -80,7 +81,7 @@ abstract class Ui extends CompositePart {
 
     if (view != null) {
       // Update it with the initial parameters
-      updateViewProperties( view, parameters )
+      updateViewProperties( view, parameters.toParameters )
 
       // Create children
       getChildren foreach { c =>

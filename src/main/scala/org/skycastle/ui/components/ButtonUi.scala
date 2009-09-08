@@ -57,16 +57,16 @@ class ButtonUi extends Ui {
 
 
   protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
-    if (changedParameters.contains('text))
+    if (changedParameters.has('text))
       view.setText( changedParameters.getString('text, "") )
 
-    if (changedParameters.contains('calledEntity))
+    if (changedParameters.has('calledEntity))
       calledEntity = changedParameters.getAs[EntityId]('calledEntity, null)
 
-    if (changedParameters.contains('calledAction))
+    if (changedParameters.has('calledAction))
       calledAction = changedParameters.getAs[Symbol]('calledAction, null)
     
-    if (changedParameters.contains('actionParameters))
+    if (changedParameters.has('actionParameters))
       actionParameters = changedParameters.getAs[Map[Symbol,Symbol]]('actionParameters, Map[Symbol,Symbol]())
 
   }

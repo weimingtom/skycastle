@@ -1,4 +1,5 @@
 package org.skycastle.client
+import org.skycastle.util.Properties
 
 
 import entity.accesscontrol.{ActionCapability, Capability}

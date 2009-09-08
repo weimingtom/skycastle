@@ -1,4 +1,5 @@
 package org.skycastle.entity.expression.num
+import org.skycastle.util.Properties
 
 
 /**

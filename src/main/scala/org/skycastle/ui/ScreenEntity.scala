@@ -8,6 +8,7 @@ import entity.Entity
 import java.awt.Dimension
 import javax.swing.{JLabel, JFrame, JComponent}
 import util.{Parameters}
+import org.skycastle.util.Properties
 
 /**
  * A set of UI:s laid out into an ui screen.

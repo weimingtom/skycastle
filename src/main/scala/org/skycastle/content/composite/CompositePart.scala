@@ -1,7 +1,8 @@
 package org.skycastle.content.composite
 
-
+import org.skycastle.util.Properties
 import util.{ErrorPrinter, Parameters}
+import org.skycastle.util.Properties
 
 /**
  * A part of a CompositeEntity.
@@ -17,7 +18,7 @@ class CompositePart {
 
   var id: Symbol = null
   var parent: Symbol = null
-  var parameters: Parameters = null
+  var parameters: Properties = null
 
   private var children: List[Symbol] = Nil
 
@@ -25,7 +26,7 @@ class CompositePart {
   /**
    * Called just after a component has been created, and before it is added to any parent component.
    */
-  def onInit(parameters: Parameters, composite : CompositeEntity) {}
+  def onInit(parameters: Properties, composite : CompositeEntity) {}
 
   /**
    * Called when a component is updated with changed parameters.
@@ -54,7 +55,7 @@ class CompositePart {
   final def init( id_ : Symbol, parent_ : Symbol, parameters_ : Parameters, composite : CompositeEntity) {
     id = id_
     parent = parent_
-    parameters = parameters_
+    parameters = new Properties( parameters_ )
 
     try {
       onInit(parameters, composite)
@@ -110,7 +111,7 @@ class CompositePart {
 
 
   final def update(changedParameters: Parameters, composite : CompositeEntity) {
-    parameters.update(changedParameters)
+    parameters.updateProperties(changedParameters)
 
     try {
       onUpdate(changedParameters,  composite)

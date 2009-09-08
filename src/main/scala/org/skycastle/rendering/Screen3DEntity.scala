@@ -4,6 +4,7 @@ import _root_.org.skycastle.entity.Entity
 import com.jme.app.AbstractGame
 import com.jme.scene.Node
 import com.jme.scene.shape.Sphere
+import org.skycastle.util.Properties
 
 /**
  * 

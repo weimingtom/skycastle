@@ -7,6 +7,8 @@ import java.util.logging.{Logger, Level}
 import script.Script
 import util.{LogMethods, Parameters}
 import network.Message
+import org.skycastle.util.Properties
+
 
 /**
  * Represents some mutable object in the game (server or client).
@@ -15,7 +17,7 @@ import network.Message
  */
 @serializable
 @SerialVersionUID(1)
-class Entity extends LogMethods with Properties {
+class Entity extends Properties with LogMethods {
 
   /**
    * Identifier of this Entity.
@@ -219,6 +221,55 @@ class Entity extends LogMethods with Properties {
   def callOtherEntity( message : Message ) {
     container.call( id, message.calledEntity, message.calledAction, message.parameters )
   }
+
+
+
+
+
+
+  def getReferencedEntity( referenceproperty : Symbol ) : Option[ Entity ]  = {
+    val entityId = getEntityId( referenceproperty, null )
+    if (entityId == null || container == null) {
+      None
+    }
+    else {
+      container.getEntity( entityId )
+    }
+  }
+
+  def getReferencedEntityForUpdate( referenceproperty : Symbol ) : Option[ Entity ]  = {
+    val entityId = getEntityId( referenceproperty, null )
+    if (entityId == null || container == null) {
+      None
+    }
+    else {
+      container.getEntityForUpdate( entityId )
+    }
+  }
+
+  def requestParameter( listener : EntityActionId, property : Symbol ) {
+    requestParameters( listener, ParametersExpression( Map() ) )
+  }
+  def requestParameters( listener : EntityActionId, parameterSources : ParametersExpression )  = {
+    container.call( id, listener, parameterSources.getParameters( this ) )
+  }
+
+
+/* TODO: Implement
+
+  def addListener( property : Symbol, listener : EntityActionId, parameterSources : ParametersExpression )  = { null }
+
+  def addTrigger( property : Symbol,  trigger : Trigger, listener : EntityActionId, parameterSources : ParametersExpression)  = { null }
+*/
+
+
+
+
+
+
+
+
+
 }
 
 
