@@ -106,7 +106,7 @@ class Entity extends Properties with LogMethods {
   }
 
   // Special actions:
-  // * Remove self
+  // * Remove the entity
   // * Add / remove / change action
 
 

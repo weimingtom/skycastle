@@ -10,7 +10,8 @@ import util.Parameters
  * 
  * @author Hans Haggstrom
  */
-
+@serializable
+@SerialVersionUID(1)
 class ServerSideAccountEntity extends Entity {
 
   def accountName : String = myAccountName

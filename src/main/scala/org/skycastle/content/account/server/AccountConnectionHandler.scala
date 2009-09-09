@@ -8,7 +8,6 @@ import network.Message
  * 
  * @author Hans Haggstrom
  */
-
 trait AccountConnectionHandler {
 
   /**

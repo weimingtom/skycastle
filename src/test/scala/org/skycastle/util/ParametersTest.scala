@@ -16,7 +16,7 @@ class ParametersTest extends TestCase {
   @Test
   def testProperties {
 
-    val prop = new Properties( 'foo -> 'baa, 'bar -> 12, 'd -> 3.15, 'zap -> "meh", 'ffff -> List( 1, 'two, "three", 4.0, new Integer(5) ) )
+    val prop = new Properties( 'foo -> 'baa, 'bar -> 12, 'd -> 3.15, 'zap -> "meh", 'ffff -> List( 1, 'two, "three", 4.0, new java.lang.Integer(5) ) )
 
     assertEquals( Some(12), prop.get( 'bar ) )
     assertEquals( 'baa, prop.getAs[Symbol]( 'foo, 'meh ) )

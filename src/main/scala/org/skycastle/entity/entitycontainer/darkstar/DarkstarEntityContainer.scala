@@ -12,9 +12,11 @@ object DarkstarEntityContainer extends EntityContainer {
 
 
   def storeEntity(entity: Entity) : EntityId = {
-    val dataManager : DataManager = AppContext.getDataManager
+    storeManagedEntity( new ManagedEntity( entity ) )
+  }
 
-    val managedEntity = new ManagedEntity( entity )
+  def storeManagedEntity( managedEntity : ManagedEntity[_ <: Entity] ) : EntityId = {
+    val dataManager : DataManager = AppContext.getDataManager
 
     val id = EntityId("entity-" + dataManager.getObjectId( managedEntity ).toString)
 

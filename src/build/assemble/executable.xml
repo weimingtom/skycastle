@@ -1,62 +1,65 @@
 <assembly>
-  <id>executable</id>
-  <formats>
-    <format>jar</format>
-  </formats>
-  <includeBaseDirectory>false</includeBaseDirectory>
-  <dependencySets>
-    <dependencySet>
-      <outputDirectory></outputDirectory>
-      <outputFileNameMapping></outputFileNameMapping>
-      <unpack>true</unpack>
-      <scope>runtime</scope>
-      <includes>
+    <id>executable</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory></outputDirectory>
+            <outputFileNameMapping></outputFileNameMapping>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <includes>
 
-        <include>org.scala-lang:scala-library</include>
-        <include>trove:trove</include>
-        <include>jpen:jpen</include>
-<!--
-        <include>j3d-org:j3d-org-java3d-all</include>
--->
-        <include>browserlauncher2:browserlauncher2</include>
-        <include>com.miglayout:miglayout</include>
-        <include>janino:janino</include>
+                <include>org.scala-lang:scala-library</include>
+                <include>trove:trove</include>
+                <include>jpen:jpen</include>
+                <!--
+                        <include>j3d-org:j3d-org-java3d-all</include>
+                -->
+                <include>browserlauncher2:browserlauncher2</include>
+                <include>com.miglayout:miglayout</include>
+                <include>janino:janino</include>
 
-        <include>com.projectdarkstar.ext.com.jmonkeyengine:jme</include>
-        <include>com.projectdarkstar.ext.com.jmonkeyengine:jme-terrain</include>
+                <include>com.projectdarkstar.ext.com.jmonkeyengine:jme</include>
+                <include>com.projectdarkstar.ext.com.jmonkeyengine:jme-terrain</include>
 
-        <include>com.vividsolutions:jts</include>
+                <include>com.vividsolutions:jts</include>
 
-<!--
-        <include>jme:jme</include>
--->
-        <include>com.projectdarkstar.client:sgs-client-api</include>
-        <include>com.projectdarkstar.client:sgs-client</include>
-        <include>com.projectdarkstar.server:sgs-shared</include>
+                <!--
+                        <include>jme:jme</include>
+                -->
+                <include>com.projectdarkstar.client:sgs-client-api</include>
+                <include>com.projectdarkstar.client:sgs-client</include>
+                <include>com.projectdarkstar.server:sgs-shared</include>
+
+                <include>org.apache.mina:mina-core</include>
+                <include>org.slf4j:slf4j-api</include>
+                <include>org.slf4j:slf4j-jdk14</include>
+
+                <include>org.lwjgl:lwjgl</include>
+                <!--
+                        <include>org.lwjgl:lwjgl_util_applet</include>
+                -->
+                <include>org.lwjgl:lwjgl_util</include>
+                <!--
+                        <include>net.java.dev.jogl:jogl</include>
+                -->
+                <include>net.java.dev.jinput:jinput</include>
+                <!--
+                        <include>jorbis:jorbis</include>
+                -->
 
 
-        <include>org.lwjgl:lwjgl</include>
-<!--
-        <include>org.lwjgl:lwjgl_util_applet</include>
--->
-        <include>org.lwjgl:lwjgl_util</include>
-<!--
-        <include>net.java.dev.jogl:jogl</include>
--->
-        <include>net.java.dev.jinput:jinput</include>
-<!--
-        <include>jorbis:jorbis</include>
--->
-
-
-      </includes>
-    </dependencySet>
-  </dependencySets>
-  <fileSets>
-    <fileSet>
-      <directory>target/classes</directory>
-      <outputDirectory></outputDirectory>
-    </fileSet>
-  </fileSets>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>target/classes</directory>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+    </fileSets>
 </assembly>
 

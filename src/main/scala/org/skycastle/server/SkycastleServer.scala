@@ -2,6 +2,7 @@ package org.skycastle.server
 
 import _root_.org.skycastle.entity.EntityId
 import com.sun.sgs.app._
+import content.account.server.{ServerSideAccountEntity, AccountManagedObject}
 import entity.entitycontainer.darkstar.DarkstarEntityContainer
 import entity.tilemap.{TilemapEntity}
 import java.util.Properties
@@ -15,9 +16,7 @@ import java.util.Properties
 @SerialVersionUID(1)
 @serializable
 class SkycastleServer extends AppListener {
-  //var currentMap: ManagedReference[ManagedEntity[TilemapEntity]] = null
 
-  var currentMapId : EntityId = null
 
   /**
    * This is called to initialize the server
@@ -26,25 +25,14 @@ class SkycastleServer extends AppListener {
 
     ServerLogger.logger.info("Skycastle Server Started")
 
-    // Try to load an initial world from a specified file in a default storage format
+    // Try to load an initial game from a specified file in a default storage format
     // TODO
 
-    // If no initial world specified, instantiate the standard world (which allows the admin to set up & edit games).
+    // If no initial game specified, instantiate the standard game (which allows the admin to set up & edit games).
     // TODO
 
-    // Store a reference to a factory object used to create some kind of proxy objects for connecting players?
+    // Store a reference to the top level game that users are added to on login.
     // TODO
-
-    //DarkstarEntityContainer.
-
-
-    // Create testworld
-    val tilemap = new TilemapEntity()
-
-    // Store testworld and retain its id
-    currentMapId = DarkstarEntityContainer.storeEntity( tilemap )
-
-    //currentMap = AppContext.getDataManager.createReference(new ManagedEntity(tilemap))
 
   }
 
@@ -53,19 +41,33 @@ class SkycastleServer extends AppListener {
    */
   def loggedIn(session: ClientSession) : ClientSessionListener  = {
 
-    // Get or create user
-    val user = User.logUserIn( session )
+    val USER_ID_PREFIX = "user-"
+    val userId = USER_ID_PREFIX + session.getName()
 
-    // Get or create entity that presents the server options for the user
-    // (if the user has admin status the screen can be different / provide additional options)
-    
+    val dataManager = AppContext.getDataManager()
 
-    // Send user the server main screen
+    // Get the user with the name used in the session login, or if not found, creates a new one.
+    val account: AccountManagedObject = try {
+      dataManager.getBinding(userId).asInstanceOf[AccountManagedObject]
+    } catch {
+      case e: NameNotBoundException => {
+        ServerLogger.logInfo( "New player account created: " + userId)
+        val a = new AccountManagedObject( new ServerSideAccountEntity() )
 
+        DarkstarEntityContainer.storeManagedEntity( a )
 
-    user
+        // TODO: Join user to the top-level Game on the Server.
+
+        dataManager.setBinding(userId, a)
+
+        a
+      }
+    }
+
+    account.setSession( session )
+
+    account
   }
-
 
 }
 
