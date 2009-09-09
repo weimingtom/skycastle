@@ -2,6 +2,13 @@ package org.skycastle.util
 
 import _root_.org.skycastle.entity.entitycontainer.EntityContainer
 
+object Properties {
+
+  def apply( elements: (Symbol, Any)* ) : Properties = new Properties( Map.empty ++ elements )
+
+}
+
+
 /**
  * A class that provides mutable Property support.
  * 
