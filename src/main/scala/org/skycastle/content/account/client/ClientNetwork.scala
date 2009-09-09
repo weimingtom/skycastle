@@ -67,7 +67,10 @@ class ClientNetwork( onMessage : Message => Unit,
     if (connectionStarted) simpleClient.logout(false)
   }
 
-  
+  def sendMessage( message : Message ) {
+    network.sendMessage( message )
+  }
+
   def receivedMessage(buffer: ByteBuffer) {
     network.handleIncomingData( buffer )
   }
