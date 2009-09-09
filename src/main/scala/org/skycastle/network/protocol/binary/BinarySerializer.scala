@@ -18,6 +18,8 @@ TODO: Implement serialization for these types:
   MATRIX_3D
 */
 // TODO: Maybe refactor to separate the functions of encodign and decodign objects and defining the serializers.
+@serializable
+@SerialVersionUID(1)
 class BinarySerializer {
 
   private val NULL_ID : Byte = 0

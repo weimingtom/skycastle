@@ -9,6 +9,8 @@ import java.nio.ByteBuffer
  * 
  * @author Hans Haggstrom
  */
+@serializable
+@SerialVersionUID(1)
 abstract class TypeSerializer[TYPE]( kind_ : Class[TYPE]) {
 
   type T = TYPE

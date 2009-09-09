@@ -14,7 +14,9 @@ object StringUtils {
    * Decodes a ByteBuffer into a {@code String}, using the UTF-8 encoding.
    */
   def decodeString( buffer: ByteBuffer ) : String = {
-    new String( buffer.array, ENCODING_CHARSET )
+    val stringBytes = new Array[Byte]( buffer.capacity() )
+    buffer.get( stringBytes )
+    new String( stringBytes, ENCODING_CHARSET )
   }
 
   /**

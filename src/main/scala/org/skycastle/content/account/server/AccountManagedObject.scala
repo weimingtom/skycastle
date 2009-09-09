@@ -9,6 +9,8 @@ import java.nio.ByteBuffer
 /**
  * 
  */
+@serializable
+@SerialVersionUID(1)
 class AccountManagedObject( accountEntity : ServerSideAccountEntity )
         extends ManagedEntity[ServerSideAccountEntity]( accountEntity ) with ClientSessionListener with AccountConnectionHandler {
 
