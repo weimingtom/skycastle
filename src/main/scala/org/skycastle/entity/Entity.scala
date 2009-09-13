@@ -2,7 +2,7 @@ package org.skycastle.entity
 
 
 import _root_.org.skycastle.entity.entitycontainer.EntityContainer
-import accesscontrol.{role, Role, RoleMember, Capability}
+import accesscontrol._
 import java.util.logging.{Logger, Level}
 import script.Script
 import util.{LogMethods, Parameters}
@@ -62,6 +62,7 @@ class Entity extends Properties with LogMethods {
   def getRoles : List[Role] = roles
 
   def getRole( roleId : Symbol ) : Option[Role] = roles.find( _.roleId == roleId )
+  def hasRole( roleId : Symbol ) : Boolean = roles.exists( _.roleId == roleId )
 
   
   @role( "roleEditor"  )
@@ -83,7 +84,7 @@ class Entity extends Properties with LogMethods {
   }
 
   @role( "roleEditor"  )
-  @action( "roleId member"  )
+  @action( "roleId, member"  )
   def addRoleMember( roleId : Symbol, member : RoleMember ) {
     getRole(roleId) match {
       case Some(role:Role) => role.addMember( member )
@@ -92,7 +93,7 @@ class Entity extends Properties with LogMethods {
   }
 
   @role( "roleEditor"  )
-  @action( "roleId member"  )
+  @action( "roleId, member"  )
   def removeRoleMember( roleId : Symbol, member : RoleMember ) {
     getRole(roleId) match {
       case Some(role:Role) => role.removeMember( member )
@@ -119,6 +120,16 @@ class Entity extends Properties with LogMethods {
   // * Add / remove / change action
 
 
+  private def callAllowed( caller: EntityId, actionId: Symbol ) : Boolean = {
+    // Check access rights.  By default allow any call by this entity itself.
+    // (the identity or privilegies of original caller are not retained when an action invokes another action,
+    // instead the identity of the entity that contains the calling action is used.)
+    caller == id ||
+      roles.exists( _.allowsCall( caller, actionId ) )
+  }
+
+  
+
   /**
    * Call an action available in this entity.
    */
@@ -128,24 +139,15 @@ class Entity extends Properties with LogMethods {
     currentAction = actionId
 
     try {
-      // Check access rights.  By default allow any call by this entity itself.
-      // (the identity or privilegies of original caller are not retained when an action invokes another action,
-      // instead the identity of the entity that contains the calling action is used.)
-      if ( caller == id || roles.exists( _.allowsCall( caller, actionId ) )) {
-        // Try to handle with default entity actions
-        if (!callDefaultAction(actionId, parameters)) {
-          // Try to handle with builtin actions from inheriting classes
-          if (!callBuiltinAction(actionId, parameters)) {
-              // Try to handle with dynamic actions
-              val action: Script = dynamicActions.getOrElse(actionId, null)
-              if (action != null) {
-                action.run( this, parameters)
-              }
-              else {
-                logWarning( "Caller '"+caller+"' tried to call action '"+actionId+"' on entity "+id+", but no such action found.  Ignoring call." )
-              }
-            }
-        }
+      ensureActionMethodsLoaded()
+
+      if ( callAllowed(caller, actionId) ) {
+        if (!callDefaultAction(actionId, parameters))
+          if (!callBuiltinAction(actionId, parameters))
+            if(!callActionMethod(caller, actionId, parameters))
+              if(!callDynamicAction(caller, actionId, parameters))
+                logWarning( "Caller '"+caller+"' tried to call action '"+actionId+"' on entity "+id+", " +
+                            "but no such action found.  Ignoring call." )
       }
       else {
         logWarning( "Caller '"+caller+"' is not authorized to call action '"+actionId+"' on entity "+id+".  Ignoring call." )
@@ -161,22 +163,87 @@ class Entity extends Properties with LogMethods {
     currentCaller = null
   }
 
+  private def callDynamicAction( caller: EntityId, actionId: Symbol, parameters: Parameters ) : Boolean = {
+    dynamicActions.get(actionId) match {
+      case Some( action : Script ) =>
+        action.run( this, parameters )
+        true
+      case None => false
+    }
+  }
+
+  private def commaSeparatedStringToSymbolList( s : String) : List[Symbol] = {
+    List.fromString( s, ',' ).flatMap( {entry : String =>
+       val trimmedEntry = entry.trim()
+       if ( trimmedEntry.length > 0) {
+         List( Symbol( trimmedEntry ) )
+       }
+       else Nil
+    })
+  }
 
   @transient private var actionMethods : Map[ Symbol, ActionMethod ] = null
-  def callActionWithReflection() {
-
-    if (actionMethods == null) {
-      
-    }
-
+  private def findActionMethods() : Map[ Symbol, ActionMethod ] = {
     val thisClass = getClass()
-    val methods : List[ Method ] = List.fromArray( thisClass.getMethods )
-    val actionMethodsList = methods.filter{ (m : Method) => m.isAnnotationPresent( classOf[action] )}
+    try {
+      val methods : List[ Method ] = List.fromArray( thisClass.getMethods )
+      val actionMethodsList = methods.filter{ (m : Method) => m.isAnnotationPresent( classOf[action] )}
 
-    actionMethodsList foreach { (m : Method) =>
-      
+      var actMethods : Map[Symbol,ActionMethod] = Map()
+
+      actionMethodsList foreach { (m : Method) =>
+        try {
+          val actionAnnotation : action = m.getAnnotation( classOf[action] )
+          val roleAnnotation : role = m.getAnnotation( classOf[role] )
+
+          val parameterMapping = commaSeparatedStringToSymbolList( actionAnnotation.value )
+          val roles = commaSeparatedStringToSymbolList( roleAnnotation.value )
+
+          if (parameterMapping.size == m.getParameterTypes.length) {
+
+            val actionId = Symbol(m.getName)
+
+            if (!roles.isEmpty) {
+              val actionCallCapability = ActionCapability( actionId )
+              roles foreach { roleId : Symbol => addRoleCapability( roleId, actionCallCapability ) }
+            }
+
+            val entry = (actionId, new ActionMethod( this, m, parameterMapping ))
+            actMethods = actMethods + entry
+          }
+          else {
+            logWarning( "the action method '"+m.getName+"' in Entity class "+thisClass.getName+" doesn't specify the names for all of its parameters " +
+                    "(or specifies too many parameter names).  Found these parameter names: '"+parameterMapping.mkString(", ") +"', " +
+                    "but required names for parameters of the following types: '"+m.getParameterTypes.mkString(", ") +"'. " )
+          }
+        }
+        catch {
+          case e : Exception => logWarning( "Problem when analysing action method '"+m.getName+"' in the Entty class "+thisClass.getName+": " + e.getMessage, e )
+        }
+      }
+
+      actMethods
     }
-    actionMethods
+    catch {
+      case e : Exception => logWarning( "Problem when analysing methods in the Entty class "+thisClass.getName+": " + e.getMessage, e )
+      Map()
+    }
+  }
+
+  private def ensureActionMethodsLoaded() {
+    if (actionMethods == null) actionMethods = findActionMethods()
+
+    // TODO: This will add duplicate capability entries for roles when the class is de-serialized, fix?
+  }
+
+  private def callActionMethod( caller: EntityId, actionId: Symbol, parameters: Parameters ) : Boolean = {
+    actionMethods.get( actionId ) match {
+      case Some( actionMethod : ActionMethod ) => {
+        actionMethod.call( caller, parameters )
+        true
+      }
+      case None => false
+    }
   }
 
 

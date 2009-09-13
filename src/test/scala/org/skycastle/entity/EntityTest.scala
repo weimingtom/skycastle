@@ -2,10 +2,12 @@ package org.skycastle.entity
 
 
 import _root_.junit.framework.TestCase
+import accesscontrol.role
 import entitycontainer.SimpleEntityContainer
 
 import org.junit._
 import Assert._
+import util.Parameters
 
 /**
  * 
@@ -13,7 +15,17 @@ import Assert._
  * @author Hans Haggstrom
  */
 @Test
-class EntityTest {
+class EntityTest extends TestCase {
+
+  var testEntity : TestEntity = null
+  var callerEntityid : EntityId = null
+
+  override def setUp = {
+    testEntity = new TestEntity()
+    callerEntityid = EntityId( "entity-testCaller" )
+    testEntity.addRole('tester )
+    testEntity.addRoleMember( 'tester, callerEntityid )
+  }
 
   @Test
   def testEntityGetsIdWhenAddedToContainer {
@@ -27,4 +39,67 @@ class EntityTest {
   }
 
 
+
+
+  @Test
+  def testActionMethodsCallWithPrimitiveArgument {
+    assertEquals( 0, testEntity.foo )
+    testEntity.call( callerEntityid, 'setFoo, Parameters( 'newValue -> 1 ) )
+    assertEquals( 1, testEntity.foo )
+  }
+
+  @Test
+  def testActionMethodCallWithArgumentList {
+    assertEquals( Nil, testEntity.fooList )
+    assertEquals( "", testEntity.bar )
+    testEntity.call( callerEntityid, 'update, Parameters( 'bar -> "news flash", 'foo -> List("bear", "badger") ) )
+    assertEquals( List("bear", "badger"), testEntity.fooList )
+    assertEquals( "news flash", testEntity.bar )
+  }
+
+  @Test
+  def testActionMethodCallWithSpecialArguemnts {
+    assertEquals( null, testEntity.caller )
+    assertEquals( null, testEntity.params )
+    val params = Parameters( 'bar -> "foo", 'foo -> 1 )
+    testEntity.call( callerEntityid, 'special, params )
+    assertEquals( callerEntityid, testEntity.caller )
+    assertEquals( params, testEntity.params )
+  }
+
 }
+
+
+
+class TestEntity extends Entity {
+
+  var foo : Int = 0
+  var bar : String = ""
+  var caller : EntityId= null
+  var params : Parameters= null
+  var fooList : List[String] = Nil
+
+  @role( "tester")
+  @action( "newValue" )
+  def setFoo( value : Int ) {
+    foo = value
+  }
+
+  @role( "tester")
+  @action( "bar, foo" )
+  def update( b : String, f: List[String] ) {
+    fooList = f
+    bar = b
+  }
+
+  @role( "tester")
+  @action( "$callerId, $parameters" )
+  def special( c : EntityId, p : Parameters ) {
+    caller= c
+    params= p
+  }
+
+
+}
+
+
