@@ -8,7 +8,7 @@ import script.Script
 import util.{LogMethods, Parameters}
 import network.Message
 import org.skycastle.util.Properties
-
+import java.lang.reflect.Method
 
 /**
  * Represents some mutable object in the game (server or client).
@@ -160,6 +160,25 @@ class Entity extends Properties with LogMethods {
     currentAction = null
     currentCaller = null
   }
+
+
+  @transient private var actionMethods : Map[ Symbol, ActionMethod ] = null
+  def callActionWithReflection() {
+
+    if (actionMethods == null) {
+      
+    }
+
+    val thisClass = getClass()
+    val methods : List[ Method ] = List.fromArray( thisClass.getMethods )
+    val actionMethodsList = methods.filter{ (m : Method) => m.isAnnotationPresent( classOf[action] )}
+
+    actionMethodsList foreach { (m : Method) =>
+      
+    }
+    actionMethods
+  }
+
 
   /**
    * Allows for use of a simple switch clause to invoke any custom actions provided by decendant Entities.

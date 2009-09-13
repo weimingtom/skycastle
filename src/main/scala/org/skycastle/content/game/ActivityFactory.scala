@@ -12,14 +12,14 @@ class ActivityFactory extends Entity {
   /**
    * Return calls with a description of the activities created by this factory.
    */
-  def getDescription( caller : Entity )
+  def getDescription( caller : Entity ) {}
 
   /**
    * Description of the activities created by this factory.
    */
-  def description : Parameters
+  def description : Parameters = {null}
 
-  def createActivity( parameters : Parameters )
+  def createActivity( parameters : Parameters ) {}
 
   
 
