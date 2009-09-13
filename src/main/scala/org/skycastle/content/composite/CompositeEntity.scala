@@ -40,10 +40,10 @@ class CompositeEntity extends Entity {
   createEditorRole()
   
   private def createEditorRole() {
-    addRole( "editor" )
-    addRoleCapability( "editor", ActionCapability( 'addComponent ) )
-    addRoleCapability( "editor", ActionCapability( 'updateComponent ) )
-    addRoleCapability( "editor", ActionCapability( 'removeComponent ) )
+    addRole( 'editor )
+    addRoleCapability( 'editor, ActionCapability( 'addComponent ) )
+    addRoleCapability( 'editor, ActionCapability( 'updateComponent ) )
+    addRoleCapability( 'editor, ActionCapability( 'removeComponent ) )
   }
 
   def getComponent( id : Symbol ) : Option[COMPONENT] = components.get( id )

@@ -2,6 +2,7 @@ package org.skycastle.content.go
 
 
 import entity.Entity
+import game.ActivityEntity
 
 /**
  * 
@@ -10,9 +11,12 @@ import entity.Entity
  */
 @serializable
 @SerialVersionUID(1)
-class GoPlayer extends Entity {
+class GoPlayer extends ActivityEntity {
 
-  def init( observer : Boolean, black : Boolean, name : String )
+  // TODO
+
+  
+  def init( observer : Boolean, black : Boolean, name : String ) {}
 
 
 }

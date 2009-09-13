@@ -9,7 +9,7 @@ package org.skycastle.entity.accesscontrol
  */
 @serializable
 @SerialVersionUID(1)
-final case class Role( roleId : String ) {
+final case class Role( roleId : Symbol ) {
 
   private var members : List[RoleMember] = Nil
   private var capabilities : List[Capability] = Nil

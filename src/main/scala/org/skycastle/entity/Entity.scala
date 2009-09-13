@@ -61,47 +61,47 @@ class Entity extends Properties with LogMethods {
 
   def getRoles : List[Role] = roles
 
-  def getRole( roleId : String ) : Option[Role] = roles.find( _.roleId == roleId )
+  def getRole( roleId : Symbol ) : Option[Role] = roles.find( _.roleId == roleId )
 
-  def addRole( roleId : String ) {
+  def addRole( roleId : Symbol ) {
     // TODO: Check role id syntax?  No special chars, java style identifier?
     if (roleId != null) {
       getRole(roleId) match {
-        case Some(role) => // TODO: Overlap, can not add.  Some error?  Or just a log message?
+        case Some(role) => logWarning( "Can not add role '"+roleId+"', it already exists." )
         case None => roles = roles ::: List( new Role( roleId ) )
       }
     }
   }
 
-  def removeRole( roleId : String ) {
+  def removeRole( roleId : Symbol ) {
     roles = roles.remove( _.roleId == roleId )
   }
 
-  def addRoleMember( roleId : String, member : RoleMember ) {
+  def addRoleMember( roleId : Symbol, member : RoleMember ) {
     getRole(roleId) match {
       case Some(role:Role) => role.addMember( member )
-      case None => // TODO: Logg warning?
+      case None => logWarning( "Can not add '"+member+"' to role '"+roleId+"', no such role found." )
     }
   }
 
-  def removeRoleMember( roleId : String, member : RoleMember ) {
+  def removeRoleMember( roleId : Symbol, member : RoleMember ) {
     getRole(roleId) match {
       case Some(role:Role) => role.removeMember( member )
-      case None => // TODO: Logg warning?
+      case None => logWarning( "Can not remove '"+member+"' from role '"+roleId+"', no such role found." )
     }
   }
 
-  def addRoleCapability( roleId : String, capability : Capability ) {
+  def addRoleCapability( roleId : Symbol, capability : Capability ) {
     getRole(roleId) match {
       case Some(role:Role) => role.addCapability( capability )
-      case None => // TODO: Logg warning?
+      case None => logWarning( "Can not add capability '"+capability+"' to role '"+roleId+"', no such role found." )
     }
   }
 
-  def removeRoleCapability( roleId : String, capability : Capability ) {
+  def removeRoleCapability( roleId : Symbol, capability : Capability ) {
     getRole(roleId) match {
       case Some(role:Role) => role.removeCapability( capability )
-      case None => // TODO: Logg warning?
+      case None => logWarning( "Can not remove capability '"+capability+"' from role '"+roleId+"', no such role found." )
     }
   }
 
@@ -164,8 +164,8 @@ class Entity extends Properties with LogMethods {
    */
   private def callDefaultAction(actionName: Symbol, parameters: Parameters): Boolean = {
     actionName match {
-      case 'addRole => addRole( parameters.getAs[String]('roleId, null )  ) ; true
-      case 'removeRole => removeRole( parameters.getAs[String]('roleId, null )  ) ; true
+      case 'addRole => addRole( parameters.getAs[Symbol]('roleId, null )  ) ; true
+      case 'removeRole => removeRole( parameters.getAs[Symbol]('roleId, null )  ) ; true
       // TODO: The rest
       case _ => false
     }
@@ -187,7 +187,7 @@ class Entity extends Properties with LogMethods {
       if (currentCaller != null && currentAction != "callFeedback" ) {
 
         // Check if the caller is authorized to receive log messages by this entity
-        getRole( "logListener" ) match {
+        getRole( 'logListener ) match {
           case Some( role : Role ) => {
             if ( role.containsEntity( currentCaller ) ) {
 

@@ -2,85 +2,75 @@ package org.skycastle.content.games.chat
 
 
 import entity.{EntityId, Entity}
+import game.ActivityEntity
 import util.Parameters
 
 /**
- * 
- * 
+ * Simple chat channel implementation.
+ *
  * @author Hans Haggstrom
  */
 @serializable
 @SerialVersionUID(1)
-// TODO: Some way to listen to the answer to a specific message?  Some kind of sender specified message id?
-class Conversation extends Entity {
+class Conversation extends ActivityEntity {
 
-  private var members : Map[ String, EntityId ] = Map()
+  // TODO: This should be a val really -> annotate the class with constructor parameter metadata, and use that when instantiating entities?
+  var conversationName : String = ""
 
-  def join( caller : EntityId, nickname : String ) {
+  private var memberToNick: Map[EntityId, String] = Map()
 
-    // Need to reply to a call?  With error condition, or acceptance condition?
+  private def updateStatus() {
+    setStatus( Parameters( 'name -> conversationName ) )
+  }
 
-    // TODO: Use a Parameters instance as parameter?
-    // Allows easy addition of parameters later, and also simplifies reflection based dispatch
-    // Maybe autodetect when reflecting
+  override protected def onMemberJoined(member: EntityId, joinParameters: Parameters)  {
+    val nickname = joinParameters.getString( 'nick, member.toString )
+    if (!memberToNick.values.contains(nickname)) {
+      val entry = (member, nickname)
+      memberToNick = memberToNick + entry
 
-    // TODO: Make sure the nickname is an accepted identifier.
-
-    if ( !members.contains(nickname) ) {
-      val entry = ( nickname, caller )
-      members = members + entry
-
-      // Send join ok message
-      // TODO: Add conversation topic / name or such?
-      callOtherEntity( caller, 'conversationMessage, Parameters( 'type -> 'joinedConversation ) )
-
-      // TODO: Notify everyone about the join
+      sendMsgToAll(Parameters('type -> 'joinedConversation, 'nick -> nickname))
     }
     else {
-      callOtherEntity( caller, 'conversationMessage, Parameters( 'type -> 'error, 'message -> "The nickname is already in use." ) )
-    }
-
-  }
-
-  def say( caller : EntityId, nickname : String, message : String ) {
-    members.get( nickname ) match {
-      case Some( user ) => {
-        if (user == caller) {
-
-          members.values foreach { memberId : EntityId =>
-            callOtherEntity( memberId, 'conversationMessage, Parameters( 'type -> 'message, 'from -> nickname, 'message -> message ) )
-          }
-        }
-        else {
-          callOtherEntity( caller, 'conversationMessage, Parameters( 'type -> 'error, 'message -> "Not a member of the conversations, or is not you." ) )
-        }
-      }
-      case None => {
-        callOtherEntity( caller, 'conversationMessage, Parameters( 'type -> 'error, 'message -> "Not a member of the conversations, or is not you." ) )
-      }
+      sendError(member, "The nickname '" + nickname + "' is already in use.")
+      removeMember( member )
     }
   }
 
-  def leave( caller : EntityId, nickname : String, message : String ) {
-    members.get( nickname ) match {
-      case Some( user ) => {
-        if (user == caller) {
-          members = members - nickname
-          // TODO: Add conversation topic / name or such?
-          callOtherEntity( caller, 'conversationMessage, Parameters( 'type -> 'leftConversation ) )
+  override protected def onMemberleft(member: EntityId, leaveParameters: Parameters) {
+    memberToNick.get( member ) match {
+      case Some( nick ) => {
+        sendMsgToAll(Parameters('type -> 'leftConversation, 'nick -> nick, 'message -> leaveParameters.getString( 'message, null )))
+        memberToNick = memberToNick - member
+      }
+      case None => logWarning( "No nickname found for member " + member )
+    }
+  }
 
-          // TODO: Notify everyone about the leave
-        }
-        else {
-          callOtherEntity( caller, 'conversationMessage, Parameters( 'type -> 'error, 'message -> "Not a member of the conversations, or is not you." ) )
-        }
+  def say(caller: EntityId, message: String) {
+    memberToNick.get( caller ) match {
+      case Some( nick ) => {
+        sendMsgToAll(Parameters('type -> 'message, 'nick -> nick, 'message -> message))
       }
-      case None => {
-        callOtherEntity( caller, 'conversationMessage, Parameters( 'type -> 'error, 'message -> "Not a member of the conversations, or is not you." ) )
-      }
+      case None => logWarning( "No nickname found for member " + caller )
     }
   }
 
 
+  private def sendMsg(entity: EntityId, parameters: Parameters) {
+    callOtherEntity(entity, 'conversationMessage, parameters.add( 'conversation, conversationName )  )
+  }
+
+  private def sendMsgToAll(parameters: Parameters) {
+    getMembers foreach { memberId: EntityId =>
+      sendMsg(memberId, parameters)
+    }
+  }
+
+  private def sendError(entity: EntityId, message: String) {
+    sendMsg(entity, Parameters('type -> 'error, 'message -> message))
+  }
+
+  
 }
 

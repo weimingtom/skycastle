@@ -4,7 +4,13 @@ package org.skycastle.util
 import java.io.Serializable
 
 object Parameters {
-  def apply (  elems: (Symbol, Any)*) = new Parameters( Map.empty ++ elems )
+
+  def apply (  elems: (Symbol, Any)*) = {
+    if (elems.length == 0) empty
+    else new Parameters( Map.empty ++ elems )
+  }
+
+  val empty = new Parameters( Map.empty )
 
   val KEY_VALUE_SEPARATOR = '='
   val ENTRY_SEPARATOR = '\n'
@@ -50,4 +56,21 @@ object Parameters {
  */
 @serializable
 @SerialVersionUID( 1 )
-final case class Parameters(val entries : Map[Symbol, Any]) extends TypedGetters
+final case class Parameters(val entries : Map[Symbol, Any]) extends TypedGetters {
+
+  def ++ ( otherParameters : Parameters ) : Parameters = {
+    val newEntries = entries ++ otherParameters.entries
+    Parameters( newEntries )
+  }
+
+  def + ( entry : (Symbol, Any) ) : Parameters = {
+    val newEntries = entries + entry
+    Parameters( newEntries )
+  }
+
+  def add( key : Symbol, value : Any  ) : Parameters = {
+    val entry = (key, value)
+    this + entry
+  }
+
+}

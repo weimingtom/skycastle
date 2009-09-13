@@ -15,8 +15,8 @@ import util.Parameters
 @SerialVersionUID(1)
 class ClientControllerEntity extends Entity {
 
-  addRole( "connect" )
-  addRoleCapability( "connect", ActionCapability( 'connectToServer ) )
+  addRole( 'connect )
+  addRoleCapability( 'connect, ActionCapability( 'connectToServer ) )
 
 
   def createUi() {
@@ -56,7 +56,7 @@ class ClientControllerEntity extends Entity {
     container.storeEntity( screen )
 
     set( 'uiId, screen.id )
-    addRoleMember( "connect", screen.id )
+    addRoleMember( 'connect, screen.id )
 
     screen
   }

@@ -1,7 +1,7 @@
 package org.skycastle.content.go
 
 
-import game.GameEntity
+import game.ActivityEntity
 
 /**
  * 
@@ -10,7 +10,7 @@ import game.GameEntity
  */
 @serializable
 @SerialVersionUID(1)
-class GoGame  extends GameEntity {
+class GoActivity  extends ActivityEntity {
 
   /**
    * Asks the caller to be added to this game.
