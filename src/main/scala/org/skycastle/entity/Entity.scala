@@ -2,7 +2,7 @@ package org.skycastle.entity
 
 
 import _root_.org.skycastle.entity.entitycontainer.EntityContainer
-import accesscontrol.{Role, RoleMember, Capability}
+import accesscontrol.{role, Role, RoleMember, Capability}
 import java.util.logging.{Logger, Level}
 import script.Script
 import util.{LogMethods, Parameters}
@@ -63,6 +63,9 @@ class Entity extends Properties with LogMethods {
 
   def getRole( roleId : Symbol ) : Option[Role] = roles.find( _.roleId == roleId )
 
+  
+  @role( "roleEditor"  )
+  @action( "roleId"  )
   def addRole( roleId : Symbol ) {
     // TODO: Check role id syntax?  No special chars, java style identifier?
     if (roleId != null) {
@@ -73,10 +76,14 @@ class Entity extends Properties with LogMethods {
     }
   }
 
+  @role( "roleEditor"  )
+  @action( "roleId"  )
   def removeRole( roleId : Symbol ) {
     roles = roles.remove( _.roleId == roleId )
   }
 
+  @role( "roleEditor"  )
+  @action( "roleId member"  )
   def addRoleMember( roleId : Symbol, member : RoleMember ) {
     getRole(roleId) match {
       case Some(role:Role) => role.addMember( member )
@@ -84,6 +91,8 @@ class Entity extends Properties with LogMethods {
     }
   }
 
+  @role( "roleEditor"  )
+  @action( "roleId member"  )
   def removeRoleMember( roleId : Symbol, member : RoleMember ) {
     getRole(roleId) match {
       case Some(role:Role) => role.removeMember( member )
