@@ -2,6 +2,7 @@ package org.skycastle.content.account.client
 
 import _root_.com.sun.sgs.client.simple.{SimpleClient, SimpleClientListener}
 import _root_.com.sun.sgs.client.{ClientChannelListener, ClientChannel}
+import _root_.org.skycastle.entity.EntityId
 import _root_.org.skycastle.util.Parameters
 import java.net.PasswordAuthentication
 import java.nio.ByteBuffer
@@ -14,7 +15,8 @@ import network.{Message, NetworkConnection}
  *
  * @author Hans Haggstrom
  */
-class ClientNetwork( onMessage : Message => Unit,
+class ClientNetwork( clientBridgeEntityId : EntityId,
+                     onMessage : Message => Unit,
                      onConnected : Parameters => Unit,
                      onDisconnected : String => Unit,
                      getPassword : => PasswordAuthentication ) extends SimpleClientListener{
@@ -24,7 +26,8 @@ class ClientNetwork( onMessage : Message => Unit,
 
   private val simpleClient = new SimpleClient( this )
 
-  private val network = new NetworkConnection(  false,
+  private val network = new NetworkConnection(  clientBridgeEntityId,
+                                                false,
                                                 onMessage,
                                                 simpleClient.send,
                                                 onProtocolNegotiationFail,

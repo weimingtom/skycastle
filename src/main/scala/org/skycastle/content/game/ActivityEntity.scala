@@ -17,7 +17,7 @@ class ActivityEntity extends Entity {
   private var status : Parameters = Parameters()
   private var statusListeners : List[EntityId] = Nil
 
-  // Add role used for members of the activity
+  // Add users used for members of the activity
   addRole( 'activityMember )
   addRoleMember( 'activityMember, RoleMembersFunction( entity => members.contains( entity ) ))
 

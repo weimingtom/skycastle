@@ -1,7 +1,7 @@
 package org.skycastle.entity.accesscontrol
 
 /**
- * Something that can be granted a role.  Ultimately boils down to collections of EntityId:s
+ * Something that can be granted a users.  Ultimately boils down to collections of EntityId:s
  *
  * @author Hans Haggstrom
  */

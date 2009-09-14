@@ -20,7 +20,7 @@ TODO: Implement serialization for these types:
 // TODO: Maybe refactor to separate the functions of encodign and decodign objects and defining the serializers.
 @serializable
 @SerialVersionUID(1)
-class BinarySerializer {
+class BinarySerializer( hostObjectId : EntityId ) {
 
   private val NULL_ID : Byte = 0
   private val OBJECT_ID_LEN = 1
@@ -167,9 +167,18 @@ class BinarySerializer {
     add( symbolSerializer )
 
     add( new TypeSerializer( classOf[EntityId] ) {
-      def len(value: T) = anySerializer.length( value.id )
-      def enc(buffer: ByteBuffer, value: T) = anySerializer.encode( buffer, value.id )
-      def dec(buffer: ByteBuffer) = EntityId( anySerializer.decode( buffer ) )
+      def len(value: T) = {
+        val encodedPath : List[String]= value.encode( hostObjectId )
+        anySerializer.length( encodedPath  )
+      }
+      def enc(buffer: ByteBuffer, value: T) = {
+        val encodedPath : List[String]= value.encode( hostObjectId )
+        anySerializer.encode( buffer, encodedPath )
+      }
+      def dec(buffer: ByteBuffer) = {
+        val path : List[String] = anySerializer.decode( buffer )
+        EntityId.decode( hostObjectId, path )
+      }
     })
     
     // Collections:

@@ -56,9 +56,11 @@ class SkycastleServer extends AppListener {
 
         DarkstarEntityContainer.storeManagedEntity( a )
 
-        // TODO: Join user to the top-level Game on the Server.
-
         dataManager.setBinding(userId, a)
+
+        a.init()
+
+        // TODO: Join user to the top-level Game on the Server.
 
         a
       }

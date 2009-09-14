@@ -17,16 +17,19 @@ class BinaryProtocolTest extends TestCase {
 
   var protocol : BinaryProtocol = null
   var serializer : BinarySerializer = null
+  var bridgeId : EntityId = null
 
   override def setUp = {
+    bridgeId = EntityId( "unusedId70643" )
     protocol = new BinaryProtocol()
-    serializer = new BinarySerializer()
+    serializer = new BinarySerializer( bridgeId )
+    protocol.init( bridgeId )
   }
 
   @Test
   def testMessages {
 
-    val order = Message( EntityId( "entity-42" ), 'bake,
+    val order = Message( EntityId( "entity42" ), 'bake,
                          Parameters(
                            'receipt -> "pizza",
                            'size -> 20,
@@ -35,9 +38,11 @@ class BinaryProtocolTest extends TestCase {
 
     val buffer = protocol.encode( order )
     val mangledOrder = protocol.decode( buffer ).head
+    val buffer2 = protocol.encode( mangledOrder )
+    val mangledOrder2 = protocol.decode( buffer2 ).head
 
     assertEquals( "The message should have passed correctly through the BinaryProtocol",
-                  order, mangledOrder )
+                  order, mangledOrder2 )
   }
 
   @Test
@@ -114,10 +119,12 @@ class BinaryProtocolTest extends TestCase {
     asserSerializes( Symbol(null) )
     asserSerializes( Symbol("foo bar") )
 
+/* TODO: Test with double serialization?
     asserSerializes( EntityId("foobar") )
     asserSerializes( EntityId("foo bar") )
     asserSerializes( EntityId("") )
     asserSerializes( EntityId(" ") )
+*/
 
     asserSerializes( Nil)
     asserSerializes( List( null ))

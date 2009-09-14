@@ -1,9 +1,10 @@
 package org.skycastle.entity.entitycontainer.darkstar
 
 import _root_.org.skycastle.server.ManagedEntity
-import com.sun.sgs.app.{DataManager, NameNotBoundException, AppContext}
+import com.sun.sgs.app.{TaskManager, DataManager, NameNotBoundException, AppContext}
 import java.lang.ClassCastException
 import util.Parameters
+import util.ParameterChecker._
 
 /**
  * A singleton object for accessing the DarkstarEntityContainer
@@ -18,12 +19,15 @@ object DarkstarEntityContainer extends EntityContainer {
   def storeManagedEntity( managedEntity : ManagedEntity[_ <: Entity] ) : EntityId = {
     val dataManager : DataManager = AppContext.getDataManager
 
-    val id = EntityId("entity-" + dataManager.getObjectId( managedEntity ).toString)
+    val name = "entity_" + dataManager.getObjectId( managedEntity ).toString
+    val id = EntityId( name )
 
-    managedEntity.entity.id = id
+    managedEntity.entity.setId( id )
     managedEntity.entity.container = managedEntity
 
-    dataManager.setBinding( id.managedObjectName, managedEntity )
+    dataManager.setBinding( name, managedEntity )
+
+    managedEntity.entity.initEntity()
 
     id
   }
@@ -37,7 +41,10 @@ object DarkstarEntityContainer extends EntityContainer {
   def getEntity(entityId: EntityId) : Option[Entity] = {
     if (entityId == null) return None
     else try {
-      Some[Entity]( AppContext.getDataManager.getBinding( entityId.managedObjectName ).asInstanceOf[ManagedEntity[Entity]].entity )
+      entityId.managedObjectName match {
+        case Some(name) => Some[Entity]( AppContext.getDataManager.getBinding( name ).asInstanceOf[ManagedEntity[Entity]].entity )
+        case None => None
+      }
     } catch {
       case e : NameNotBoundException => None
       case e : ClassCastException => None
@@ -47,7 +54,10 @@ object DarkstarEntityContainer extends EntityContainer {
   def getEntityForUpdate(entityId: EntityId) : Option[Entity] = {
     if (entityId == null) return None
     else try {
-      Some[Entity]( AppContext.getDataManager.getBindingForUpdate( entityId.managedObjectName ).asInstanceOf[ManagedEntity[Entity]].entity )
+      entityId.managedObjectName match {
+        case Some(name) => Some[Entity]( AppContext.getDataManager.getBindingForUpdate( name ).asInstanceOf[ManagedEntity[Entity]].entity )
+        case None => None
+      }
     } catch {
       case e : NameNotBoundException => None
       case e : ClassCastException => None
@@ -58,29 +68,37 @@ object DarkstarEntityContainer extends EntityContainer {
     val dataManager : DataManager = AppContext.getDataManager
 
     try {
-      val managedObject = dataManager.getBinding( entityId.managedObjectName )
-      dataManager.removeBinding( entityId.managedObjectName )
-      dataManager.removeObject( managedObject )
+      entityId.managedObjectName match  {
+        case Some( name ) => {
+          val managedObject = dataManager.getBinding( name )
+          dataManager.removeBinding( name )
+          dataManager.removeObject( managedObject )
+        }
+        case None => EntityLogger.logWarning( "Can not remove entity "+entityId+" from container "+this+": The Entity is not hosted in this container." )
+      }
     } catch {
-      case e : NameNotBoundException => // Ignore if no such object exists
+      case e : NameNotBoundException => EntityLogger.logWarning( "Can not remove entity "+entityId+" from container "+this+": The Entity was not found.", e )
     }
 
   }
 
 
   def bindName(name: String, entity: Entity) {
-    // TODO: Log and ignore instead??
-    if (entity == null) throw new IllegalArgumentException("Entity should not be null")
-    if (name== null) throw new IllegalArgumentException("Name should not be null")
+    requireNotNull( name, 'name )
+    requireNotNull( entity, 'entity )
 
     val dataManager : DataManager = AppContext.getDataManager
 
     val id = if (entity.id != null) entity.id
              else storeEntity( entity )
 
-    val managedEntity = AppContext.getDataManager.getBinding( id.managedObjectName )
-
-    dataManager.setBinding( getBindingName( name ), managedEntity )
+    id.managedObjectName match {
+      case Some( entityId ) => {
+        val managedEntity = AppContext.getDataManager.getBinding( entityId )
+        dataManager.setBinding( getBindingName( name ), managedEntity )
+      }
+      case None => throw new IllegalStateException( "Can not bind a name to the entity "+entity+", because it doesn't have a one-path id, meaning it is hosted by another entity container." )
+    }
   }
 
   def getNamedEntity(name: String) : Option[Entity] = {
@@ -105,20 +123,24 @@ object DarkstarEntityContainer extends EntityContainer {
 
   def removeBinding(name: String)  {
     val dataManager : DataManager = AppContext.getDataManager
-    
+
     try {
       dataManager.removeBinding( getBindingName( name ))
     } catch {
-      case e : NameNotBoundException => // Ignore if no such object exists
+      case e : NameNotBoundException =>  EntityLogger.logWarning( "Can not remove name binding '"+name+"' from container "+this+": Nothing was bound to the name.", e )
     }
   }
 
-  private def getBindingName( name : String ) = "namedEntity-" + name
+  private def getBindingName( name : String ) = "namedEntity_" + name
 
 
   def call(callingEntity: EntityId, calledEntity: EntityId, actionName: Symbol, parameters: Parameters) {
 
-    EntityLogger.logError( "DarkstarEntityContainer.call Not yet implemented" )
-    // TODO: handle
+    val taskManager : TaskManager = AppContext.getTaskManager
+
+    taskManager.scheduleTask( ActionCallTask( callingEntity, calledEntity, actionName, parameters ) )
   }
 }
+
+
+

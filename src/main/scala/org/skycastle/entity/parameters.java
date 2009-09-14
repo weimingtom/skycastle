@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  */
 @Retention( RetentionPolicy.RUNTIME)
 @Target( ElementType.METHOD )
-public @interface action
+public @interface parameters
 {
     /**
      * @return Space separated list of parameter names to use when calling the action method.

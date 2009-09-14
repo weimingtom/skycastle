@@ -1,5 +1,6 @@
 package org.skycastle.network
 
+import _root_.org.skycastle.entity.EntityId
 import java.lang.{IllegalStateException}
 import protocol.Protocol
 import _root_.org.skycastle.util.Parameters
@@ -14,7 +15,8 @@ import negotiator.ProtocolNegotiator
  */
 @serializable
 @SerialVersionUID(1)
-final class NetworkConnection( isServer : Boolean,
+final class NetworkConnection( bridgeEntityId : EntityId,
+                               isServer : Boolean,
                                incomingMessageListener : Message => Unit,
                                outgoingDataListener : ByteBuffer => Unit,
                                onProtocolNegotiationFail : (String, Parameters) => Unit,
@@ -26,12 +28,15 @@ final class NetworkConnection( isServer : Boolean,
   private var protocol : Protocol = null
 
   private val negotiator : ProtocolNegotiator = new ProtocolNegotiator( isServer, outgoingDataListener,
+    // on success:
     { (p : Protocol, properties : Parameters ) =>
       protocol = p
+      p.init( bridgeEntityId )
       sendQueue foreach sendMessage
       sendQueue = Nil
       onProtocolNegotiationSuccess( properties )
     },
+    // on failure:
     { (failureReason : String, properties : Parameters) =>
       sendQueue = Nil
       fail = true

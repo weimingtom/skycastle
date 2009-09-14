@@ -19,12 +19,22 @@ import java.lang.reflect.Method
 @SerialVersionUID(1)
 class Entity extends Properties with LogMethods {
 
+
+  private var _id: EntityId = null
+
+  /**
+   * Initialize the ID when adding this Entity to an EntityContainer.
+   * Should not be used from client code, so only visible to the entity package.
+   */
+  private[entity] def setId( newId : EntityId) {
+    _id = newId
+  }
+
   /**
    * Identifier of this Entity.
    * Initialized when the entity is added to an EntityContainer.
-   * (TODO: Can we use scala to indicate that it should only be changed by the entity container somehow?  E.g. private[entitycontainer]?)
    */
-  var id: EntityId = null
+  def id : EntityId = _id
 
   /**
    * Used for accessing operations involving the system that keeps track and stores all entities.
@@ -39,7 +49,7 @@ class Entity extends Properties with LogMethods {
   private val dynamicActions: Map[Symbol, Script] = Map()
 
   /**
-   * The roles for role based security access control to the actions of this Entity.
+   * The roles for users based security access control to the actions of this Entity.
    */
   private var roles : List[Role] = Nil
 
@@ -55,7 +65,7 @@ class Entity extends Properties with LogMethods {
   @transient
   private var currentAction : Symbol = null
 
-  // TODO: Maybe add RoleMember that is a check if caller id is in some collection in a property -> use some collections of entity id:s in properties as role members?
+  // TODO: Maybe add RoleMember that is a check if caller id is in some collection in a property -> use some collections of entity id:s in properties as users members?
   // Complex cases could be e.g. Organization maintenance, handling different guild functions, etc.
 
 
@@ -64,11 +74,20 @@ class Entity extends Properties with LogMethods {
   def getRole( roleId : Symbol ) : Option[Role] = roles.find( _.roleId == roleId )
   def hasRole( roleId : Symbol ) : Boolean = roles.exists( _.roleId == roleId )
 
-  
-  @role( "roleEditor"  )
-  @action( "roleId"  )
+  /**
+   * Called after the Entity has been created and added to an EntityContainer.
+   */
+  private[entity] final def initEntity() { onInit() }
+
+  /**
+   * Called after the Entity has been created and added to an EntityContainer.
+   */
+  protected def onInit() {}
+
+  @users( "roleEditor"  )
+  @parameters( "roleId"  )
   def addRole( roleId : Symbol ) {
-    // TODO: Check role id syntax?  No special chars, java style identifier?
+    // TODO: Check users id syntax?  No special chars, java style identifier?
     if (roleId != null) {
       getRole(roleId) match {
         case Some(role) => logWarning( "Can not add role '"+roleId+"', it already exists." )
@@ -77,14 +96,14 @@ class Entity extends Properties with LogMethods {
     }
   }
 
-  @role( "roleEditor"  )
-  @action( "roleId"  )
+  @users( "roleEditor"  )
+  @parameters( "roleId"  )
   def removeRole( roleId : Symbol ) {
     roles = roles.remove( _.roleId == roleId )
   }
 
-  @role( "roleEditor"  )
-  @action( "roleId, member"  )
+  @users( "roleEditor"  )
+  @parameters( "roleId, member"  )
   def addRoleMember( roleId : Symbol, member : RoleMember ) {
     getRole(roleId) match {
       case Some(role:Role) => role.addMember( member )
@@ -92,13 +111,25 @@ class Entity extends Properties with LogMethods {
     }
   }
 
-  @role( "roleEditor"  )
-  @action( "roleId, member"  )
+  @users( "roleEditor"  )
+  @parameters( "roleId, member" )
   def removeRoleMember( roleId : Symbol, member : RoleMember ) {
     getRole(roleId) match {
       case Some(role:Role) => role.removeMember( member )
       case None => logWarning( "Can not remove '"+member+"' from role '"+roleId+"', no such role found." )
     }
+  }
+
+  @users( "roleEditor"  )
+  @parameters( "roleId, actionId"  )
+  def addRoleActionCapability( roleId : Symbol, allowedAction : Symbol ) {
+    addRoleCapability( roleId, ActionCapability( allowedAction ) )
+  }
+
+  @users( "roleEditor"  )
+  @parameters( "roleId, actionId"  )
+  def removeRoleActionCapability( roleId : Symbol, allowedAction : Symbol ) {
+    removeRoleCapability( roleId, ActionCapability( allowedAction ) )
   }
 
   def addRoleCapability( roleId : Symbol, capability : Capability ) {
@@ -187,14 +218,14 @@ class Entity extends Properties with LogMethods {
     val thisClass = getClass()
     try {
       val methods : List[ Method ] = List.fromArray( thisClass.getMethods )
-      val actionMethodsList = methods.filter{ (m : Method) => m.isAnnotationPresent( classOf[action] )}
+      val actionMethodsList = methods.filter{ (m : Method) => m.isAnnotationPresent( classOf[parameters] )}
 
       var actMethods : Map[Symbol,ActionMethod] = Map()
 
       actionMethodsList foreach { (m : Method) =>
         try {
-          val actionAnnotation : action = m.getAnnotation( classOf[action] )
-          val roleAnnotation : role = m.getAnnotation( classOf[role] )
+          val actionAnnotation : parameters = m.getAnnotation( classOf[parameters] )
+          val roleAnnotation : users = m.getAnnotation( classOf[users] )
 
           val parameterMapping = commaSeparatedStringToSymbolList( actionAnnotation.value )
           val roles = commaSeparatedStringToSymbolList( roleAnnotation.value )

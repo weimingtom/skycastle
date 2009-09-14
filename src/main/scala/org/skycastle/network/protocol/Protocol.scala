@@ -1,5 +1,6 @@
 package org.skycastle.network.protocol
 
+import _root_.org.skycastle.entity.EntityId
 import java.nio.ByteBuffer
 
 /**
@@ -16,6 +17,12 @@ abstract class Protocol  {
    * The name for this protocol, defined by implementing classes.
    */
   val identifier : Symbol
+
+  /**
+   * Initializes the protocol.  The id of the bridge object is needed so that arriving and departing
+   * EntityId:s can have proper routing information attached or detached.
+   */
+  def init( hostObjectId : EntityId  )
 
   /**
    * Encodes a message to a ByteBuffer

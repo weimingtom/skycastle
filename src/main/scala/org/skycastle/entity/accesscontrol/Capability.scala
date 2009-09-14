@@ -35,17 +35,17 @@ case object AllActionCapability extends Capability {
 /*
 case class RoleMemberManagementCapability( roleId : String ) extends Capability {
   def allowsCall(action: String) = false
-  def allowsRoleMemberManagement( role : String ) = role == roleId
+  def allowsRoleMemberManagement( users : String ) = users == roleId
 }
 
 */
 /**
- * The capability to manage all role memberships of an entity.
+ * The capability to manage all users memberships of an entity.
  */
 /*
 case class AllRoleMeberManagementCapability extends Capability {
   def allowsCall(action: String) = false
-  def allowsRoleMemberManagement(role: String) = true
+  def allowsRoleMemberManagement(users: String) = true
 }
 */
 

@@ -3,7 +3,7 @@ package org.skycastle.entity.accesscontrol
 
 
 /**
- * Used in role based access control to Entity Actions.
+ * Used in users based access control to Entity Actions.
  * 
  * @author Hans Haggstrom
  */

@@ -2,7 +2,7 @@ package org.skycastle.entity
 
 
 import _root_.junit.framework.TestCase
-import accesscontrol.role
+import org.skycastle.entity.accesscontrol.users
 import entitycontainer.SimpleEntityContainer
 
 import org.junit._
@@ -22,7 +22,7 @@ class EntityTest extends TestCase {
 
   override def setUp = {
     testEntity = new TestEntity()
-    callerEntityid = EntityId( "entity-testCaller" )
+    callerEntityid = EntityId( "entity_testCaller" )
     testEntity.addRole('tester )
     testEntity.addRoleMember( 'tester, callerEntityid )
   }
@@ -79,21 +79,21 @@ class TestEntity extends Entity {
   var params : Parameters= null
   var fooList : List[String] = Nil
 
-  @role( "tester")
-  @action( "newValue" )
+  @users( "tester")
+  @parameters( "newValue" )
   def setFoo( value : Int ) {
     foo = value
   }
 
-  @role( "tester")
-  @action( "bar, foo" )
+  @users( "tester")
+  @parameters( "bar, foo" )
   def update( b : String, f: List[String] ) {
     fooList = f
     bar = b
   }
 
-  @role( "tester")
-  @action( "$callerId, $parameters" )
+  @users( "tester")
+  @parameters( "$callerId, $parameters" )
   def special( c : EntityId, p : Parameters ) {
     caller= c
     params= p

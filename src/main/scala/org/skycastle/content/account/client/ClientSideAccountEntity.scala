@@ -30,11 +30,16 @@ final class ClientSideAccountEntity extends Entity {
 
   @transient private var password: Array[Char] = null
   private var connected: Boolean = false
-  private val clientNetwork = new ClientNetwork(onMessage, onConnected, onDisconnected, getPassword)
+  private var clientNetwork : ClientNetwork = null
 
   private val DEFAULT_PORT = "1139"
 
   def isConnected: Boolean = connected
+
+
+  override protected def onInit() {
+    clientNetwork = new ClientNetwork( id, onMessage, onConnected, onDisconnected, getPassword)
+  }
 
   def connect() {
     val actualPort = if (port == null) DEFAULT_PORT else port

@@ -18,7 +18,11 @@ class BinaryProtocol extends Protocol {
 
   val identifier = 'BinaryProtocol
 
-  private val serializer = new BinarySerializer()
+  private var serializer : BinarySerializer = null
+
+  def init(hostObjectId: EntityId) = {
+    serializer = new BinarySerializer( hostObjectId )
+  }
 
   def decode(receivedBytes: ByteBuffer) : List[Message] = {
 

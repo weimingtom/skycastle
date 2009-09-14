@@ -16,13 +16,18 @@ class AccountManagedObject( accountEntity : ServerSideAccountEntity )
 
   private var currentSessionRef : ManagedReference[ClientSession] = null
 
-  private val network = new NetworkConnection(  true,
-                                                onMessagFromClientToServer,
-                                                sendDataToClient,
-                                                onProtocolNegotiationFail,
-                                                onProtocolNegotiationSuccess )
+  private var network : NetworkConnection = null
 
   accountEntity.setAccountConnection( this )
+
+  def init() {
+    network = new NetworkConnection(  accountEntity.id,
+                                      true,
+                                      onMessagFromClientToServer,
+                                      sendDataToClient,
+                                      onProtocolNegotiationFail,
+                                      onProtocolNegotiationSuccess )
+  }
 
   def setSession( session : ClientSession ) {
     markThisForUpdate

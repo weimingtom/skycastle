@@ -25,11 +25,14 @@ class SimpleEntityContainer extends EntityContainer {
 
     if (entity.id != null) throw new IllegalStateException( "Can not store entity, it already has an id.  Entity = " + entity )
     
-    val id = new EntityId( "entity-" + nextId() )
+    val id = EntityId( "entity_" + nextId() )
 
-    entity.id = id
+    entity.setId( id )
     entity.container = this
     entities.put( id, entity )
+
+    entity.initEntity()
+
     id
   }
 
