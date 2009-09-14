@@ -29,6 +29,16 @@ object ParameterChecker {
     test( StringUtils.isIdentifier( s ), s, parameterName, "be a valid identifier" )
   }
 
+    /**
+     * Some collection should be the specified size.
+     */
+    def requireSizeEquals( value : Seq[_], parameterName : Symbol, expectedSize : Int ) {
+
+      requireNotNull( value, parameterName )
+
+      test( value.size == expectedSize, "of size "+value.size+" ("+value+")", parameterName, "be of size "+expectedSize )
+    }
+
 
   private def test( testResult : Boolean, value : Any, parameter : Symbol, requirement : String ) {
     if ( !testResult ) {

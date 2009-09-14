@@ -11,6 +11,9 @@ object EntityId {
   def apply( id : String  ) = new EntityId( List( id ) )
 
   def decode( bridgeId : EntityId, path : List[String] ) : EntityId = {
+    requireNotNull( bridgeId, 'bridgeId )
+    requireNotEmpty( path, 'path )
+
     val finalPath = if ( path.head == REMOTE_OBJ_ENCODING ) bridgeId.path ::: path.tail
                     else path 
 
@@ -56,7 +59,10 @@ final case class EntityId( path : List[String] ) extends RoleMember {
   override def toString = path.mkString( "." )
 
   def encode( bridgeId : EntityId ) : List[String] = {
-    if ( path.size > 1 &&  path.head == bridgeId ) path.tail
+    requireNotNull( bridgeId, 'bridgeId )
+    requireSizeEquals( bridgeId.path, 'bridgeId, 1 )
+
+    if ( path.size > 1 &&  path.head == bridgeId.path.head ) path.tail
     else List( EntityId.REMOTE_OBJ_ENCODING ) ::: path
   }
 

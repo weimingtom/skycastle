@@ -27,6 +27,24 @@ class BinaryProtocolTest extends TestCase {
   }
 
   @Test
+  def testEntityIdCoding {
+    val clientBridgeId = EntityId( "clientBridge" )
+    val serverBridgeId = EntityId( "serverBridge" )
+    val clientObjectId = EntityId( "clientObject" )
+
+    assertEquals( List( "clientObject" ), clientObjectId.path )
+    val code = clientObjectId.encode( clientBridgeId )
+    assertEquals( List( "0", "clientObject" ), code )
+    val serverSideObjectId = EntityId.decode( serverBridgeId, code )
+    assertEquals( List( "serverBridge", "clientObject" ), serverSideObjectId.path )
+
+    val code2 = serverSideObjectId.encode( serverBridgeId )
+    assertEquals( List( "0", "clientObject" ), code2 )
+    val clientObjectBackAtClient = EntityId.decode( clientBridgeId, code2 )
+    assertEquals( List( "clientObject" ), clientObjectBackAtClient.path )
+  }
+
+  @Test
   def testMessages {
 
     val order = Message( EntityId( "entity42" ), 'bake,
@@ -38,6 +56,7 @@ class BinaryProtocolTest extends TestCase {
 
     val buffer = protocol.encode( order )
     val mangledOrder = protocol.decode( buffer ).head
+    println( mangledOrder )
     val buffer2 = protocol.encode( mangledOrder )
     val mangledOrder2 = protocol.decode( buffer2 ).head
 
