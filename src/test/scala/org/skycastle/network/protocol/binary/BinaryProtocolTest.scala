@@ -39,7 +39,7 @@ class BinaryProtocolTest extends TestCase {
     assertEquals( List( "serverBridge", "clientObject" ), serverSideObjectId.path )
 
     val code2 = serverSideObjectId.encode( serverBridgeId )
-    assertEquals( List( "0", "clientObject" ), code2 )
+    assertEquals( List( "clientObject" ), code2 )
     val clientObjectBackAtClient = EntityId.decode( clientBridgeId, code2 )
     assertEquals( List( "clientObject" ), clientObjectBackAtClient.path )
   }
