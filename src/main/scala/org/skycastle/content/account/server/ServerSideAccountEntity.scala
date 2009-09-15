@@ -11,8 +11,8 @@ object ServerSideAccountEntity {
 }
 
 /**
- * 
- * 
+ *
+ *
  * @author Hans Haggstrom
  */
 @serializable

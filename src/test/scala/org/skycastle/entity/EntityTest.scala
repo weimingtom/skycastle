@@ -17,6 +17,37 @@ import util.Parameters
 @Test
 class EntityTest extends TestCase {
 
+  class TestEntity extends Entity {
+
+    var foo : Int = 0
+    var bar : String = ""
+    var caller : EntityId= null
+    var params : Parameters= null
+    var fooList : List[String] = Nil
+
+    @users( "tester")
+    @parameters( "newValue" )
+    def setFoo( value : Int ) {
+      foo = value
+    }
+
+    @users( "tester")
+    @parameters( "bar, foo" )
+    def update( b : String, f: List[String] ) {
+      fooList = f
+      bar = b
+    }
+
+    @users( "tester")
+    @parameters( "$callerId, $parameters" )
+    def special( c : EntityId, p : Parameters ) {
+      caller= c
+      params= p
+    }
+
+
+  }
+
   var testEntity : TestEntity = null
   var callerEntityid : EntityId = null
 
@@ -71,35 +102,5 @@ class EntityTest extends TestCase {
 
 
 
-class TestEntity extends Entity {
-
-  var foo : Int = 0
-  var bar : String = ""
-  var caller : EntityId= null
-  var params : Parameters= null
-  var fooList : List[String] = Nil
-
-  @users( "tester")
-  @parameters( "newValue" )
-  def setFoo( value : Int ) {
-    foo = value
-  }
-
-  @users( "tester")
-  @parameters( "bar, foo" )
-  def update( b : String, f: List[String] ) {
-    fooList = f
-    bar = b
-  }
-
-  @users( "tester")
-  @parameters( "$callerId, $parameters" )
-  def special( c : EntityId, p : Parameters ) {
-    caller= c
-    params= p
-  }
-
-
-}
 
 

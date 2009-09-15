@@ -28,11 +28,9 @@ case class ManagedEntity[T <: Entity]( entity : T ) extends ManagedObject with E
   def getNamedEntity(name: String)                            = DarkstarEntityContainer.getNamedEntity( name )
   def getNamedEntityForUpdate(name: String)                   = DarkstarEntityContainer.getNamedEntityForUpdate( name )
   def removeBinding(name: String)                             = DarkstarEntityContainer.removeBinding( name )
-
-
+  
   def call(callingEntity: EntityId, calledEntity: EntityId, actionName: Symbol, parameters: Parameters) {
-    EntityLogger.logError( "ManagedEntity.call Not yet implemented" )
-    // TODO: handle
+    DarkstarEntityContainer.call( callingEntity, calledEntity, actionName, parameters )
   }
 }
 
