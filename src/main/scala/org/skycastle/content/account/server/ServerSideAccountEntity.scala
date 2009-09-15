@@ -34,12 +34,18 @@ class ServerSideAccountEntity extends Entity {
     accountConnection.disconnect
   }
 
+  override def callContained(caller: EntityId, innerEntityId: EntityId, actionId: Symbol, parameters: Parameters) {
+    // TODO: Check if the caller has the right to send messages to the client?
+
+    sendMessageToClient( Message( caller, innerEntityId, actionId, parameters ) )
+  }
+
   def onMessageFromClient( message : Message )  {
     logInfo( "Received message from client: " + message )
 
     // Dispatch messages addressed to SERVER_ACCOUNT_ID to self
     val messageToSend = if (message.calledEntity == ServerSideAccountEntity.SERVER_ACCOUNT_ID )
-      Message( id, message.calledAction, message.parameters )
+      Message( message.callingEntity, id, message.calledAction, message.parameters )
     else
       message
 
@@ -55,7 +61,7 @@ class ServerSideAccountEntity extends Entity {
   def onConnected( clientParameters : Parameters ) {
     logInfo( "Connected to client.  Client properties are: " + clientParameters )
 
-    sendMessageToClient( Message( ClientSideAccountEntity.CLIENT_ACCOUNT_ID, 'hiThereClient, Parameters( 'bar -> "zap" ) ) )
+    sendMessageToClient( Message( id, ClientSideAccountEntity.CLIENT_ACCOUNT_ID, 'hiThereClient, Parameters( 'bar -> "zap" ) ) )
   }
 
 

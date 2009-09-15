@@ -6,6 +6,7 @@ import accesscontrol._
 import java.util.logging.{Logger, Level}
 import script.Script
 import util.{LogMethods, Parameters}
+import util.ParameterChecker._
 import network.Message
 import org.skycastle.util.Properties
 import java.lang.reflect.Method
@@ -27,6 +28,9 @@ class Entity extends Properties with LogMethods {
    * Should not be used from client code, so only visible to the entity package.
    */
   private[entity] def setId( newId : EntityId) {
+    requireNotNull( newId, 'newId )
+    requireSizeEquals( newId.path, 'newId_path , 1 )
+    
     _id = newId
   }
 
@@ -68,6 +72,7 @@ class Entity extends Properties with LogMethods {
   // TODO: Maybe add RoleMember that is a check if caller id is in some collection in a property -> use some collections of entity id:s in properties as users members?
   // Complex cases could be e.g. Organization maintenance, handling different guild functions, etc.
 
+  addRole( 'roleEditor )
 
   def getRoles : List[Role] = roles
 
@@ -192,6 +197,15 @@ class Entity extends Properties with LogMethods {
     // TODO: Add these to default clause in try catch if possible
     currentAction = null
     currentCaller = null
+  }
+
+  /**
+   * Call an action on an Entity managed by this Entity.
+   * This is used for example for the connection Entities between the client and server.
+   * Override if necessary, default implementation will just log an error.
+   */
+  def callContained( innerEntityId : EntityId, caller: EntityId, actionId: Symbol, parameters: Parameters ) {
+    logError( "The entity "+id+" doesn't support inner entities.  '"+caller+"' tried to call action '"+actionId+"' with parameters '"+parameters+"' on inner entity "+innerEntityId+"." )
   }
 
   private def callDynamicAction( caller: EntityId, actionId: Symbol, parameters: Parameters ) : Boolean = {

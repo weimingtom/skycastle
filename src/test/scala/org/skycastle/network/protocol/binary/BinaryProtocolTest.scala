@@ -47,7 +47,9 @@ class BinaryProtocolTest extends TestCase {
   @Test
   def testMessages {
 
-    val order = Message( EntityId( "entity42" ), 'bake,
+    val order = Message( bridgeId, 
+                         EntityId( "entity42" ),
+                         'bake,
                          Parameters(
                            'receipt -> "pizza",
                            'size -> 20,

@@ -13,4 +13,4 @@ import util.Parameters
  */
 @serializable
 @SerialVersionUID(1)
-case class Message( calledEntity : EntityId, calledAction : Symbol, parameters : Parameters )
+case class Message( callingEntity : EntityId, calledEntity : EntityId, calledAction : Symbol, parameters : Parameters )

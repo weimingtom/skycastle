@@ -12,9 +12,16 @@ case class ActionCallTask( callerId : EntityId, entityId : EntityId, action : Sy
 
   @throws(classOf[Exception])
   def run {
-    DarkstarEntityContainer.getEntity( entityId ) match {
-      case Some( entity : Entity ) => entity.call( callerId, action, parameters )
-      case None => EntityLogger.logWarning( "Entity "+callerId +" could not call action "+action+" on entity "+entityId+", the entity was not found." ) 
+
+    val headEntityId = entityId.headEntityId
+    DarkstarEntityContainer.getEntity( headEntityId ) match {
+      case Some(entity : Entity) => {
+        entityId.tailEntityId match  {
+          case Some( innerEntityId ) => entity.callContained( callerId, entityId, action, parameters )
+          case None => entity.call( callerId, action, parameters )
+        }
+      }
+      case None => EntityLogger.logWarning( "Entity "+callerId +" could not call action "+action+" on entity "+entityId+", the entity was not found." )
     }
   }
 }

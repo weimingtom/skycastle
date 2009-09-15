@@ -30,26 +30,30 @@ class BinaryProtocol extends Protocol {
 
     // There may be multiple messages in the buffer, decode until it is empty
     while ( receivedBytes.hasRemaining ) {
-      val calledEntityId = serializer.decode[EntityId]( receivedBytes )
-      val action         = serializer.decode[Symbol]( receivedBytes )
-      val parameters     = serializer.decode[Parameters]( receivedBytes )
+      val callingEntityId = serializer.decode[EntityId]( receivedBytes )
+      val calledEntityId  = serializer.decode[EntityId]( receivedBytes )
+      val action          = serializer.decode[Symbol]( receivedBytes )
+      val parameters      = serializer.decode[Parameters]( receivedBytes )
 
-      messages = messages ::: List( Message( calledEntityId, action, parameters ) )
+      messages = messages ::: List( Message( callingEntityId, calledEntityId, action, parameters ) )
     }
 
     messages
   }
 
   def encode(message: Message) : ByteBuffer = {
-    if (message.calledEntity == null ) throw new ProtocolException( "Can not send message "+message+" as it doesn't specify an entity to call." )
-    if (message.calledAction == null ) throw new ProtocolException( "Can not send message "+message+" as it doesn't specify an action to call." )
+    if (message.callingEntity == null ) throw new ProtocolException( "Can not send message "+message+" as it doesn't specify the calling entity." )
+    if (message.calledEntity  == null ) throw new ProtocolException( "Can not send message "+message+" as it doesn't specify an entity to call." )
+    if (message.calledAction  == null ) throw new ProtocolException( "Can not send message "+message+" as it doesn't specify an action to call." )
 
-    val messageLength_bytes = serializer.length( message.calledEntity ) +
+    val messageLength_bytes = serializer.length( message.callingEntity ) +
+                              serializer.length( message.calledEntity ) +
                               serializer.length( message.calledAction ) +
                               serializer.length( message.parameters )
 
     val buffer = ByteBuffer.wrap( new Array[Byte]( messageLength_bytes ) );
 
+    serializer.encode( buffer, message.callingEntity )
     serializer.encode( buffer, message.calledEntity )
     serializer.encode( buffer, message.calledAction )
     serializer.encode( buffer, message.parameters )

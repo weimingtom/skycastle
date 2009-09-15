@@ -46,6 +46,8 @@ final case class EntityId( path : List[String] ) extends RoleMember {
 
   def containsEntity(entity: EntityId) = entity.path == path
 
+  def hasPath : Boolean = path.size > 1
+
   def headEntityId : EntityId = {
     if (path.size <= 1) this
     else new EntityId( List( path.head ) )

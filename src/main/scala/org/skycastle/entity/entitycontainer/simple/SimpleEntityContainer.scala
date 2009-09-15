@@ -89,9 +89,16 @@ class SimpleEntityContainer extends EntityContainer {
 
     // Execute all calls
     actionsToDo foreach { call : ActionCall =>
-      getEntityForUpdate( call.calledEntity ) match {
-        case Some(entity : Entity) => entity.call( call.callingEntity, call.actionName, call.parameters )
-        case _ => EntityLogger.logDebug( "Can not process action call " +call+ ", entity "+call.calledEntity+" not found." )
+
+      val headEntityId = call.calledEntity.headEntityId
+      getEntity( headEntityId ) match {
+        case Some(entity : Entity) => {
+          call.calledEntity.tailEntityId match  {
+            case Some( innerEntityId ) => entity.callContained( call.callingEntity, call.calledEntity, call.actionName, call.parameters )
+            case None => entity.call( call.callingEntity, call.actionName, call.parameters )
+          }
+        }
+        case _ => EntityLogger.logDebug( "Can not process action call " +call+ ", entity "+headEntityId +" not found." )
       }
     }
   }

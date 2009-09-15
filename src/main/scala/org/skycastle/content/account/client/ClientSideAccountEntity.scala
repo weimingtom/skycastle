@@ -53,6 +53,15 @@ final class ClientSideAccountEntity extends Entity {
     clientNetwork.disconnect
   }
 
+
+
+  override def callContained(caller: EntityId, innerEntityId: EntityId, actionId: Symbol, parameters: Parameters) {
+    // TODO: Check if the caller has the right to send messages to the server?
+
+    sendMessageToServer( Message( caller, innerEntityId, actionId, parameters ) )
+  }
+
+
   /**
    * Sends a message to the server side
    */
@@ -69,7 +78,7 @@ final class ClientSideAccountEntity extends Entity {
 
     logInfo("Connected to server.  Server properties are: " + serverProperties)
 
-    sendMessageToServer( Message( ServerSideAccountEntity.SERVER_ACCOUNT_ID, 'helloServer, Parameters( 'foo -> "bar" ) ) )
+    sendMessageToServer( Message( id, ServerSideAccountEntity.SERVER_ACCOUNT_ID, 'helloServer, Parameters( 'foo -> "bar" ) ) )
   }
 
   /**
@@ -97,7 +106,7 @@ final class ClientSideAccountEntity extends Entity {
 
     // Dispatch messages addressed to CLIENT_ACCOUNT_ID to self
     val messageToSend = if (message.calledEntity == ClientSideAccountEntity.CLIENT_ACCOUNT_ID )
-      Message( id, message.calledAction, message.parameters )
+      Message( message.callingEntity, id, message.calledAction, message.parameters )
     else
       message
 
