@@ -1,4 +1,4 @@
-package org.skycastle.content.activities.gamebrowser
+package org.skycastle.content.activities.activitybrowser
 
 
 import entity.{EntityId, Entity}
