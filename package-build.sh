@@ -32,6 +32,8 @@ oneLineDescription=$(cat short-description.txt)
 credits="Programmed by Hans H&auml;ggstr&ouml;m ( zzorn @ iki.fi )"
 license="GPL v2"
 documentationUrl=http://skycastle.googlecode.com/svn/wiki/Documentation.wiki
+darkstarServerName=Skycastle
+darkstarServerListener=org.skycastle.server.SkycastleServer
 
 
 
@@ -64,9 +66,11 @@ mkdir $builddir
 
 ###########################################################################
 echo "#### Updating application.properties"
+touch $appProperties
 scripts/set-property.py -q -f $appProperties -p "version" -v "$version"
 scripts/set-property.py -q -f $appProperties -p "repositoryVersion" -v "$revision"
 scripts/set-property.py -q -f $appProperties -p "releaseDate" -v "$releaseDate"
+scripts/set-property.py -q -f $appProperties -p "status" -v "Beta"
 scripts/set-property.py -q -f $appProperties -p "homepage" -v "$homepage"
 scripts/set-property.py -q -f $appProperties -p "bugReportUrl" -v "$bugReportUrl"
 scripts/set-property.py -q -f $appProperties -p "featureRequestUrl" -v "$featureRequestUrl"
@@ -74,6 +78,11 @@ scripts/set-property.py -q -f $appProperties -p "applicationName" -v "$userReada
 scripts/set-property.py -q -f $appProperties -p "oneLineDescription" -v "$oneLineDescription"
 scripts/set-property.py -q -f $appProperties -p "credits" -v "$credits"
 scripts/set-property.py -q -f $appProperties -p "license" -v "$license"
+
+# Darkstar server properties:
+scripts/set-property.py -q -f $appProperties -p "com.sun.sgs.app.name" -v "$darkstarServerName"
+scripts/set-property.py -q -f $appProperties -p "com.sun.sgs.app.listener" -v "$darkstarServerListener"
+
 
 ###########################################################################
 echo "#### Compiling"
