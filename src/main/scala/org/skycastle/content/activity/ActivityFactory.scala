@@ -1,4 +1,4 @@
-package org.skycastle.content.game
+package org.skycastle.content.activity
 
 import _root_.org.skycastle.entity.Entity
 import _root_.org.skycastle.util.{Properties, Parameters}

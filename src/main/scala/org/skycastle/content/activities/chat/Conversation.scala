@@ -1,8 +1,8 @@
-package org.skycastle.content.games.chat
+package org.skycastle.content.activities.chat
 
 
 import entity.{EntityId, Entity}
-import game.ActivityEntity
+import activity.ActivityEntity
 import util.Parameters
 
 /**

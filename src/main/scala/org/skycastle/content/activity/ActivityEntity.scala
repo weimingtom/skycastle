@@ -1,4 +1,4 @@
-package org.skycastle.content.game
+package org.skycastle.content.activity
 
 
 import entity.accesscontrol.{RoleMembersFunction, RoleMember}

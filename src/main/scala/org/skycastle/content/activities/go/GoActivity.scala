@@ -1,7 +1,7 @@
 package org.skycastle.content.go
 
 
-import game.ActivityEntity
+import activity.ActivityEntity
 
 /**
  * 

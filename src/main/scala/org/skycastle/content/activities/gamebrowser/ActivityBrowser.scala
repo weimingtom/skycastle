@@ -1,8 +1,8 @@
-package org.skycastle.content.games.gamebrowser
+package org.skycastle.content.activities.gamebrowser
 
 
 import entity.{EntityId, Entity}
-import game.ActivityEntity
+import activity.ActivityEntity
 import util.{ Parameters}
 import util.ParameterChecker._
 
