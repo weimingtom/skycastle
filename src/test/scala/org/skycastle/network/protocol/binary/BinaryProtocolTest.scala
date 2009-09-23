@@ -69,105 +69,107 @@ class BinaryProtocolTest extends TestCase {
   @Test
   def testTypes {
 
-    asserSerializes( null)
+    assertSerializes( null)
 
-    asserSerializes( true )
-    asserSerializes( false )
+    assertSerializes( true )
+    assertSerializes( false )
 
-    asserSerializes( (-128).byteValue )
-    asserSerializes( (-1).byteValue )
-    asserSerializes( 0.byteValue )
-    asserSerializes( 23.byteValue )
-    asserSerializes( 127.byteValue )
-    asserSerializes( Math.MAX_BYTE )
-    asserSerializes( Math.MIN_BYTE )
+    assertSerializes( (-128).byteValue )
+    assertSerializes( (-1).byteValue )
+    assertSerializes( 0.byteValue )
+    assertSerializes( 23.byteValue )
+    assertSerializes( 127.byteValue )
+    assertSerializes( Math.MAX_BYTE )
+    assertSerializes( Math.MIN_BYTE )
 
-    asserSerializes( 0.shortValue )
-    asserSerializes( 893.shortValue )
-    asserSerializes( (-2833).shortValue )
-    asserSerializes( Math.MAX_SHORT )
-    asserSerializes( Math.MIN_SHORT )
+    assertSerializes( 0.shortValue )
+    assertSerializes( 893.shortValue )
+    assertSerializes( (-2833).shortValue )
+    assertSerializes( Math.MAX_SHORT )
+    assertSerializes( Math.MIN_SHORT )
 
-    asserSerializes( 4 )
-    asserSerializes( -3 )
-    asserSerializes( 0 )
-    asserSerializes( 238218 )
-    asserSerializes( -90393 )
-    asserSerializes( Math.MAX_INT )
-    asserSerializes( Math.MIN_INT )
+    assertSerializes( 4 )
+    assertSerializes( -3 )
+    assertSerializes( 0 )
+    assertSerializes( 238218 )
+    assertSerializes( -90393 )
+    assertSerializes( Math.MAX_INT )
+    assertSerializes( Math.MIN_INT )
 
-    asserSerializes( 0L )
-    asserSerializes( 8L )
-    asserSerializes( 9853L )
-    asserSerializes( 58425943L )
-    asserSerializes( -59405L )
-    asserSerializes( 2313234344235L )
-    asserSerializes( Math.MAX_LONG )
-    asserSerializes( Math.MIN_LONG )
+    assertSerializes( 0L )
+    assertSerializes( 8L )
+    assertSerializes( 9853L )
+    assertSerializes( 58425943L )
+    assertSerializes( -59405L )
+    assertSerializes( 2313234344235L )
+    assertSerializes( Math.MAX_LONG )
+    assertSerializes( Math.MIN_LONG )
 
-    asserSerializes( 0.0f )
-    asserSerializes( 123.0021f )
-    asserSerializes( -0.000123f )
-    asserSerializes( 122.0e8f )
-    asserSerializes( 32.0e-7f )
-    asserSerializes( Math.NaN_FLOAT )
-    asserSerializes( Math.POS_INF_FLOAT )
-    asserSerializes( Math.NEG_INF_FLOAT )
+    assertSerializes( 0.0f )
+    assertSerializes( 123.0021f )
+    assertSerializes( -0.000123f )
+    assertSerializes( 122.0e8f )
+    assertSerializes( 32.0e-7f )
+    assertSerializes( Math.NaN_FLOAT )
+    assertSerializes( Math.POS_INF_FLOAT )
+    assertSerializes( Math.NEG_INF_FLOAT )
 
-    asserSerializes( 0.0 )
-    asserSerializes( 123243.002321 )
-    asserSerializes( -0.000000123 )
-    asserSerializes( 53.0e22 )
-    asserSerializes( -32.0e-17 )
-    asserSerializes( Math.NaN_DOUBLE)
-    asserSerializes( Math.POS_INF_DOUBLE )
-    asserSerializes( Math.NEG_INF_DOUBLE )
+    assertSerializes( 0.0 )
+    assertSerializes( 123243.002321 )
+    assertSerializes( -0.000000123 )
+    assertSerializes( 53.0e22 )
+    assertSerializes( -32.0e-17 )
+    assertSerializes( Math.NaN_DOUBLE)
+    assertSerializes( Math.POS_INF_DOUBLE )
+    assertSerializes( Math.NEG_INF_DOUBLE )
 
-    asserSerializes( ' ')
-    asserSerializes( 'a')
-    asserSerializes( 'ä')
-    asserSerializes( '@')
-    asserSerializes( '\n')
+    assertSerializes( ' ')
+    assertSerializes( 'a')
+    assertSerializes( 'ä')
+    assertSerializes( '@')
+    assertSerializes( '\n')
 
-    asserSerializes( "")
-    asserSerializes( " " )
-    asserSerializes( "Foobar foo bar")
-    asserSerializes( "AAAAaaAAAAAAAAaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaAAAAAAAAAAAA!!!!!!!1111111111")
+    assertSerializes( "")
+    assertSerializes( " " )
+    assertSerializes( "Foobar foo bar")
+    assertSerializes( "AAAAaaAAAAAAAAaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaAAAAAAAAAAAA!!!!!!!1111111111")
 
-    asserSerializes( 'foobar )
-    asserSerializes( 'a )
-    asserSerializes( Symbol("") )
-    asserSerializes( Symbol(null) )
-    asserSerializes( Symbol("foo bar") )
+    assertSerializes( 'foobar )
+    assertSerializes( 'a )
+    assertSerializes( Symbol("") )
+    assertSerializes( Symbol(null) )
+    assertSerializes( Symbol("foo bar") )
 
 /* TODO: Test with double serialization?
-    asserSerializes( EntityId("foobar") )
-    asserSerializes( EntityId("foo bar") )
-    asserSerializes( EntityId("") )
-    asserSerializes( EntityId(" ") )
+    assertSerializes( EntityId("foobar") )
+    assertSerializes( EntityId("foo bar") )
+    assertSerializes( EntityId("") )
+    assertSerializes( EntityId(" ") )
 */
 
-    asserSerializes( Nil)
-    asserSerializes( List( null ))
-    asserSerializes( List( 10, "a", 'Hello ))
-    asserSerializes( List( 1, List( 2, List (3)) ))
+    assertSerializes( Nil)
+    assertSerializes( List( null ))
+    assertSerializes( List( 10, "a", 'Hello ))
+    assertSerializes( List( 1, List( 2, List (3)) ))
 
-    asserSerializes( Set(  ))
-    asserSerializes( Set( 'one ))
-    asserSerializes( Set( 1, 2, 3, 4 ))
-    asserSerializes( Set( 1, 2, 3, 3, "4" ))
+    assertSerializes( Set(  ))
+    assertSerializes( Set( 'one ))
+    assertSerializes( Set( 1, 2, 3, 4 ))
+    assertSerializes( Set( 1, 2, 3, 3, "4" ))
 
-    asserSerializes( Map( ))
-    asserSerializes( Map( 0 -> 1 ))
-    asserSerializes( Map( 'a -> "*B*", 'c' -> 0xd, "foobar bar" -> null, 0 -> null))
+    assertSerializes( Map( ))
+    assertSerializes( Map( 0 -> 1 ))
+    assertSerializes( Map( 'a -> "*B*", 'c' -> 0xd, "foobar bar" -> null, 0 -> null))
 
-    asserSerializes( Parameters())
-    asserSerializes( Parameters( 'foo -> 1 ) )
-    asserSerializes( Parameters( 'foo -> true, 'bar -> 32312L, 'zap -> 0.33f, 'zoo -> Math.POS_INF_DOUBLE, 'zapap -> Map( "a" -> 1.toShort, "b" ->(-1).toByte ) ) )
+    assertSerializes( Parameters())
+    assertSerializes( Parameters( 'foo -> 1 ) )
+    assertSerializes( Parameters( 'foo -> true, 'bar -> 32312L, 'zap -> 0.33f, 'zoo -> Math.POS_INF_DOUBLE, 'zapap -> Map( "a" -> 1.toShort, "b" ->(-1).toByte ) ) )
+
+    assertSerializes( DummyTransferable( "Yarr", 42, 3.1415f ) )
 
   }
 
-  def asserSerializes[T]( value : T ) {
+  def assertSerializes[T]( value : T ) {
     def typeName( value : Any ) = if (value == null) "null" else value.asInstanceOf[Object].getClass.getSimpleName
 
     val length_bytes = serializer.length( value )
@@ -200,4 +202,25 @@ class BinaryProtocolTest extends TestCase {
   }
 
 }
+
+
+
+object DummyTransferable {
+
+  def fromTransferObject( obj : Object ) : DummyTransferable = {
+    val params = value.asInstanceOf[Parameters]
+
+    DummyTransferable( params.getString( 'foo, null ),
+                       params.getInt( 'bar, 0),
+                       params.getFloat( 'zap, 0f ) )
+
+  }
+
+}
+
+case class DummyTransferable(foo : String, bar : Int, zap : Float) extends Transferable {
+
+  def toTransferObject = Parameters( 'foo -> foo, 'bar -> bar, 'zap -> zap )
+}
+
 

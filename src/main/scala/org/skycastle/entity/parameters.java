@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates that a method in an Entity is an action that can be called by another Entity through the action call mechanism.
  *
- * Specifies which incoming parameter names should be wrapped to which parameter, as a space separated string.
+ * Specifies which incoming parameter names should be wrapped to which parameter, as a comma separated string.
  *
  * @author Hans Haggstrom
  */
