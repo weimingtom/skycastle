@@ -294,9 +294,9 @@ class BinarySerializer( hostObjectId : EntityId ) {
 
         try {
           val typeClass : Class[_]= Class.forName( typeName )
-          if ( classOf[Transferable].isAssignableFrom( typeClass ) ) {
+          if ( classOf[TransferableDecoder].isAssignableFrom( typeClass ) ) {
             try {
-              val factoryMethod : Method = typeClass.getMethod( "fromTransferableObject", Array( classOf[Object] ) )
+              val factoryMethod : Method = typeClass.getMethod( "fromTransferObject", classOf[Object] )
 
               if ( Modifier.isStatic( factoryMethod.getModifiers ) ) {
                 val valueObject = anySerializer.decode( buffer )

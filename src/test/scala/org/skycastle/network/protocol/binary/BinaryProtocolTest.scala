@@ -205,10 +205,10 @@ class BinaryProtocolTest extends TestCase {
 
 
 
-object DummyTransferable {
+object DummyTransferable extends TransferableDecoder {
 
   def fromTransferObject( obj : Object ) : DummyTransferable = {
-    val params = value.asInstanceOf[Parameters]
+    val params = obj.asInstanceOf[Parameters]
 
     DummyTransferable( params.getString( 'foo, null ),
                        params.getInt( 'bar, 0),
