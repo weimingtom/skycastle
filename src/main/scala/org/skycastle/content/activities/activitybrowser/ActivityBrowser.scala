@@ -13,38 +13,67 @@ import util.ParameterChecker._
  * 
  * @author Hans Haggstrom
  */
+// TODO: Switch to EntityFactories for activities instead?  Basically some parametrized activities - same class can e.g. be used both for a small and large go game.
 @serializable
 @SerialVersionUID(1)
 class ActivityBrowser extends ActivityEntity {
 
-  var activityParameters : Map[EntityId, Parameters] = Map()
+
+  private var activityTypes : Map[String, Parameters] = Map()
+
+  private var activities : Map[EntityId, Parameters] = Map()
 
   override protected def onMemberJoined(member: EntityId, joinParameters: Parameters) {
-    activityParameters foreach { case (activityId : EntityId, info : Parameters) =>
-       notifyMemberOfUpdate( member, activityId , info )
+    activityTypes foreach { case (activityClass : String, info : Parameters) =>
+      notifyMemberOfAddedActivityType( member, activityClass, info )
+    }
+    activities foreach { case (activityId : EntityId, info : Parameters) =>
+      notifyMemberOfUpdate( member, activityId , info )
     }
   }
 
-  def createActivity( user : EntityId, gameType : Symbol, gameParameters : Parameters ) {
+  def addActivityType( caller : EntityId, activityClass : String, activityInfo : Parameters ) {
+    requireNotNull( caller, 'caller )
+    requireNotEmpty( activityClass, 'activityClass )
+    requireNotNull( activityInfo, 'activityInfo )
+
+    val entry = ( activityClass, activityInfo )
+    activityTypes = activityTypes + entry
+
+    getMembers foreach { m => notifyMemberOfAddedActivityType( m, activityClass, activityInfo ) }
+  }
+
+  def removeActivityType( caller : EntityId, activityClass : String ) {
+    requireNotNull( caller, 'caller )
+    requireNotEmpty( activityClass, 'activityClass )
+
+    if (activityTypes.contains( activityClass )) {
+      activityTypes = activityTypes.remove( _ == activityFactory )
+
+      getMembers foreach { m => notifyMemberOfRemovedActivityType( m, activityClass ) }
+    }
+  }
+
+  def createActivity( user : EntityId, activityType : Symbol, activityParameters : Parameters ) {
     requireNotNull( user, 'user )
-    requireNotNull( gameType, 'gameType )
-    requireNotNull( gameParameters, 'gameParameters )
+    requireNotNull( activityType, 'gameType )
+    requireNotNull( activityParameters, 'gameParameters )
 
-    // TODO: Check access rights to create the specified type of game etc
+    // TODO: Check access rights to create the specified type of activity etc
 
-    // Find and create the game
+    // Find and create the activity
     // TODO
     val activity : ActivityEntity = null
     val activityId : EntityId = activity.id
     val parameters = Parameters()
 
-    // Listen to status updates from the game
+    // Listen to status updates from the activity
     activity.addStatusListener( id )
 
-    // Join the user into the game
-    activity.joinActivity( user, gameParameters )
+    // Join the user into the activity
+    activity.joinActivity( user, activityParameters )
 
-    // Add the game to the gamelist
+    // Add the activity to the activitylist
     val entry = (activityId, parameters)
       activityParameters = activityParameters + entry
 
@@ -57,9 +86,9 @@ class ActivityBrowser extends ActivityEntity {
   def removeActivity( activityId : EntityId ) {
     requireNotNull( activityId, 'activityId )
 
-    activityParameters.get( activityId ) match {
+    activities.get( activityId ) match {
       case Some( info ) => {
-        activityParameters = activityParameters - activityId
+        activities = activities - activityId
 
         getMembers foreach { member : EntityId => notifyMemberOfRemoval( member, activityId, info ) }
       }
@@ -72,10 +101,10 @@ class ActivityBrowser extends ActivityEntity {
     requireNotNull( activityId, 'activityId )
     requireNotNull( parameters, 'parameters )
 
-    activityParameters.get( activityId ) match {
+    activities.get( activityId ) match {
       case Some( oldInfo ) => {
         val newEntry = ( activityId, parameters )
-        activityParameters = activityParameters + newEntry
+        activities = activities + newEntry
 
         getMembers foreach { member : EntityId => notifyMemberOfUpdate( member, activityId, parameters ) }
       }
@@ -89,6 +118,14 @@ class ActivityBrowser extends ActivityEntity {
 
   private def notifyMemberOfRemoval( member : EntityId, activityId : EntityId, endStatus : Parameters ) {
     callOtherEntity( member, 'activityRemoved, Parameters( 'activityId -> activityId, 'info -> endStatus ) )
+  }
+
+  private def notifyMemberOfAddedActivityType( member : EntityId, activityClass : String, activityTypeInfo : Parameters ) {
+    callOtherEntity( member, 'activityTypeAdded, Parameters( 'activityClass -> activityClass , 'info -> activityTypeInfo ) )
+  }
+
+  private def notifyMemberOfRemovedActivityType( member : EntityId, activityClass : String ) {
+    callOtherEntity( member, 'activityTypeRemoved, Parameters( 'activityClass  -> activityClass ) )
   }
 
 }

@@ -1,7 +1,7 @@
 package org.skycastle.entity.entitycontainer
 
 
-import util.Parameters
+import util.{ClassUtils, Parameters}
 
 /**
  * Something that can contain and manage entities.
@@ -14,6 +14,22 @@ import util.Parameters
  * @author Hans Haggstrom
  */
 trait EntityContainer {
+
+  /**
+   * Creates and returns an entity of the specified (super) type, using the class with the specified name.
+   * The entity is stored to the container also.
+   *
+   * Throws an ObjectCreationException if the specified class was not found, or was not of the specified kind.
+   */
+  def createEntity[T <: Entity]( classname : String, kind : Class[T] ) : T = {
+
+    val newEntity = ClassUtils.createObject( classname, kind )
+
+    storeEntity( newEntity )
+
+    newEntity
+  }
+
 
   /**
    * Returns the entity with the specified id, or None if no such entity was found.
