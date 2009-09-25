@@ -90,8 +90,7 @@ class ActivityBrowser extends ActivityEntity {
   }
 
   // TODO: Do we need parameters at this level?  Maybe better to just have many entity factories for
-  // different types of games, and allow parameters bysankareita
-  // when the game is actually created. 
+  // different types of games, and allow parameters by the creating user when the game is actually created.
   def addActivityType(activityTypeID: Symbol, activityFactory: EntityId, parameters: Parameters) {
     requireNotNull(activityTypeID, 'activityTypeID)
     requireNotNull(activityFactory, 'activityFactory)
