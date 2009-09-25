@@ -3,9 +3,12 @@ package org.skycastle.server
 import _root_.org.skycastle.entity.EntityId
 import com.sun.sgs.app._
 import content.account.server.{ServerSideAccountEntity, AccountManagedObject}
+import content.activities.activitybrowser.ActivityBrowser
+import content.activity.ActivityEntity
 import entity.entitycontainer.darkstar.DarkstarEntityContainer
 import entity.tilemap.{TilemapEntity}
 import java.util.Properties
+import skycastle.util.Parameters
 
 
 /**
@@ -34,6 +37,14 @@ class SkycastleServer extends AppListener {
     // Store a reference to the top level game that users are added to on login.
     // TODO
 
+
+    // TODO: Create initial activity types..
+    val textEditorFactoryId : EntityId = null
+
+    val topLevelActivityBrwoser : ActivityBrowser = new ActivityBrowser()
+    topLevelActivityBrwoser.addActivityType( 'textEditor, textEditorFactoryId, Parameters() )
+    DarkstarEntityContainer.bindName( "topLevelActivity", topLevelActivityBrwoser )
+
   }
 
   /**
@@ -60,8 +71,7 @@ class SkycastleServer extends AppListener {
 
         a.init()
 
-        // TODO: Join user to the top-level Game on the Server.
-
+        // TODO: Send user some interface or similar for joining server activities etc.
         a
       }
     }

@@ -1,8 +1,8 @@
 package org.skycastle.content.activity
 
 
-import entity.accesscontrol.{RoleMembersFunction, RoleMember}
-import entity.{EntityId, Entity}
+import entity.accesscontrol.{users, RoleMembersFunction, RoleMember}
+import entity.{parameters, EntityId, Entity}
 import util.{Properties, Parameters}
 /**
  * An activity is something users can join into and experience together with others.
@@ -24,6 +24,7 @@ class ActivityEntity extends Entity {
   /**
    * Calls back with avatar entity id? Or just confirmation.
    */
+  @parameters("$callerId, $parameters")
   final def joinActivity( caller : EntityId, parameters : Parameters ) {
     if (!hasMember( caller )) {
       addMember( caller )
@@ -34,6 +35,8 @@ class ActivityEntity extends Entity {
   /**
    * Removes a member from the activity.
    */
+  @users("activityMember")
+  @parameters("$callerId, $parameters")
   final def leaveActivity( caller : EntityId, parameters : Parameters  ) {
     if (hasMember( caller )) {
       removeMember( caller )
@@ -47,6 +50,8 @@ class ActivityEntity extends Entity {
    *
    * Immediately after starting listening the status listener is notified about the current state.
    */
+  @users("activityMember")
+  @parameters("$callerId")
   final def addStatusListener( listener : EntityId ) {
     if (!statusListeners.contains( listener )) {
       statusListeners = listener :: statusListeners
@@ -57,6 +62,8 @@ class ActivityEntity extends Entity {
   /**
    * Removes the listener.
    */
+  @users("activityMember")
+  @parameters("$callerId")
   final def removeStatusListener( listener : EntityId ) {
     statusListeners = statusListeners.remove( _ == listener )
   }

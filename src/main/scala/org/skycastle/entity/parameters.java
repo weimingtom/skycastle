@@ -10,6 +10,9 @@ import java.lang.annotation.Target;
  *
  * Specifies which incoming parameter names should be wrapped to which parameter, as a comma separated string.
  *
+ * Special parameter names are $callerId and $parameters, that indicate that the EntityId of the caller,
+ * or the method call parameters object itself should be passed as a input to the parameter. 
+ *
  * @author Hans Haggstrom
  */
 @Retention( RetentionPolicy.RUNTIME)
