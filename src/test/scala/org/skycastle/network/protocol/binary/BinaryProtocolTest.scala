@@ -140,7 +140,8 @@ class BinaryProtocolTest extends TestCase {
     assertSerializes( Symbol(null) )
     assertSerializes( Symbol("foo bar") )
 
-/* TODO: Test with double serialization?
+/* EntityID:s get transpated when sent over the network, so this wont work.
+   TODO: Test with double serialization?
     assertSerializes( EntityId("foobar") )
     assertSerializes( EntityId("foo bar") )
     assertSerializes( EntityId("") )
