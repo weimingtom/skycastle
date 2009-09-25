@@ -282,10 +282,10 @@ class BinarySerializer( hostObjectId : EntityId ) {
 
     // Arbitrary types that implement own serialization and deserialization
     add( new TypeSerializer( classOf[Transferable] ) {
-      def len(value: Transferable) = symbolSerializer.length( Symbol( value.decoderTypeName ) ) +
+      def len(value: Transferable) = symbolSerializer.length( Symbol( value.getClass.getName ) ) +
                                      anySerializer.length( value.toTransferObject )
       def enc(buffer: ByteBuffer, value: Transferable) = {
-        symbolSerializer.encode( buffer, Symbol( value.decoderTypeName ) )
+        symbolSerializer.encode( buffer, Symbol( value.getClass.getName ) )
         anySerializer.encode( buffer, value.toTransferObject )
       }
 
@@ -294,18 +294,11 @@ class BinarySerializer( hostObjectId : EntityId ) {
 
         try {
           val typeClass : Class[_]= Class.forName( typeName )
-          if ( classOf[TransferableDecoder].isAssignableFrom( typeClass ) ) {
+          if ( classOf[Transferable].isAssignableFrom( typeClass ) ) {
             try {
-              val factoryMethod : Method = typeClass.getMethod( "fromTransferObject", classOf[Object] )
-
-              if ( Modifier.isStatic( factoryMethod.getModifiers ) ) {
-                val valueObject = anySerializer.decode( buffer )
-                factoryMethod.invoke( null, valueObject ).asInstanceOf[Transferable]
-              }
-              else {
-                ProtocolLogger.logWarning( "When decoding message: The specified decode method for transferable type '"+typeName+"' is not static.  Substituting with null." )
-                null.asInstanceOf[Transferable]
-              }
+              val constructor = typeClass.getConstructor( classOf[Object] )
+              val valueObject : Object = anySerializer.decode( buffer )
+              constructor.newInstance( valueObject ).asInstanceOf[Transferable]
             }
             catch {
               case e  =>

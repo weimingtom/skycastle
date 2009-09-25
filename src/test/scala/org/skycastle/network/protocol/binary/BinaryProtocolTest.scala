@@ -205,20 +205,13 @@ class BinaryProtocolTest extends TestCase {
 
 
 
-object DummyTransferable extends TransferableDecoder {
-
-  def fromTransferObject( obj : Object ) : DummyTransferable = {
-    val params = obj.asInstanceOf[Parameters]
-
-    DummyTransferable( params.getString( 'foo, null ),
-                       params.getInt( 'bar, 0),
-                       params.getFloat( 'zap, 0f ) )
-
-  }
-
-}
-
 case class DummyTransferable(foo : String, bar : Int, zap : Float) extends Transferable {
+
+  def this( obj : Object ) {
+    this( obj.asInstanceOf[Parameters].getString( 'foo, null ),
+          obj.asInstanceOf[Parameters].getInt( 'bar, 0),
+          obj.asInstanceOf[Parameters].getFloat( 'zap, 0f ) )
+  }
 
   def toTransferObject = Parameters( 'foo -> foo, 'bar -> bar, 'zap -> zap )
 }
