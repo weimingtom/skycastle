@@ -31,6 +31,7 @@ class ActivityEntity extends Entity {
       addMember( caller )
       callOtherEntity( caller, 'joinedActivity, status )
       onMemberJoined( caller, parameters )
+      createClientUi( caller )
     }
   }
 
@@ -47,6 +48,17 @@ class ActivityEntity extends Entity {
     }
   }
 
+  /**
+   * Builds up a client side view of the activity.
+   *
+   * Can also be called after the client has already joined and participated in the action,
+   * so that the client can resume after reconnection, etc.
+   */
+  @users("activityMember")
+  @parameters("$callerId" )
+  def createClientUi( client : EntityId ) {
+    // TODO
+  }
 
   /**
    * Adds a listener that is notified about status changes of the activity (e.g. if new users can join, the final outcome when the acticity ends, etc)
