@@ -2,7 +2,7 @@ package org.skycastle.client
 
 
 import content.account.client.ClientSideAccountEntity
-import entity.accesscontrol.ActionCapability
+import entity.accesscontrol.{users, ActionCapability}
 import entity.{EntityId, Entity}
 import ui.{ScreenEntity, Ui}
 import util.Parameters
@@ -16,7 +16,6 @@ import util.Parameters
 class ClientControllerEntity extends Entity {
 
   addRole( 'connect )
-  addRoleCapability( 'connect, ActionCapability( 'connectToServer ) )
 
 
   def createUi() {
@@ -81,11 +80,12 @@ class ClientControllerEntity extends Entity {
     
   }
 
+  @users("connect")
   def connectToServer( url : String, port : String, userName : String, uiContainerForServer : Ui ) {
 
     val account = new ClientSideAccountEntity
-
-    container.storeEntity( account, null )
+    
+    container.storeEntity( account, createClientParameters )
 
     account.server = url
     account.port = port
@@ -95,6 +95,19 @@ class ClientControllerEntity extends Entity {
 
     println( "Trying to connect to server "+url+":"+port+" as user "+ userName  )
     account.connect
+  }
+
+  private def createClientParameters : Parameters = {
+    // TODO: Get the properties from the application properties or similar?
+    val application = "SkycastleClient"
+    val version     = "0.1.0"
+    val build       = "r?"
+
+    Parameters(
+      'application -> application,
+      'version -> version,
+      'build -> build,
+      'mainEntity -> id )
   }
 }
 

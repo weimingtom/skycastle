@@ -27,6 +27,8 @@ class SkycastleServer extends AppListener {
 
   var topLevelActivityId : EntityId = null
 
+  var serverParameters : Parameters = null
+
   /**
    * This is called to initialize the server
    */
@@ -47,6 +49,22 @@ class SkycastleServer extends AppListener {
     // Create initial activity types
     createActivityType( browser, "Text Editor", "Collaborative multi-user text editor!", classOf[TexteditActivity], Parameters() )
     createActivityType( browser, "Chat", "Multi-user conversation!", classOf[Conversation], Parameters() )
+
+    // Setup server parameters
+    // TODO: Get the properties from the application properties or similar?
+    val application = "Skycastle"
+    val version     = "0.1.0"
+    val build       = "r?"
+    val serverName  = "Skycastle Test Server"
+    val serverDescription  = "For testing the Skycastle Server.  May reboot at any time."
+
+    serverParameters = Parameters(
+      'application -> application,
+      'version -> version,
+      'build -> build,
+      'serverName -> serverName,
+      'serverDescription -> serverDescription,
+      'mainActivity -> topLevelActivityId )
   }
 
   /**
@@ -66,7 +84,7 @@ class SkycastleServer extends AppListener {
       case e: NameNotBoundException => {
         // Create account for new player
         ServerLogger.logInfo( "New player account created: " + userId)
-        val accountManagedObject = new AccountManagedObject( new ServerSideAccountEntity() )
+        val accountManagedObject = new AccountManagedObject( new ServerSideAccountEntity(), serverParameters )
 
         DarkstarEntityContainer.storeManagedEntity( accountManagedObject, null )
 
@@ -79,12 +97,6 @@ class SkycastleServer extends AppListener {
     }
 
     account.setSession( session )
-
-    // Tell the client the ID of the top level activity.
-    account.sendMessage( new Message( ServerSideAccountEntity.SERVER_ACCOUNT_ID,
-                                      ClientSideAccountEntity.CLIENT_ACCOUNT_ID, 
-                                      'setMainActivity,
-                                      Parameters( 'id -> topLevelActivityId ) ) )
 
     account
   }

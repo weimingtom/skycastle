@@ -12,6 +12,7 @@ import util.{StringUtils, Parameters}
 @serializable
 @SerialVersionUID(1)
 class ProtocolNegotiator( isServer : Boolean,
+                          parameters : Parameters,
                           outgoingDataListener : ByteBuffer => Unit,
                           onProtocolNegotiationSuccess : (Protocol, Parameters) => Unit,
                           onProtocolNegotiationFail : (String, Parameters) => Unit ) {
@@ -38,20 +39,7 @@ class ProtocolNegotiator( isServer : Boolean,
 
       // The server is the one who starts the exchange
       if ( isServer ) {
-
-        // TODO: Get the properties from the application properties or similar?
-        val application = "Skycastle"
-        val version     = "0.1.0"
-        val build       = "r?"
-        val serverName  = "Skycastle Test Server"
-        val serverDescription  = "For testing the Skycastle Server.  May reboot at any time."
-
-        send( Parameters(
-          'application -> stripRowSeparators( application ),
-          'version     -> stripRowSeparators( version ),
-          'build       -> stripRowSeparators( build ),
-          'name        -> stripRowSeparators( serverName ),
-          'description -> stripRowSeparators( serverDescription ),
+        send( parameters ++ Parameters(
           'supportedProtocols -> stripRowSeparators( supportedProtocolsAsString ) ) )
       }
     }
@@ -133,17 +121,8 @@ class ProtocolNegotiator( isServer : Boolean,
       storedServerParams = parameters
 
       // Send client info to server
-
-      // TODO: Get the properties from the application properties or similar?
-      val application = "SkycastleClient"
-      val version     = "0.1.0"
-      val build       = "r?"
-
-      send( Parameters(
-        'application -> application,
-        'version     -> version,
-        'build       -> build,
-        'supportedProtocols -> supportedProtocolsAsString ) )
+      send( parameters ++
+            Parameters( 'supportedProtocols -> supportedProtocolsAsString ) )
     }
   }
 

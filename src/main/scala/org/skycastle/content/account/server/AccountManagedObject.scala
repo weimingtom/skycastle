@@ -11,7 +11,7 @@ import java.nio.ByteBuffer
  */
 @serializable
 @SerialVersionUID(1)
-class AccountManagedObject( accountEntity : ServerSideAccountEntity )
+class AccountManagedObject( accountEntity : ServerSideAccountEntity, parameters : Parameters )
         extends ManagedEntity[ServerSideAccountEntity]( accountEntity ) with ClientSessionListener with AccountConnectionHandler {
 
   private var currentSessionRef : ManagedReference[ClientSession] = null
@@ -23,6 +23,7 @@ class AccountManagedObject( accountEntity : ServerSideAccountEntity )
   def init() {
     network = new NetworkConnection(  accountEntity.id,
                                       true,
+                                      parameters,
                                       onMessagFromClientToServer,
                                       sendDataToClient,
                                       onProtocolNegotiationFail,

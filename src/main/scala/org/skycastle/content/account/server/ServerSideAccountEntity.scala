@@ -6,9 +6,6 @@ import _root_.org.skycastle.entity.{EntityId, Entity}
 import network.Message
 import util.Parameters
 
-object ServerSideAccountEntity {
-  val SERVER_ACCOUNT_ID = EntityId( "ServerAccount" )
-}
 
 /**
  *
@@ -21,6 +18,7 @@ class ServerSideAccountEntity extends Entity {
 
   def accountName : String = myAccountName
 
+  var clientMainEntityId : EntityId = null
 
   private var myAccountName : String = null
   private var accountConnection : AccountConnectionHandler = null
@@ -43,15 +41,9 @@ class ServerSideAccountEntity extends Entity {
   def onMessageFromClient( message : Message )  {
     logInfo( "Received message from client: " + message )
 
-    // Dispatch messages addressed to SERVER_ACCOUNT_ID to self
-    val messageToSend = if (message.calledEntity == ServerSideAccountEntity.SERVER_ACCOUNT_ID )
-      Message( message.callingEntity, id, message.calledAction, message.parameters )
-    else
-      message
-
     // Dispatch to the called entity.
     // The called entity will need to allow this entity to execute the action for it to actually take place.
-    callOtherEntity( messageToSend )
+    callOtherEntity( message )
   }
 
   def onDisconnected( reason : String ) {
@@ -61,7 +53,7 @@ class ServerSideAccountEntity extends Entity {
   def onConnected( clientParameters : Parameters ) {
     logInfo( "Connected to client.  Client properties are: " + clientParameters )
 
-    sendMessageToClient( Message( id, ClientSideAccountEntity.CLIENT_ACCOUNT_ID, 'hiThereClient, Parameters( 'bar -> "zap" ) ) )
+    clientMainEntityId = clientParameters.getEntityId( 'mainEntity, null )
   }
 
 

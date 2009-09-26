@@ -16,6 +16,7 @@ import network.{Message, NetworkConnection}
  * @author Hans Haggstrom
  */
 class ClientNetwork( clientBridgeEntityId : EntityId,
+                     parameters : Parameters,
                      onMessage : Message => Unit,
                      onConnected : Parameters => Unit,
                      onDisconnected : String => Unit,
@@ -28,6 +29,7 @@ class ClientNetwork( clientBridgeEntityId : EntityId,
 
   private val network = new NetworkConnection(  clientBridgeEntityId,
                                                 false,
+                                                parameters,
                                                 onMessage,
                                                 simpleClient.send,
                                                 onProtocolNegotiationFail,

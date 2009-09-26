@@ -9,13 +9,6 @@ import java.net.{PasswordAuthentication}
 import java.lang.String
 import network.{Message}
 
-object ClientSideAccountEntity {
-
-  /**
-   * Entity id that is treated as this entity when any message to it is received from the server.
-   */
-  val CLIENT_ACCOUNT_ID = EntityId( "ClientAccount" )
-}
 
 /**
  * A client side Entity that represents an user account on a specific server.
@@ -28,6 +21,8 @@ final class ClientSideAccountEntity extends Entity {
   var port: String = "1139"
   var accountName: String = null
 
+  var serverMainActivity : EntityId = null
+
 
   @transient private var password: Array[Char] = null
   private var connected: Boolean = false
@@ -39,7 +34,7 @@ final class ClientSideAccountEntity extends Entity {
 
 
   override protected def onInit( creationParameters : Parameters ) {
-    clientNetwork = new ClientNetwork( id, onMessage, onConnected, onDisconnected, getPassword)
+    clientNetwork = new ClientNetwork( id, creationParameters, onMessage, onConnected, onDisconnected, getPassword)
   }
 
   def connect() {
@@ -55,16 +50,6 @@ final class ClientSideAccountEntity extends Entity {
   }
 
 
-  /**
-   * Called by server, specifies the id of the main activity on the server that the client should initially join.
-   */
-  @parameters( "id" )
-  def setMainActivity( activityId : EntityId ) {
-    // Create activity client entity to show the activity UI and provide the activity with user input.
-    // TODO: Give the client a panel / tab in the UI
-    val client = new ActivityClient()
-    container.storeEntity( client, Parameters( 'activityId -> activityId ) )
-  }
 
 
   override def callContained(caller: EntityId, innerEntityId: EntityId, actionId: Symbol, parameters: Parameters) {
@@ -90,7 +75,17 @@ final class ClientSideAccountEntity extends Entity {
 
     logInfo("Connected to server.  Server properties are: " + serverProperties)
 
-    sendMessageToServer( Message( id, ServerSideAccountEntity.SERVER_ACCOUNT_ID, 'helloServer, Parameters( 'foo -> "bar" ) ) )
+    serverMainActivity = serverProperties.getEntityId( 'mainActivity, null )
+
+    if (serverMainActivity == null) {
+      logError( "The server specified no id for a mainActivity to connect to!" )
+    }
+    else {
+      // Create activity client entity to show the activity UI and provide the activity with user input.
+      // TODO: Give the client a panel / tab in the UI
+      val client = new ActivityClient()
+      container.storeEntity( client, Parameters( 'activityId -> serverMainActivity ) )
+    }
   }
 
   /**
@@ -116,15 +111,17 @@ final class ClientSideAccountEntity extends Entity {
 
     logInfo( "Received message from server: " + message )
 
+/*
     // Dispatch messages addressed to CLIENT_ACCOUNT_ID to self
     val messageToSend = if (message.calledEntity == ClientSideAccountEntity.CLIENT_ACCOUNT_ID )
       Message( message.callingEntity, id, message.calledAction, message.parameters )
     else
       message
+*/
 
     // Dispatch to the called entity.
     // The called entity will need to allow this entity to execute the action for it to actually take place.
-    callOtherEntity( messageToSend )
+    callOtherEntity( message )
 
   }
 

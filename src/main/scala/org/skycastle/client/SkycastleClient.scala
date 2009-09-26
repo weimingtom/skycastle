@@ -68,6 +68,7 @@ object SkycastleClient {
 
     val controller = new ClientControllerEntity()
 
+    container.storeEntity( controller, null )
     container.bindName( clientControllerName, controller )
 
     controller

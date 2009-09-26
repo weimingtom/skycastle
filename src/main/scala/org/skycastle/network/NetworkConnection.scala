@@ -17,6 +17,7 @@ import negotiator.ProtocolNegotiator
 @SerialVersionUID(1)
 final class NetworkConnection( bridgeEntityId : EntityId,
                                isServer : Boolean,
+                               parameters : Parameters,
                                incomingMessageListener : Message => Unit,
                                outgoingDataListener : ByteBuffer => Unit,
                                onProtocolNegotiationFail : (String, Parameters) => Unit,
@@ -27,7 +28,7 @@ final class NetworkConnection( bridgeEntityId : EntityId,
   private var fail : Boolean = false
   private var protocol : Protocol = null
 
-  private val negotiator : ProtocolNegotiator = new ProtocolNegotiator( isServer, outgoingDataListener,
+  private val negotiator : ProtocolNegotiator = new ProtocolNegotiator( isServer, parameters, outgoingDataListener,
     // on success:
     { (p : Protocol, properties : Parameters ) =>
       protocol = p
