@@ -12,11 +12,11 @@ import util.ParameterChecker._
 object DarkstarEntityContainer extends EntityContainer {
 
 
-  def storeEntity(entity: Entity) : EntityId = {
-    storeManagedEntity( new ManagedEntity( entity ) )
+  def storeEntity(entity: Entity, initializationParameters : Parameters) : EntityId = {
+    storeManagedEntity( new ManagedEntity( entity ), initializationParameters )
   }
 
-  def storeManagedEntity( managedEntity : ManagedEntity[_ <: Entity] ) : EntityId = {
+  def storeManagedEntity( managedEntity : ManagedEntity[_ <: Entity], initializationParameters : Parameters ) : EntityId = {
     val dataManager : DataManager = AppContext.getDataManager
 
     val name = "entity_" + dataManager.getObjectId( managedEntity ).toString
@@ -27,7 +27,7 @@ object DarkstarEntityContainer extends EntityContainer {
 
     dataManager.setBinding( name, managedEntity )
 
-    managedEntity.entity.initEntity()
+    managedEntity.entity.initEntity(initializationParameters)
 
     id
   }
@@ -86,13 +86,11 @@ object DarkstarEntityContainer extends EntityContainer {
   def bindName(name: String, entity: Entity) {
     requireNotNull( name, 'name )
     requireNotNull( entity, 'entity )
+    if (entity.id == null) throw new IllegalArgumentException( "Can not bind entity '"+entity+"' to name '"+name+"', it is not yet stored in any EntityCOntainer." )
 
     val dataManager : DataManager = AppContext.getDataManager
 
-    val id = if (entity.id != null) entity.id
-             else storeEntity( entity )
-
-    id.managedObjectName match {
+    entity.id.managedObjectName match {
       case Some( entityId ) => {
         val managedEntity = AppContext.getDataManager.getBinding( entityId )
         dataManager.setBinding( getBindingName( name ), managedEntity )

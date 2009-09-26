@@ -18,7 +18,7 @@ case class ManagedEntity[T <: Entity]( entity : T ) extends ManagedObject with E
 
   // Fordward the requests to the DarkstarEntityContainer singleton
 
-  def storeEntity(entity: Entity) : EntityId                  = DarkstarEntityContainer.storeEntity(entity)
+  def storeEntity(entity: Entity, initParams : Parameters) : EntityId  = DarkstarEntityContainer.storeEntity(entity, initParams)
   def markForUpdate( entity : Entity )                        = DarkstarEntityContainer.markForUpdate(entity)
   def getEntity(entityId: EntityId) : Option[Entity]          = DarkstarEntityContainer.getEntity( entityId )
   def getEntityForUpdate(entityId: EntityId) : Option[Entity] = DarkstarEntityContainer.getEntityForUpdate(entityId)

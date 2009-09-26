@@ -19,13 +19,13 @@ import util.ParameterChecker._
 @SerialVersionUID(1)
 class ActivityBrowser extends ActivityEntity {
 
-  private var activityTypes: Map[Symbol, (EntityId, Parameters, Parameters)] = Map()
+  private var activityTypes: Map[Symbol, (EntityId, Parameters)] = Map()
 
   private var activities: Map[EntityId, Parameters] = Map()
 
   @users("activityMember")
-  @parameters("$callerId, activityType, activityParameters")
-  def createActivity(user: EntityId, activityType: Symbol, activityParameters: Parameters) {
+  @parameters("$callerId, activityType, activityParameters, userParameters")
+  def createActivity(user: EntityId, activityType: Symbol, activityParameters: Parameters, joinParameters: Parameters) {
     requireNotNull(user, 'user)
     requireNotNull(activityType, 'gameType)
     requireNotNull(activityParameters, 'gameParameters)
@@ -36,13 +36,12 @@ class ActivityBrowser extends ActivityEntity {
     activityTypes.get(activityType) match {
       case Some(x) =>
         val factoryId: EntityId = x._1
-        val creationParameters: Parameters = x._2
-        val info: Parameters = x._3
+        val info: Parameters = x._2
 
         container.getEntity(factoryId) match {
           case Some(factory: EntityFactory) =>
 
-            val entity: Entity = factory.createEntity(creationParameters)
+            val entity: Entity = factory.createEntity(activityParameters)
 
             if (classOf[ActivityEntity].isAssignableFrom(entity.getClass())) {
 
@@ -54,7 +53,7 @@ class ActivityBrowser extends ActivityEntity {
               activity.addStatusListener(id)
 
               // Join the user into the activity
-              activity.joinActivity(user, activityParameters)
+              activity.joinActivity(user, joinParameters)
 
               // Add the activity to the activitylist
               val entry = (activityId, parameters)
@@ -89,22 +88,19 @@ class ActivityBrowser extends ActivityEntity {
     }
   }
 
-  // TODO: Do we need parameters at this level?  Maybe better to just have many entity factories for
-  // different types of games, and allow parameters by the creating user when the game is actually created.
-  def addActivityType(activityTypeID: Symbol, activityFactory: EntityId, parameters: Parameters) {
+  def addActivityType(activityTypeID: Symbol, activityFactory: EntityId) {
     requireNotNull(activityTypeID, 'activityTypeID)
     requireNotNull(activityFactory, 'activityFactory)
-    requireNotNull(parameters, 'parameters)
 
     container.getEntity(activityFactory) match {
       case Some(factory: EntityFactory) =>
 
-        val description = factory.getDescription(parameters)
+        val info = factory.info
 
-        val entry = (activityTypeID, (activityFactory, parameters, description))
+        val entry = (activityTypeID, (activityFactory, info))
         activityTypes = activityTypes + entry
 
-        getMembers foreach {m => notifyMemberOfAddedActivityType(m, activityTypeID, description)}
+        getMembers foreach {m => notifyMemberOfAddedActivityType(m, activityTypeID, info)}
 
       case _ => logWarning("No activity factory with id '" + activityFactory + "' found.")
     }
@@ -139,7 +135,7 @@ class ActivityBrowser extends ActivityEntity {
 
   override protected def onMemberJoined(member: EntityId, joinParameters: Parameters) {
     activityTypes foreach {
-      case (activityType: Symbol, ( factoryID : EntityId, creationParams : Parameters, info: Parameters ) )  =>
+      case (activityType: Symbol, ( factoryID : EntityId, info: Parameters ) )  =>
         notifyMemberOfAddedActivityType(member, activityType, info)
     }
     activities foreach {

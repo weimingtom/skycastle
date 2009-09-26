@@ -2,6 +2,7 @@ package org.skycastle.entity.entitycontainer
 
 
 import util.{ClassUtils, Parameters}
+import util.ParameterChecker._
 
 /**
  * Something that can contain and manage entities.
@@ -16,16 +17,30 @@ import util.{ClassUtils, Parameters}
 trait EntityContainer {
 
   /**
+   * Creates and returns an entity of the specified type.
+   * The entity is stored to the container also.
+   *
+   * Throws an ObjectCreationException if the specified class was not found, or was not of the specified kind.
+   */
+  def createEntity[T <: Entity]( kind : Class[T], initializationParameters : Parameters ) : T = {
+    requireNotNull( kind, 'kind )
+    createEntity( kind.getName, kind, initializationParameters )
+  }
+
+
+  /**
    * Creates and returns an entity of the specified (super) type, using the class with the specified name.
    * The entity is stored to the container also.
    *
    * Throws an ObjectCreationException if the specified class was not found, or was not of the specified kind.
    */
-  def createEntity[T <: Entity]( classname : String, kind : Class[T] ) : T = {
+  def createEntity[T <: Entity]( classname : String, kind : Class[T], initializationParameters : Parameters ) : T = {
+    requireNotNull( classname, 'classname )
+    requireNotNull( kind, 'kind )
 
     val newEntity = ClassUtils.createObject( classname, kind )
 
-    storeEntity( newEntity )
+    storeEntity( newEntity, initializationParameters )
 
     newEntity
   }
@@ -51,8 +66,10 @@ trait EntityContainer {
   /**
    * Stores the entity to the EntityContainer, and returns its id.
    * The entity should not already be stored.
+   *
+   * Calls the onInit method of the entity with the initializationParameters once the entity has been stored.
    */
-  def storeEntity( entity : Entity ) : EntityId
+  def storeEntity( entity : Entity, initializationParameters : Parameters ) : EntityId
 
   /**
    * Removes the entity from the EntityContainer.

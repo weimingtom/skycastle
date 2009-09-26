@@ -28,6 +28,7 @@ class ActivityEntity extends Entity {
   final def joinActivity( caller : EntityId, parameters : Parameters ) {
     if (!hasMember( caller )) {
       addMember( caller )
+      callOtherEntity( caller, 'joinedActivity, status )
       onMemberJoined( caller, parameters )
     }
   }
@@ -40,6 +41,7 @@ class ActivityEntity extends Entity {
   final def leaveActivity( caller : EntityId, parameters : Parameters  ) {
     if (hasMember( caller )) {
       removeMember( caller )
+      callOtherEntity( caller, 'leftActivity, status )
       onMemberleft( caller, parameters )
     }
   }

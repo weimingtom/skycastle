@@ -3,6 +3,9 @@ package org.skycastle.entity.entitycontainer
 
 import collection.mutable.HashMap
 import util.Parameters
+import util.ParameterChecker._
+
+
 /**
  * A straightforward single-threaded, non-persistent EntityContainer.
  * 
@@ -21,7 +24,7 @@ class SimpleEntityContainer extends EntityContainer {
     id
   }
 
-  def storeEntity(entity: Entity) : EntityId = {
+  def storeEntity(entity: Entity, initializationParameters : Parameters) : EntityId = {
 
     if (entity.id != null) throw new IllegalStateException( "Can not store entity, it already has an id.  Entity = " + entity )
     
@@ -31,7 +34,7 @@ class SimpleEntityContainer extends EntityContainer {
     entity.container = this
     entities.put( id, entity )
 
-    entity.initEntity()
+    entity.initEntity( initializationParameters )
 
     id
   }
@@ -53,14 +56,11 @@ class SimpleEntityContainer extends EntityContainer {
 
 
   def bindName(name: String, entity: Entity) {
-    // TODO: Log warning & ignore on null entity or null name?
-    if (entity == null) throw new IllegalArgumentException("Entity should not be null")
-    if (name== null) throw new IllegalArgumentException("Name should not be null")
+    requireNotNull( entity, 'entity )
+    requireNotNull( name, 'name )
+    if (entity.id == null) throw new IllegalArgumentException("Entity should already be added to an EntityContainer.")
 
-    val id = if (entity.id != null) entity.id
-             else storeEntity( entity )
-
-    namedEntities.put( name, id )
+    namedEntities.put( name, entity.id )
   }
 
   def getNamedEntity(name: String) : Option[Entity] = getEntity( namedEntities.getOrElse( name, null ) )

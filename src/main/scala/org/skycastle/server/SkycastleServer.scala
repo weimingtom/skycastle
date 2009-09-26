@@ -1,13 +1,18 @@
 package org.skycastle.server
 
-import _root_.org.skycastle.entity.EntityId
 import com.sun.sgs.app._
+import content.account.client.ClientSideAccountEntity
 import content.account.server.{ServerSideAccountEntity, AccountManagedObject}
 import content.activities.activitybrowser.ActivityBrowser
+import content.activities.chat.Conversation
+import content.activities.textedit.TexteditActivity
 import content.activity.ActivityEntity
+import content.factory.SimpleEntityFactory
 import entity.entitycontainer.darkstar.DarkstarEntityContainer
 import entity.tilemap.{TilemapEntity}
+import entity.{Entity, EntityId}
 import java.util.Properties
+import network.Message
 import skycastle.util.Parameters
 
 
@@ -20,6 +25,7 @@ import skycastle.util.Parameters
 @serializable
 class SkycastleServer extends AppListener {
 
+  var topLevelActivityId : EntityId = null
 
   /**
    * This is called to initialize the server
@@ -28,23 +34,19 @@ class SkycastleServer extends AppListener {
 
     ServerLogger.logger.info("Skycastle Server Started")
 
-    // Try to load an initial game from a specified file in a default storage format
+    // Try to load an initial activity from a specified file in a default storage format
     // TODO
 
-    // If no initial game specified, instantiate the standard game (which allows the admin to set up & edit games).
-    // TODO
+    // If no initial activity is specified, instantiate the standard activity browser with some example applications:
 
-    // Store a reference to the top level game that users are added to on login.
-    // TODO
+    // Set up activity browser
+    val browser : ActivityBrowser = new ActivityBrowser()
+    topLevelActivityId = DarkstarEntityContainer.storeEntity( browser, null )
+    DarkstarEntityContainer.bindName( "topLevelActivity", browser )
 
-
-    // TODO: Create initial activity types..
-    val textEditorFactoryId : EntityId = null
-
-    val topLevelActivityBrwoser : ActivityBrowser = new ActivityBrowser()
-    topLevelActivityBrwoser.addActivityType( 'textEditor, textEditorFactoryId, Parameters() )
-    DarkstarEntityContainer.bindName( "topLevelActivity", topLevelActivityBrwoser )
-
+    // Create initial activity types
+    createActivityType( browser, "Text Editor", "Collaborative multi-user text editor!", classOf[TexteditActivity], Parameters() )
+    createActivityType( browser, "Chat", "Multi-user conversation!", classOf[Conversation], Parameters() )
   }
 
   /**
@@ -62,23 +64,38 @@ class SkycastleServer extends AppListener {
       dataManager.getBinding(userId).asInstanceOf[AccountManagedObject]
     } catch {
       case e: NameNotBoundException => {
+        // Create account for new player
         ServerLogger.logInfo( "New player account created: " + userId)
-        val a = new AccountManagedObject( new ServerSideAccountEntity() )
+        val accountManagedObject = new AccountManagedObject( new ServerSideAccountEntity() )
 
-        DarkstarEntityContainer.storeManagedEntity( a )
+        DarkstarEntityContainer.storeManagedEntity( accountManagedObject, null )
 
-        dataManager.setBinding(userId, a)
+        dataManager.setBinding(userId, accountManagedObject)
 
-        a.init()
+        accountManagedObject.init()
 
-        // TODO: Send user some interface or similar for joining server activities etc.
-        a
+        accountManagedObject
       }
     }
 
     account.setSession( session )
 
+    // Tell the client the ID of the top level activity.
+    account.sendMessage( new Message( ServerSideAccountEntity.SERVER_ACCOUNT_ID,
+                                      ClientSideAccountEntity.CLIENT_ACCOUNT_ID, 
+                                      'setMainActivity,
+                                      Parameters( 'id -> topLevelActivityId ) ) )
+
     account
+  }
+
+
+  private def createActivityType( browser : ActivityBrowser, name : String, description : String, kind : Class[_ <: ActivityEntity], creationParameters : Parameters ) : EntityId = {
+    val info = Parameters( 'name -> name, 'description -> description )
+    val activityEntity = new SimpleEntityFactory( info, kind.getName, kind, creationParameters, null )
+    val activityId = DarkstarEntityContainer.storeEntity( activityEntity, null )
+    browser.addActivityType( Symbol(name), activityId )
+    activityId
   }
 
 }

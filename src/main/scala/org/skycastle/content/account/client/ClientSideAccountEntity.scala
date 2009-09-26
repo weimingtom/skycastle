@@ -2,8 +2,9 @@ package org.skycastle.content.account.client
 
 
 import _root_.org.skycastle.content.account.server.ServerSideAccountEntity
-import _root_.org.skycastle.entity.{EntityId, Entity}
 import _root_.org.skycastle.util.Parameters
+import activity.ActivityClient
+import entity.{parameters, EntityId, Entity}
 import java.net.{PasswordAuthentication}
 import java.lang.String
 import network.{Message}
@@ -37,7 +38,7 @@ final class ClientSideAccountEntity extends Entity {
   def isConnected: Boolean = connected
 
 
-  override protected def onInit() {
+  override protected def onInit( creationParameters : Parameters ) {
     clientNetwork = new ClientNetwork( id, onMessage, onConnected, onDisconnected, getPassword)
   }
 
@@ -53,6 +54,17 @@ final class ClientSideAccountEntity extends Entity {
     clientNetwork.disconnect
   }
 
+
+  /**
+   * Called by server, specifies the id of the main activity on the server that the client should initially join.
+   */
+  @parameters( "id" )
+  def setMainActivity( activityId : EntityId ) {
+    // Create activity client entity to show the activity UI and provide the activity with user input.
+    // TODO: Give the client a panel / tab in the UI
+    val client = new ActivityClient()
+    container.storeEntity( client, Parameters( 'activityId -> activityId ) )
+  }
 
 
   override def callContained(caller: EntityId, innerEntityId: EntityId, actionId: Symbol, parameters: Parameters) {

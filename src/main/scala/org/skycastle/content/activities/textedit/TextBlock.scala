@@ -9,7 +9,8 @@ import network.Transferable
  * 
  * @author Hans Haggstrom
  */
-
+@serializable
+@SerialVersionUID(1)
 abstract class TextBlock( author : EntityId ) extends Transferable {
 
   def addText( text : String )

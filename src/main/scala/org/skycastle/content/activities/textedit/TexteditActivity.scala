@@ -12,6 +12,8 @@ import util.Parameters
  * 
  * @author Hans Haggstrom
  */
+@serializable
+@SerialVersionUID(1)
 abstract class TexteditActivity extends ActivityEntity {
 
   private var text = null

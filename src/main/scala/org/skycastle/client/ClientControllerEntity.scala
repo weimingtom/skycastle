@@ -53,7 +53,7 @@ class ClientControllerEntity extends Entity {
     screen.addComponent( "button", 'login, 'root, Parameters( 'text -> "Login", 'calledEntity -> id, 'calledAction -> 'connectToServer, 'actionParameters -> Map( 'url -> 'serverField, 'port -> 'portField, 'userName -> 'userField ) ) )
 
 
-    container.storeEntity( screen )
+    container.storeEntity( screen, null )
 
     set( 'uiId, screen.id )
     addRoleMember( 'connect, screen.id )
@@ -85,7 +85,7 @@ class ClientControllerEntity extends Entity {
 
     val account = new ClientSideAccountEntity
 
-    container.storeEntity( account )
+    container.storeEntity( account, null )
 
     account.server = url
     account.port = port

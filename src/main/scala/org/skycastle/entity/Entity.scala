@@ -82,12 +82,14 @@ class Entity extends Properties with LogMethods {
   /**
    * Called after the Entity has been created and added to an EntityContainer.
    */
-  private[entity] final def initEntity() { onInit() }
+  private[entity] final def initEntity( initializationParameters : Parameters ) {
+    onInit( if (initializationParameters == null) Parameters.empty else initializationParameters ) 
+  }
 
   /**
    * Called after the Entity has been created and added to an EntityContainer.
    */
-  protected def onInit() {}
+  protected def onInit( initializationParameters : Parameters ) {}
 
   @users( "roleEditor"  )
   @parameters( "roleId"  )

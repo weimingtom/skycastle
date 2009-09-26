@@ -64,7 +64,7 @@ class EntityTest extends TestCase {
     val entityContainer = new SimpleEntityContainer()
 
     assertNull( entity.id )
-    entityContainer.storeEntity( entity )
+    entityContainer.storeEntity( entity, null )
     assertNotNull( entity.id )
     assertEquals( entityContainer,  entity.container  )
   }

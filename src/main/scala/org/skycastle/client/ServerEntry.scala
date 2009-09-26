@@ -36,7 +36,7 @@ class ServerEntry extends Entity {
       case Some(screen : ScreenEntity) => {
 
         val connection = new UserConnection()
-        container.storeEntity( connection )
+        container.storeEntity( connection, null )
 
         // Make sure the UserConnection can update its UI:
         screen.addRoleMember( 'editor, connection.id )
