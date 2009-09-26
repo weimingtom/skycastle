@@ -2,26 +2,27 @@ package org.skycastle.entity.entitycontainer.darkstar
 
 import _root_.org.skycastle.util.Parameters
 import com.sun.sgs.app.Task
+import network.Message
 
 /**
  * A Darkstar Task that calls an action on an entity.
  */
 @serializable
 @SerialVersionUID( 1 )
-case class ActionCallTask( callerId : EntityId, entityId : EntityId, action : Symbol, parameters : Parameters ) extends Task {
+case class ActionCallTask( message : Message ) extends Task {
 
   @throws(classOf[Exception])
   def run {
 
-    val headEntityId = entityId.headEntityId
+    val headEntityId = message.calledEntity.headEntityId
     DarkstarEntityContainer.getEntity( headEntityId ) match {
       case Some(entity : Entity) => {
-        entityId.tailEntityId match  {
-          case Some( innerEntityId ) => entity.callContained( callerId, entityId, action, parameters )
-          case None => entity.call( callerId, action, parameters )
+        message.calledEntity.tailEntityId match  {
+          case Some( innerEntityId ) => entity.callContained( message )
+          case None => entity.call( message )
         }
       }
-      case None => EntityLogger.logWarning( "Entity "+callerId +" could not call action "+action+" on entity "+entityId+", the entity was not found." )
+      case None => EntityLogger.logWarning( "Entity "+message.callingEntity +" could not call action "+message.calledAction+" on entity "+message.calledEntity+", the entity was not found." )
     }
   }
 }

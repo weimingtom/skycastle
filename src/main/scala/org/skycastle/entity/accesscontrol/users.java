@@ -19,5 +19,5 @@ public @interface users
     /**
      * @return Space separated list of role identifiers that are allowed to call the action method.
      */
-    String value();
+    String value() default "";
 }

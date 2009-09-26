@@ -3,6 +3,7 @@ package org.skycastle.entity.entitycontainer.darkstar
 import _root_.org.skycastle.server.ManagedEntity
 import com.sun.sgs.app.{TaskManager, DataManager, NameNotBoundException, AppContext}
 import java.lang.ClassCastException
+import network.Message
 import util.Parameters
 import util.ParameterChecker._
 
@@ -132,11 +133,11 @@ object DarkstarEntityContainer extends EntityContainer {
   private def getBindingName( name : String ) = "namedEntity_" + name
 
 
-  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: Symbol, parameters: Parameters) {
+  def call(message : Message) {
 
     val taskManager : TaskManager = AppContext.getTaskManager
 
-    taskManager.scheduleTask( ActionCallTask( callingEntity, calledEntity, actionName, parameters ) )
+    taskManager.scheduleTask( ActionCallTask( message ) )
   }
 }
 

@@ -24,6 +24,7 @@ class ActivityEntity extends Entity {
   /**
    * Calls back with avatar entity id? Or just confirmation.
    */
+  @users("everyone")
   @parameters("$callerId, $parameters")
   final def joinActivity( caller : EntityId, parameters : Parameters ) {
     if (!hasMember( caller )) {

@@ -6,6 +6,9 @@ import ParameterChecker._
  */
 object ClassUtils {
 
+  private val classUtilsLogger = new LogUtil("org.skycastle.util.ClassUtils")
+
+
   /**
    * Creates an object by instantiating the specified class with a no-parameters constructor.
    *
@@ -32,6 +35,25 @@ object ClassUtils {
     }
     catch {
       case e : ClassNotFoundException => throw new ObjectCreationException(  "No class named '"+classname+"' found", e )
+    }
+  }
+
+
+  def preloadClasses( classes : Class[_] * ) {
+    ParameterChecker.requireNotNull( classes, 'classes )
+
+    classes foreach preloadClass
+  }
+
+  def preloadClass( clazz : Class[_] ) {
+    ParameterChecker.requireNotNull( clazz, 'clazz )
+
+    try {
+      Class.forName( clazz.getName )
+    }
+    catch {
+      case e =>
+        classUtilsLogger.logWarning( "Could not preload class '"+clazz.getName+"', skipping it. ("+e.getMessage + ")" , e )
     }
   }
 }

@@ -12,7 +12,7 @@ import util.{StringUtils, Parameters}
 @serializable
 @SerialVersionUID(1)
 class ProtocolNegotiator( isServer : Boolean,
-                          parameters : Parameters,
+                          ownParameters : Parameters,
                           outgoingDataListener : ByteBuffer => Unit,
                           onProtocolNegotiationSuccess : (Protocol, Parameters) => Unit,
                           onProtocolNegotiationFail : (String, Parameters) => Unit ) {
@@ -39,7 +39,7 @@ class ProtocolNegotiator( isServer : Boolean,
 
       // The server is the one who starts the exchange
       if ( isServer ) {
-        send( parameters ++ Parameters(
+        send( ownParameters ++ Parameters(
           'supportedProtocols -> stripRowSeparators( supportedProtocolsAsString ) ) )
       }
     }
@@ -69,7 +69,7 @@ class ProtocolNegotiator( isServer : Boolean,
       else handleClient( parameters )
     }
     else {
-      ProtocolLogger.logInfo( "Negotiation is over, but we still got a "+buffer.capacity+" bytes sized datapackage to the ProtocolNegotiator.  Ignoring it." )
+      ProtocolLogger.logWarning( "Negotiation is over, but we still got a "+buffer.capacity+" bytes sized datapackage to the ProtocolNegotiator.  Ignoring it." )
     }
 
   }
@@ -88,7 +88,7 @@ class ProtocolNegotiator( isServer : Boolean,
         onProtocolNegotiationSuccess( protocol, parameters )
 
       }
-      case None => {
+      case _ => {
 
         // We didn't find any matching protocol.
         send( Parameters( 'selectedProtocol -> "" ) )
@@ -121,7 +121,7 @@ class ProtocolNegotiator( isServer : Boolean,
       storedServerParams = parameters
 
       // Send client info to server
-      send( parameters ++
+      send( ownParameters ++
             Parameters( 'supportedProtocols -> supportedProtocolsAsString ) )
     }
   }

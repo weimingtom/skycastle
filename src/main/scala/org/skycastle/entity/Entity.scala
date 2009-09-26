@@ -94,6 +94,8 @@ class Entity extends Properties with LogMethods {
   @users( "roleEditor"  )
   @parameters( "roleId"  )
   def addRole( roleId : Symbol ) {
+    requireNotNull(roleId, 'roleId)
+
     // TODO: Check users id syntax?  No special chars, java style identifier?
     if (roleId != null) {
       getRole(roleId) match {
@@ -106,12 +108,17 @@ class Entity extends Properties with LogMethods {
   @users( "roleEditor"  )
   @parameters( "roleId"  )
   def removeRole( roleId : Symbol ) {
+    requireNotNull(roleId, 'roleId)
+
     roles = roles.remove( _.roleId == roleId )
   }
 
   @users( "roleEditor"  )
   @parameters( "roleId, member"  )
   def addRoleMember( roleId : Symbol, member : RoleMember ) {
+    requireNotNull(roleId, 'roleId)
+    requireNotNull(member, 'member)
+
     getRole(roleId) match {
       case Some(role:Role) => role.addMember( member )
       case None => logWarning( "Can not add '"+member+"' to role '"+roleId+"', no such role found." )
@@ -121,6 +128,9 @@ class Entity extends Properties with LogMethods {
   @users( "roleEditor"  )
   @parameters( "roleId, member" )
   def removeRoleMember( roleId : Symbol, member : RoleMember ) {
+    requireNotNull(roleId, 'roleId)
+    requireNotNull(member, 'member)
+
     getRole(roleId) match {
       case Some(role:Role) => role.removeMember( member )
       case None => logWarning( "Can not remove '"+member+"' from role '"+roleId+"', no such role found." )
@@ -130,16 +140,25 @@ class Entity extends Properties with LogMethods {
   @users( "roleEditor"  )
   @parameters( "roleId, actionId"  )
   def addRoleActionCapability( roleId : Symbol, allowedAction : Symbol ) {
+    requireNotNull(roleId, 'roleId)
+    requireNotNull(allowedAction, 'allowedAction)
+
     addRoleCapability( roleId, ActionCapability( allowedAction ) )
   }
 
   @users( "roleEditor"  )
   @parameters( "roleId, actionId"  )
   def removeRoleActionCapability( roleId : Symbol, allowedAction : Symbol ) {
+    requireNotNull(roleId, 'roleId)
+    requireNotNull(allowedAction, 'allowedAction)
+
     removeRoleCapability( roleId, ActionCapability( allowedAction ) )
   }
 
   def addRoleCapability( roleId : Symbol, capability : Capability ) {
+    requireNotNull(roleId, 'roleId)
+    requireNotNull(capability, 'capability)
+
     getRole(roleId) match {
       case Some(role:Role) => role.addCapability( capability )
       case None => logWarning( "Can not add capability '"+capability+"' to role '"+roleId+"', no such role found." )
@@ -147,6 +166,9 @@ class Entity extends Properties with LogMethods {
   }
 
   def removeRoleCapability( roleId : Symbol, capability : Capability ) {
+    requireNotNull(roleId, 'roleId)
+    requireNotNull(capability, 'capability)
+
     getRole(roleId) match {
       case Some(role:Role) => role.removeCapability( capability )
       case None => logWarning( "Can not remove capability '"+capability+"' from role '"+roleId+"', no such role found." )
@@ -166,12 +188,12 @@ class Entity extends Properties with LogMethods {
       roles.exists( _.allowsCall( caller, actionId ) )
   }
 
-  
+  def call( message : Message ) :Unit = call( message.callingEntity, message.calledAction, message.parameters )
 
   /**
    * Call an action available in this entity.
    */
-  def call(caller: EntityId, actionId: Symbol, parameters: Parameters) {
+  def call( caller : EntityId, actionId : Symbol, parameters : Parameters  ) :Unit = {
 
     currentCaller = caller
     currentAction = actionId
@@ -180,15 +202,14 @@ class Entity extends Properties with LogMethods {
       ensureActionMethodsLoaded()
 
       if ( callAllowed(caller, actionId) ) {
-        if (!callDefaultAction(actionId, parameters))
-          if (!callBuiltinAction(actionId, parameters))
-            if(!callActionMethod(caller, actionId, parameters))
-              if(!callDynamicAction(caller, actionId, parameters))
-                logWarning( "Caller '"+caller+"' tried to call action '"+actionId+"' on entity "+id+", " +
-                            "but no such action found.  Ignoring call." )
+        if (!callBuiltinAction(actionId, parameters))
+          if(!callActionMethod(caller, actionId, parameters))
+            if(!callDynamicAction(caller, actionId, parameters))
+              logWarning( "Caller '"+caller+"' tried to call action '"+actionId+"' on entity "+id+", " +
+                          "but no such action found.  Ignoring call." )
       }
       else {
-        logWarning( "Caller '"+caller+"' is not authorized to call action '"+actionId+"' on entity "+id+".  Ignoring call." )
+        logWarning( "Caller '"+caller+"' is not authorized to call action '"+actionId+"' on entity "+id+" of type '"+getClass.getName+"', or no such method found.  Ignoring call." )
       }
     } catch {
        case e : Throwable => {
@@ -206,8 +227,8 @@ class Entity extends Properties with LogMethods {
    * This is used for example for the connection Entities between the client and server.
    * Override if necessary, default implementation will just log an error.
    */
-  def callContained( innerEntityId : EntityId, caller: EntityId, actionId: Symbol, parameters: Parameters ) {
-    logError( "The entity "+id+" doesn't support inner entities.  '"+caller+"' tried to call action '"+actionId+"' with parameters '"+parameters+"' on inner entity "+innerEntityId+"." )
+  def callContained( message : Message ) {
+    logError( "The entity "+id+" doesn't support inner entities.  '"+message.callingEntity+"' tried to call action '"+message.calledAction+"' with parameters '"+message.parameters+"' on inner entity "+message.calledEntity+"." )
   }
 
   private def callDynamicAction( caller: EntityId, actionId: Symbol, parameters: Parameters ) : Boolean = {
@@ -244,7 +265,7 @@ class Entity extends Properties with LogMethods {
           val roleAnnotation : users = m.getAnnotation( classOf[users] )
 
           val parameterMapping = commaSeparatedStringToSymbolList( actionAnnotation.value )
-          val roles = commaSeparatedStringToSymbolList( roleAnnotation.value )
+          val roles = commaSeparatedStringToSymbolList( if( roleAnnotation==null) "" else roleAnnotation.value )
 
           if (parameterMapping.size == m.getParameterTypes.length) {
 
@@ -278,6 +299,12 @@ class Entity extends Properties with LogMethods {
   }
 
   private def ensureActionMethodsLoaded() {
+
+    if (!hasRole('everyone)) {
+      addRole('everyone)
+      addRoleMember( 'everyone, Everyone )
+    }
+    
     if (actionMethods == null) actionMethods = findActionMethods()
 
     // TODO: This will add duplicate capability entries for roles when the class is de-serialized, fix?
@@ -299,19 +326,6 @@ class Entity extends Properties with LogMethods {
    * Return true if the action was handled, false if not.
    */
   protected def callBuiltinAction(actionName: Symbol, parameters: Parameters): Boolean = { false }
-
-  /**
-   * Handles default actions provided for all entities.
-   * Return true if the action was handled, false if not.
-   */
-  private def callDefaultAction(actionName: Symbol, parameters: Parameters): Boolean = {
-    actionName match {
-      case 'addRole => addRole( parameters.getAs[Symbol]('roleId, null )  ) ; true
-      case 'removeRole => removeRole( parameters.getAs[Symbol]('roleId, null )  ) ; true
-      // TODO: The rest
-      case _ => false
-    }
-  }
 
 
   def logger : Logger = EntityLogger.logger

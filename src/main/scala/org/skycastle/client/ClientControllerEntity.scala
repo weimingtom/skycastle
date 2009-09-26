@@ -3,7 +3,7 @@ package org.skycastle.client
 
 import content.account.client.ClientSideAccountEntity
 import entity.accesscontrol.{users, ActionCapability}
-import entity.{EntityId, Entity}
+import entity.{parameters, EntityId, Entity}
 import ui.{ScreenEntity, Ui}
 import util.Parameters
 /**
@@ -70,18 +70,9 @@ class ClientControllerEntity extends Entity {
    */
   // TODO: Refactor connection to a separate client side server representation object,
   // and have the connection take username etc as parameters
-  override protected def callBuiltinAction(actionName: Symbol, parameters: Parameters) = {
-
-    actionName match {
-      case 'connectToServer => connectToServer( parameters.getAs[String]('url, null ), parameters.getAs[String]('port, null ), parameters.getAs[String]('userName, null ), null  ) ; true
-
-      case _ => false
-    }
-    
-  }
-
   @users("connect")
-  def connectToServer( url : String, port : String, userName : String, uiContainerForServer : Ui ) {
+  @parameters( "url, port, userName" )
+  def connectToServer( url : String, port : String, userName : String ) {
 
     val account = new ClientSideAccountEntity
     

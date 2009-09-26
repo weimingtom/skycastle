@@ -2,9 +2,9 @@ package org.skycastle.content.account.server
 
 import _root_.org.skycastle.network.{Message, NetworkConnection}
 import _root_.org.skycastle.server.ManagedEntity
-import _root_.org.skycastle.util.Parameters
 import com.sun.sgs.app._
 import java.nio.ByteBuffer
+import skycastle.util.{TimerUtil, Parameters}
 
 /**
  * 
@@ -55,7 +55,9 @@ class AccountManagedObject( accountEntity : ServerSideAccountEntity, parameters 
   }
 
   def receivedMessage(buffer: ByteBuffer) {
-    network.handleIncomingData( buffer )
+    TimerUtil.timeAndLog( "handling of message from client to " + accountEntity.id ) {
+      network.handleIncomingData( buffer )
+    }
   }
 
   def sendDataToClient(buffer: ByteBuffer) {
@@ -63,7 +65,7 @@ class AccountManagedObject( accountEntity : ServerSideAccountEntity, parameters 
       currentSessionRef.get.send( buffer )
     }
     else {
-      accountEntity.logDebug( "Tried to send data to client although no client is connected.  Message ignored." )
+      accountEntity.logWarning( "Tried to send data to client although no client is connected.  Message ignored." )
     }
   }
 
@@ -78,7 +80,7 @@ class AccountManagedObject( accountEntity : ServerSideAccountEntity, parameters 
 
 
 
-  def onProtocolNegotiationFail( failureReason : String, serverProperties : Parameters ) {
+  def onProtocolNegotiationFail( failureReason : String, properties : Parameters ) {
     handleDisconnect( true, "protocol negotiation failed, closing connection", failureReason )
   }
 

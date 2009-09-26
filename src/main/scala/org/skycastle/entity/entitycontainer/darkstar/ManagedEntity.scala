@@ -5,6 +5,7 @@ import _root_.org.skycastle.entity.entitycontainer.EntityContainer
 import com.sun.sgs.app.{NameNotBoundException, DataManager, ManagedObject, AppContext}
 import entity.entitycontainer.darkstar.DarkstarEntityContainer
 import entity.{EntityLogger, EntityId, Entity}
+import network.Message
 import util.Parameters
 /**
  * ManagedObject wrapper for an Entity.
@@ -29,8 +30,7 @@ case class ManagedEntity[T <: Entity]( entity : T ) extends ManagedObject with E
   def getNamedEntityForUpdate(name: String)                   = DarkstarEntityContainer.getNamedEntityForUpdate( name )
   def removeBinding(name: String)                             = DarkstarEntityContainer.removeBinding( name )
   
-  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: Symbol, parameters: Parameters) {
-    DarkstarEntityContainer.call( callingEntity, calledEntity, actionName, parameters )
-  }
+  def call( message : Message )                               = DarkstarEntityContainer.call( message )
+
 }
 

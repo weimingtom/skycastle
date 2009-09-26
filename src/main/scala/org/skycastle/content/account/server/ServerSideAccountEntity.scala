@@ -12,6 +12,7 @@ import util.Parameters
  *
  * @author Hans Haggstrom
  */
+// TODO: Merge similar parts of ClientSideAccountEntity and ServerSideAccountEntity
 @serializable
 @SerialVersionUID(1)
 class ServerSideAccountEntity extends Entity {
@@ -32,10 +33,10 @@ class ServerSideAccountEntity extends Entity {
     accountConnection.disconnect
   }
 
-  override def callContained(caller: EntityId, innerEntityId: EntityId, actionId: Symbol, parameters: Parameters) {
+  override def callContained(message : Message) {
     // TODO: Check if the caller has the right to send messages to the client?
 
-    sendMessageToClient( Message( caller, innerEntityId, actionId, parameters ) )
+    sendMessageToClient( message )
   }
 
   def onMessageFromClient( message : Message )  {
@@ -43,7 +44,7 @@ class ServerSideAccountEntity extends Entity {
 
     // Dispatch to the called entity.
     // The called entity will need to allow this entity to execute the action for it to actually take place.
-    callOtherEntity( message )
+    container.call( message )
   }
 
   def onDisconnected( reason : String ) {
@@ -53,7 +54,8 @@ class ServerSideAccountEntity extends Entity {
   def onConnected( clientParameters : Parameters ) {
     logInfo( "Connected to client.  Client properties are: " + clientParameters )
 
-    clientMainEntityId = clientParameters.getEntityId( 'mainEntity, null )
+    val clientMainEntityString = clientParameters.getString( 'mainEntity, null )
+    clientMainEntityId = if (clientMainEntityString == null) null else new EntityId( id.path :::  List( clientMainEntityString) )
   }
 
 

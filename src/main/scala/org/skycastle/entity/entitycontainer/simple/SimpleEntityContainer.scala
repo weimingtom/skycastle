@@ -2,6 +2,7 @@ package org.skycastle.entity.entitycontainer
 
 
 import collection.mutable.HashMap
+import network.Message
 import util.Parameters
 import util.ParameterChecker._
 
@@ -16,7 +17,7 @@ class SimpleEntityContainer extends EntityContainer {
   private val entities = new HashMap[EntityId, Entity]()
   private val namedEntities = new HashMap[String, EntityId]()
   private var nextFreeId : Long = 1L
-  private var queuesActionCalls : List[ActionCall] = Nil
+  private var queuesActionCalls : List[Message] = Nil
 
   private def nextId() : Long = {
     val id = nextFreeId
@@ -72,8 +73,8 @@ class SimpleEntityContainer extends EntityContainer {
   }
 
 
-  def call(callingEntity: EntityId, calledEntity: EntityId, actionName: Symbol, parameters: Parameters)  {
-    queuesActionCalls = queuesActionCalls ::: List(ActionCall( callingEntity, calledEntity, actionName, parameters ))
+  def call(message : Message)  {
+    queuesActionCalls = queuesActionCalls ::: List( message )
   }
 
 
@@ -88,17 +89,17 @@ class SimpleEntityContainer extends EntityContainer {
     queuesActionCalls = Nil
 
     // Execute all calls
-    actionsToDo foreach { call : ActionCall =>
+    actionsToDo foreach { call : Message =>
 
       val headEntityId = call.calledEntity.headEntityId
       getEntity( headEntityId ) match {
         case Some(entity : Entity) => {
           call.calledEntity.tailEntityId match  {
-            case Some( innerEntityId ) => entity.callContained( call.callingEntity, call.calledEntity, call.actionName, call.parameters )
-            case None => entity.call( call.callingEntity, call.actionName, call.parameters )
+            case Some( innerEntityId ) => entity.callContained( call )
+            case None => entity.call( call )
           }
         }
-        case _ => EntityLogger.logDebug( "Can not process action call " +call+ ", entity "+headEntityId +" not found." )
+        case _ => EntityLogger.logError( "Can not process action call " +call+ ", entity "+headEntityId +" not found." )
       }
     }
   }
@@ -110,7 +111,7 @@ class SimpleEntityContainer extends EntityContainer {
     while (true ) {
       update( System.currentTimeMillis )
 
-      Thread.sleep( 10 )
+      Thread.sleep( 1 )
     }
   }
 

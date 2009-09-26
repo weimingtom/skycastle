@@ -1,6 +1,7 @@
 package org.skycastle.entity.entitycontainer
 
 
+import network.Message
 import util.{ClassUtils, Parameters}
 import util.ParameterChecker._
 
@@ -82,11 +83,17 @@ trait EntityContainer {
   def getNamedEntityForUpdate( name : String ) : Option[Entity]
   def removeBinding( name : String )
 
+  /**
+   * Asynchronously invokes the specified action on the specified entity, assuming the calling entity has the access rights for it.
+   */
+  def call( message : Message )
 
   /**
    * Asynchronously invokes the specified action on the specified entity, assuming the calling entity has the access rights for it.
    */
-  def call( callingEntity : EntityId, calledEntity : EntityId, actionName : Symbol, parameters : Parameters )
+  def call( callingEntity : EntityId, calledEntity : EntityId, actionName : Symbol, parameters : Parameters ) {
+    call( Message( callingEntity, calledEntity, actionName, parameters ) )
+  }
 
   /**
    * Asynchronously invokes the specified action on the specified entity, assuming the calling entity has the access rights for it.

@@ -1,6 +1,7 @@
 package org.skycastle.entity.script
 
 
+import network.Message
 import util.Parameters
 
 /**

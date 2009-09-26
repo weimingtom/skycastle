@@ -16,6 +16,7 @@ import network.{Message}
  *
  * @author Hans Haggstrom
  */
+// TODO: Merge similar parts of ClientSideAccountEntity and ServerSideAccountEntity
 final class ClientSideAccountEntity extends Entity {
   var server: String = "localhost"
   var port: String = "1139"
@@ -52,10 +53,10 @@ final class ClientSideAccountEntity extends Entity {
 
 
 
-  override def callContained(caller: EntityId, innerEntityId: EntityId, actionId: Symbol, parameters: Parameters) {
+  override def callContained(message : Message) {
     // TODO: Check if the caller has the right to send messages to the server?
 
-    sendMessageToServer( Message( caller, innerEntityId, actionId, parameters ) )
+    sendMessageToServer( message )
   }
 
 
@@ -75,12 +76,14 @@ final class ClientSideAccountEntity extends Entity {
 
     logInfo("Connected to server.  Server properties are: " + serverProperties)
 
-    serverMainActivity = serverProperties.getEntityId( 'mainActivity, null )
+    val entityIdString = serverProperties.getString( 'mainActivity, null )
 
-    if (serverMainActivity == null) {
+    if (entityIdString == null) {
+      serverMainActivity = null
       logError( "The server specified no id for a mainActivity to connect to!" )
     }
     else {
+      serverMainActivity = new EntityId( id.path ::: List( entityIdString ) )
       // Create activity client entity to show the activity UI and provide the activity with user input.
       // TODO: Give the client a panel / tab in the UI
       val client = new ActivityClient()
@@ -121,7 +124,7 @@ final class ClientSideAccountEntity extends Entity {
 
     // Dispatch to the called entity.
     // The called entity will need to allow this entity to execute the action for it to actually take place.
-    callOtherEntity( message )
+    container.call( message )
 
   }
 
