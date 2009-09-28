@@ -144,6 +144,26 @@ class ActivityBrowser extends ActivityEntity {
     }
   }
 
+
+  override def createClientUi(client: EntityId) {
+
+    // Collecton with activities & statuses
+
+    // Collection with available activity types
+
+    // List of activities, showing activity collection
+    // Join button next to it, for joining the selected activity (only activate button when activity selected)
+    // Can also doubleclick activity for join
+
+    // Drop down selector with available activity types
+    // Create button next to it
+
+    // Listen to changes to activities, update activity collection
+
+    // Listen to changes to available activity types, update ui
+
+  }
+
   private def notifyMemberOfUpdate(member: EntityId, activityId: EntityId, activityInfo: Parameters) {
     callOtherEntity(member, 'activityUpdated, Parameters('activityId -> activityId, 'info -> activityInfo))
   }

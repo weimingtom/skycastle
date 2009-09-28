@@ -1,10 +1,9 @@
 package org.skycastle.content.composite
 
 
-import entity.accesscontrol.ActionCapability
-import entity.Entity
-import util.Parameters
-
+import entity.accesscontrol.{users, ActionCapability}
+import entity.{parameters, Entity}
+import util.{ClassUtils, Parameters}
 /**
  * An entity that is composed from several parametrized parts of some types, and where some parts
  * again may be composed of child parts.
@@ -28,28 +27,26 @@ import util.Parameters
 
 // IDEA: Maybe send failure log messages to the calling entity, allowing it to show them e.g. in a feedback messages view in a developers client?
 // -> Makes troubleshooting much easier
+
+// TODO: Should this be implemented as an EntityContainer?
 @serializable
 @SerialVersionUID( 1 )
-class CompositeEntity extends Entity {
+abstract class CompositeEntity extends Entity {
 
   private var components: Map[Symbol, COMPONENT] = Map[Symbol, COMPONENT]()
 
   type COMPONENT <: CompositePart
-  type VIEW
 
-  createEditorRole()
-  
-  private def createEditorRole() {
-    addRole( 'editor )
-    addRoleCapability( 'editor, ActionCapability( 'addComponent ) )
-    addRoleCapability( 'editor, ActionCapability( 'updateComponent ) )
-    addRoleCapability( 'editor, ActionCapability( 'removeComponent ) )
-  }
+  val componentClass : Class[COMPONENT]
+
+  addRole( 'editor )
 
   def getComponent( id : Symbol ) : Option[COMPONENT] = components.get( id )
-  
+
+  @users( "editor" )
+  @parameters( "componentType, id, parent, $parameters" )
   def addComponent( componentType: String, id: Symbol, parent: Symbol, parameters: Parameters ) {
-    logTrace( "Adding component of type " + componentType+ " with id "+id+", parent "+parent+", and parameters " + parameters )
+    //logTrace( "Adding component of type " + componentType+ " with id "+id+", parent "+parent+", and parameters " + parameters )
 
     if (componentType == null) {
       logWarning("The componentType was null when trying to add a component.  The component parameters were " + parameters + ". Ignoring the add.")
@@ -87,6 +84,8 @@ class CompositeEntity extends Entity {
 
   }
 
+  @users( "editor" )
+  @parameters( "id, $parameters" )
   def updateComponent( id: Symbol, parameters: Parameters ) {
     components.get(id) match {
       case Some(component : CompositePart) => {
@@ -98,6 +97,8 @@ class CompositeEntity extends Entity {
     }
   }
 
+  @users( "editor" )
+  @parameters( "id" )
   def removeComponent( id: Symbol ) {
     components.get(id) match {
       case Some(component : CompositePart) => {
@@ -111,43 +112,15 @@ class CompositeEntity extends Entity {
   }
   
   protected def createComponentOfType(componentType: String, componentId : Symbol): COMPONENT = {
-    // Try to find the classname from the specified approved classnames or paths
-    // TODO
-
-    // Create an instance of the class.  No constructor parameters are assumed.
-    // TODO
-
-    // In the event of failure, log the reason and return null
-    logWarning("Unknown component type '" + componentType + "' when trying to add component '"+componentId+"'.  Ignoring the add.")
-    // TODO
-
-    null.asInstanceOf[COMPONENT]
-  }
-
-  protected override def callBuiltinAction(actionName: Symbol, parameters: Parameters): Boolean = {
-    actionName match {
-      case 'addComponent => {
-        val componentType = parameters.getAs[String]('componentType, null)
-        val id = parameters.getAs[Symbol]('id, null)
-        val parentId = parameters.getAs[Symbol]('parent, null)
-        addComponent(componentType, id, parentId, parameters)
-        true
-      }
-      case 'updateComponent => {
-        val id = parameters.getAs[Symbol]('id, null)
-        updateComponent(id, parameters)
-        true
-      }
-      case 'removeComponent => {
-        val id = parameters.getAs[Symbol]('id, null)
-        removeComponent(id)
-        true
-      }
-      case _ => {
-        false
-      }
+    try {
+      ClassUtils.createObject( componentType, componentClass )
+    }
+    catch {
+      case e => logWarning("Could not create component of type '" + componentType + "' when trying to add component '"+componentId+"'.  Ignoring the add.", e)
+                null.asInstanceOf[COMPONENT]
     }
   }
+
 
 }
 

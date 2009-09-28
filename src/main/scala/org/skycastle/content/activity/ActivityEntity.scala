@@ -56,9 +56,7 @@ class ActivityEntity extends Entity {
    */
   @users("activityMember")
   @parameters("$callerId" )
-  def createClientUi( client : EntityId ) {
-    // TODO
-  }
+  def createClientUi( client : EntityId ) {}
 
   /**
    * Adds a listener that is notified about status changes of the activity (e.g. if new users can join, the final outcome when the acticity ends, etc)

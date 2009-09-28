@@ -12,4 +12,6 @@ import composite.CompositeEntity
 class ModelEntity extends CompositeEntity {
   type VIEW = Spatial
   type COMPONENT = ModelPart
+
+  val componentClass = classOf[ModelPart]
 }

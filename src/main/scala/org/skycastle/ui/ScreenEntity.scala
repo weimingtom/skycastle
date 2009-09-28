@@ -24,6 +24,7 @@ class ScreenEntity extends CompositeEntity {
 
   type COMPONENT = Ui
   type VIEW = JComponent
+  val componentClass = classOf[Ui]
 
   override protected def createComponentOfType(componentType: String, componentId: Symbol) : COMPONENT = {
     componentType match {
