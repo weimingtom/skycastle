@@ -147,11 +147,11 @@ class ActivityBrowser extends ActivityEntity {
 
   override def createClientUi(client: EntityId) {
 
-    // Collecton with activities & statuses
-
+    // Collecton with activities & statuses - store in list properties with properties in the client object
     // Collection with available activity types
 
-    // List of activities, showing activity collection
+    // List of activities, showing activity collection.  Specify columns to show, and what data to put in them, and how to visualize that data.
+
     // Join button next to it, for joining the selected activity (only activate button when activity selected)
     // Can also doubleclick activity for join
 

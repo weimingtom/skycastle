@@ -91,6 +91,12 @@ class Entity extends Properties with LogMethods {
    */
   protected def onInit( initializationParameters : Parameters ) {}
 
+  /**
+   * Called before the Entity is removed from an EntityContainer.
+   * Can e.g. be used to remove composite entities.
+   */
+  protected def onRemoved() {}
+
   @users( "roleEditor"  )
   @parameters( "roleId"  )
   def addRole( roleId : Symbol ) {

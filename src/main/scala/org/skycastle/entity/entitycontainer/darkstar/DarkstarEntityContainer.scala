@@ -68,19 +68,19 @@ object DarkstarEntityContainer extends EntityContainer {
   def removeEntity(entityId: EntityId) {
     val dataManager : DataManager = AppContext.getDataManager
 
-    try {
-      entityId.managedObjectName match  {
-        case Some( name ) => {
-          val managedObject = dataManager.getBinding( name )
-          dataManager.removeBinding( name )
-          dataManager.removeObject( managedObject )
+    getEntity( entityId ) match {
+      case Some( entity : Entity ) =>
+        entityId.managedObjectName match  {
+          case Some( name ) => {
+            entity.onRemoved()
+            val managedObject = dataManager.getBinding( name )
+            dataManager.removeBinding( name )
+            dataManager.removeObject( managedObject )
+          }
+          case None => EntityLogger.logWarning( "Can not remove entity "+entityId+" from container "+this+": The Entity is not hosted in this container." )
         }
-        case None => EntityLogger.logWarning( "Can not remove entity "+entityId+" from container "+this+": The Entity is not hosted in this container." )
-      }
-    } catch {
-      case e : NameNotBoundException => EntityLogger.logWarning( "Can not remove entity "+entityId+" from container "+this+": The Entity was not found.", e )
+      case None => EntityLogger.logWarning( "Can not remove entity "+entityId+" from container "+this+": Entity not found." )
     }
-
   }
 
 

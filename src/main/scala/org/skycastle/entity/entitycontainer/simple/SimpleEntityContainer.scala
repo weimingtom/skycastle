@@ -48,7 +48,12 @@ class SimpleEntityContainer extends EntityContainer {
   }
 
   def removeEntity(entityId: EntityId) {
-    if (entityId != null) entities.removeKey( entityId )
+    entities.get( entityId ) match {
+      case (entity : Entity) =>
+        entity.onRemoved()
+        if (entityId != null) entities.removeKey( entityId )
+      case None => logWarning( "Attempt to remove non-existing entity '"+entityId+"', ignoring." )
+    }
   }
 
   def getEntityForUpdate(entityId: EntityId) = {
