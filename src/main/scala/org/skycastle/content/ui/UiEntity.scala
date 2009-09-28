@@ -11,6 +11,7 @@ import entity.Entity
  * @author Hans Haggstrom
  */
 // TODO: Generalize UI, so that both 3D and Swing UI:s will work??
+// TODO: Maybe use same appearance / skinning for 3D UI and swing UI?  Or it might just be complex and hold both back.
 @serializable
 @SerialVersionUID( 1 )
 class UiEntity extends Entity {
