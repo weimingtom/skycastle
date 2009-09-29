@@ -25,6 +25,10 @@ class EntityTest extends TestCase {
     var params : Parameters= null
     var fooList : List[String] = Nil
 
+    @editors()
+    @readers()
+    var lunch : String = "Pizza"
+
     @users( "tester")
     @parameters( "newValue" )
     def setFoo( value : Int ) {
