@@ -95,7 +95,7 @@ class Entity extends Properties with LogMethods {
    * Called before the Entity is removed from an EntityContainer.
    * Can e.g. be used to remove composite entities.
    */
-  protected def onRemoved() {}
+  def onRemoved() {}
 
   @users( "roleEditor"  )
   @parameters( "roleId"  )

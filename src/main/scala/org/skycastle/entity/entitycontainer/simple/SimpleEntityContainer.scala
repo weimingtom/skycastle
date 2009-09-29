@@ -52,7 +52,7 @@ class SimpleEntityContainer extends EntityContainer {
       case (entity : Entity) =>
         entity.onRemoved()
         if (entityId != null) entities.removeKey( entityId )
-      case None => logWarning( "Attempt to remove non-existing entity '"+entityId+"', ignoring." )
+      case None => EntityLogger.logWarning( "Attempt to remove non-existing entity '"+entityId+"', ignoring." )
     }
   }
 
