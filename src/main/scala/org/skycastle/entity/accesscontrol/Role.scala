@@ -38,10 +38,14 @@ final case class Role( roleId : Symbol ) {
   }
 
   def hasCallCapability( actionId : Symbol ) : Boolean = capabilities.exists( _.allowsCall( actionId ) )
+  def hasReadCapability( property : Symbol ) : Boolean = capabilities.exists( _.allowsRead( property ) )
+  def hasWriteCapability( property : Symbol ) : Boolean = capabilities.exists( _.allowsWrite( property ) )
 
-  def allowsCall( caller : EntityId, actionId : Symbol ) : Boolean = {
-    containsEntity( caller ) && hasCallCapability( actionId )
-  }
+  def allowsCall( caller : EntityId, actionId : Symbol ) = containsEntity( caller ) && hasCallCapability( actionId )
+  def allowsRead( caller : EntityId, property : Symbol ) = containsEntity( caller ) && hasReadCapability( property )
+  def allowsWrite( caller : EntityId, property : Symbol ) = containsEntity( caller ) && hasWriteCapability( property )
 
+
+  override def toString = "Role '"+roleId+"', members: "+members.mkString("  ")+", capabilities: "+capabilities.mkString("  ") +"."
 }
 

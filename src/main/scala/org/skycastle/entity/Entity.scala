@@ -198,6 +198,8 @@ class Entity extends Properties with LogMethods {
   @users( "propertyEditor"  )
   @parameters( "property, value"  )
   def setProperty( property : Symbol, value : Any ) {
+    ensurePropertyFieldsLoaded()
+
     // Search for Property fields
     propertyFields.get( property ) match {
       case Some( f ) => f.setValue( value )
@@ -218,6 +220,8 @@ class Entity extends Properties with LogMethods {
   @parameters( "property"  )
   @callback
   def getProperty( property : Symbol ) : Any = {
+    ensurePropertyFieldsLoaded()
+
     // Search for Property fields
     propertyFields.get( property ) match {
       case Some( f ) => f.getValue
@@ -238,6 +242,8 @@ class Entity extends Properties with LogMethods {
   @users( "propertyCreator"  )
   @parameters( "property, value"  )
   def createProperty( property : Symbol, value : Any ) {
+    ensurePropertyFieldsLoaded()
+
     // Search for Property fields, do not allow creation of a propety that would be shadowed by a property field
     // TODO
 
@@ -248,12 +254,30 @@ class Entity extends Properties with LogMethods {
     // TODO
   }
 
-  private def callAllowed( caller: EntityId, actionId: Symbol ) : Boolean = {
+  private def callAllowed( caller: EntityId, actionId: Symbol, parameters : Parameters  ) : Boolean = {
+
+    def callerIsSelf : Boolean = caller == id
+    def actionCallAllowed : Boolean = roles.exists( _.allowsCall( caller, actionId ) )
+    def propertyMethodAllowed( method : Symbol, predicate : (Role, Symbol) => Boolean ) : Boolean = {
+      actionId == method &&
+      ( parameters.getAs[Symbol]( 'property ) match {
+        case Some(property : Symbol) => roles.exists( { predicate( _, property) } )
+        case _ => false
+      } )
+    }
+
+    println("caller = " + caller)
+    println("actionId = " + actionId)
+    println("parameters = " + parameters)
+    println("roles = " + roles.mkString("\n") )
+
     // Check access rights.  By default allow any call by this entity itself.
     // (the identity or privilegies of original caller are not retained when an action invokes another action,
     // instead the identity of the entity that contains the calling action is used.)
-    caller == id ||
-      roles.exists( _.allowsCall( caller, actionId ) )
+    callerIsSelf || 
+      actionCallAllowed ||
+      propertyMethodAllowed('getProperty, { _.allowsRead( caller, _ ) } ) ||
+      propertyMethodAllowed('setProperty, { _.allowsWrite( caller, _ ) } )
   }
 
   def call( message : Message ) :Unit = call( message.callingEntity, message.calledAction, message.parameters )
@@ -267,9 +291,10 @@ class Entity extends Properties with LogMethods {
     currentAction = actionId
 
     try {
+      ensurePropertyFieldsLoaded()
       ensureActionMethodsLoaded()
 
-      if ( callAllowed(caller, actionId) ) {
+      if ( callAllowed(caller, actionId, parameters) ) {
         if (!callBuiltinAction(actionId, parameters))
           if(!callActionMethod(caller, actionId, parameters))
             if(!callDynamicAction(caller, actionId, parameters))

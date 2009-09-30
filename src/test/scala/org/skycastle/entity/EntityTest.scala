@@ -76,6 +76,12 @@ class EntityTest extends TestCase {
     assertEquals( entityContainer,  entity.container  )
   }
 
+  @Test
+  def testRoles {
+
+    // TODO: Easier tests for property editing and calling -> create role collection wrapper.
+
+  }
 
   @Test
   def testSetProperty {
