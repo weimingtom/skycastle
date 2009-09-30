@@ -1,68 +1,29 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
 
-  <!-- Basics -->
-  <groupId>org.skycastle</groupId>
-  <artifactId>skycastle</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
-
-  <!-- Project Information -->
-  <name>Skycastle</name>
-  <description>Multiplayer game project.</description>
-  <url>http://www.skycastle.org</url>
-  <inceptionYear>2009</inceptionYear>
-
-  <!-- Some main library version properties -->
-  <properties>
-    <scala.version>2.7.6</scala.version>
-    <darkstar.version>0.9.10</darkstar.version>
-  </properties>
+import sbt._
 
 
-  <!-- Places to retrieve libraries from -->
-  <repositories>
-    <repository>
-      <id>java.net</id>
-      <name>java.net Maven2 Repository</name>
-      <url>http://download.java.net/maven/2/</url>
-      <layout>default</layout>
-    </repository>
+/**
+ * SBT build script for Skycastle.
+ * 
+ * @author Hans Haggstrom
+ */
+class BuildSkycastle(info: ProjectInfo) extends DefaultProject(info)
+{
 
-    <repository>
-      <id>scala-tools.org</id>
-      <name>Scala-Tools Maven2 Repository</name>
-      <url>http://scala-tools.org/repo-releases</url>
-    </repository>
+  // Add some repositories we use
+  val javaNetRepository = "java.net Maven2 Repository" at "http://download.java.net/maven/2/"
 
-    <!-- A mirror of third party libraries that are not available from any official repository -->
-    <repository>
-      <id>skycastle-central-repository</id>
-      <url>http://zzorn.xiiris.com:8081/nexus/content/groups/public</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>skycastle-snapshots-repository</id>
-      <url>http://zzorn.xiiris.com:8081/nexus/content/groups/public-snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
+  // Dependencies
+  val junitLib = "junit" % "junit" % "4.4"
+  val Lib = "" % "" % ""
+  val Lib = "" % "" % ""
+  val Lib = "" % "" % ""
+  val Lib = "" % "" % ""
+  val Lib = "" % "" % ""
 
-  <!-- Places to retrieve maven plugins from -->
-  <pluginRepositories>
-    <pluginRepository>
-      <id>scala-tools.org</id>
-      <name>Scala-Tools Maven2 Repository</name>
-      <url>http://scala-tools.org/repo-releases</url>
-    </pluginRepository>
-  </pluginRepositories>
 
-  <!-- External libraries used -->
-  <dependencies>
+
+
 
     <!-- Testing -->
     <dependency>
@@ -284,104 +245,5 @@
 -->
   </dependencies>
 
-  <!-- Build configuration -->
-  <build>
+}
 
-    <sourceDirectory>src/main/scala</sourceDirectory>
-
-    <testSourceDirectory>src/test/scala</testSourceDirectory>
-
-    <finalName>skycastle</finalName>
-
-    <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-
-
-      <!-- Scala compile -->
-      <plugin>
-        <groupId>org.scala-tools</groupId>
-        <artifactId>maven-scala-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <scalaVersion>${scala.version}</scalaVersion>
-          <!-- TODO: Require java 1.6
-                    <args>
-                      <arg>-target:jvm-1.5</arg>
-                    </args>
-          -->
-        </configuration>
-      </plugin>
-
-      <!-- Scala eclipse plugin  TODO: Does it work? Remove? -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <downloadSources>true</downloadSources>
-          <buildcommands>
-            <buildcommand>ch.epfl.lamp.sdt.core.scalabuilder</buildcommand>
-          </buildcommands>
-          <additionalProjectnatures>
-            <projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>
-          </additionalProjectnatures>
-          <classpathContainers>
-            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-            <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
-          </classpathContainers>
-        </configuration>
-      </plugin>
-
-      <!-- Creating an executable jar -->
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>src/build/assemble/executable.xml</descriptor>
-          </descriptors>
-          <archive>
-            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-
-    </plugins>
-  </build>
-
-  <!-- Report configuration -->
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.scala-tools</groupId>
-        <artifactId>maven-scala-plugin</artifactId>
-        <configuration>
-          <scalaVersion>${scala.version}</scalaVersion>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
-
-
-  <!-- Configure the version control system used. -->
-  <scm>
-    <connection>scm:svn:https://skycastle.googlecode.com/svn/trunk</connection>
-    <developerConnection>scm:svn:https://skycastle.googlecode.com/svn/trunk</developerConnection>
-    <url>http://skycastle.googlecode.com/svn/trunk/</url>
-  </scm>
-
-
-</project>
