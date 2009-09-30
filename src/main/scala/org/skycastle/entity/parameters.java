@@ -20,8 +20,10 @@ import java.lang.annotation.Target;
 public @interface parameters
 {
     /**
-     * @return Space separated list of parameter names to use when calling the action method.
-     */
+     * @return Comma separated list of parameter names to use when calling the action method.
+     * Special parameter names are $callerId and $parameters, that indicate that the EntityId of the caller,
+      * or the method call parameters object itself should be passed as a input to the parameter.
+      */
     String value() default "";
 }
 

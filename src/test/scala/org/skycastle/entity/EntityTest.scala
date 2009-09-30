@@ -2,6 +2,7 @@ package org.skycastle.entity
 
 
 import _root_.junit.framework.TestCase
+import network.Message
 import org.skycastle.entity.accesscontrol.users
 import entitycontainer.SimpleEntityContainer
 
@@ -25,9 +26,11 @@ class EntityTest extends TestCase {
     var params : Parameters= null
     var fooList : List[String] = Nil
 
-    @editors()
-    @readers()
+    @editors( "tester" )
     var lunch : String = "Pizza"
+
+    @readers( "tester" )
+    var breakfast : String = "Coffeine 100 mg"
 
     @users( "tester")
     @parameters( "newValue" )
@@ -74,6 +77,19 @@ class EntityTest extends TestCase {
   }
 
 
+  @Test
+  def testSetProperty {
+    assertEquals(  "Pizza", testEntity.lunch )
+    testEntity.call( Message( callerEntityid, testEntity.id, 'setProperty, Parameters( 'property -> 'lunch, 'value -> "Chinese" ) ) )
+    assertEquals(  "Chinese", testEntity.lunch )
+  }
+
+  @Test
+  def testSetPropertyWithoutPermission {
+    assertEquals(  "Pizza", testEntity.lunch )
+    testEntity.call( Message( EntityId( "AnonymousCoward" ), testEntity.id, 'setProperty, Parameters( 'property -> 'lunch, 'value -> "Hot Grits" ) ) )
+    assertEquals(  "Pizza", testEntity.lunch )
+  }
 
 
   @Test

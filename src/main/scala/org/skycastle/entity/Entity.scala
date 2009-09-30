@@ -3,13 +3,13 @@ package org.skycastle.entity
 
 import _root_.org.skycastle.entity.entitycontainer.EntityContainer
 import accesscontrol._
+import java.lang.reflect.{AnnotatedElement, Field, Method}
 import java.util.logging.{Logger, Level}
 import script.Script
-import util.{LogMethods, Parameters}
 import util.ParameterChecker._
 import network.Message
-import org.skycastle.util.Properties
-import java.lang.reflect.Method
+import util.{Property, LogMethods, Parameters, Properties}
+import org.skycastle.util.{Properties, Parameters}
 
 /**
  * Represents some mutable object in the game (server or client).
@@ -56,6 +56,10 @@ class Entity extends Properties with LogMethods {
    * The roles for users based security access control to the actions of this Entity.
    */
   private var roles : List[Role] = Nil
+
+  @transient private var actionMethods : Map[ Symbol, ActionMethod ] = null
+  @transient private var propertyFields : Map[ Symbol, PropertyField ] = null
+
 
   /**
    * The ID of the entity that is currently calling an action on this entity, or null if this entity is not processing
@@ -185,6 +189,64 @@ class Entity extends Properties with LogMethods {
   // * Remove the entity
   // * Add / remove / change action
 
+  /**
+   * Sets the value of a property.
+   *
+   * Can have different permissions depending on the property?
+   * But will default to allow editing access to the propertyEditor role.
+   */
+  @users( "propertyEditor"  )
+  @parameters( "property, value"  )
+  def setProperty( property : Symbol, value : Any ) {
+    // Search for Property fields
+    propertyFields.get( property ) match {
+      case Some( f ) => f.setValue( value )
+      case None => {
+        // Search for dynamical properties
+        // TODO
+      }
+    }
+  }
+
+  /**
+   * Returns the value of a property.
+   *
+   * Can have different permissions depending on the property?
+   * But will default to allow reading access to the propertyEditor and propertyReader roles.
+   */
+  @users( "propertyEditor, propertyReader"  )
+  @parameters( "property"  )
+  @callback
+  def getProperty( property : Symbol ) : Any = {
+    // Search for Property fields
+    propertyFields.get( property ) match {
+      case Some( f ) => f.getValue
+      case None => {
+        // Search for dynamical properties
+        // TODO
+      }
+    }
+  }
+
+  /**
+   * Creates a new dynamical property.
+   * By requiring properties to be created before use we reduce errors from misstyping a property value when
+   * trying to set it, and accidentally creating a new property instead of updating an existing.
+   *
+   * Also allows specifying property metadata, type, invariants, etc.
+   */
+  @users( "propertyCreator"  )
+  @parameters( "property, value"  )
+  def createProperty( property : Symbol, value : Any ) {
+    // Search for Property fields, do not allow creation of a propety that would be shadowed by a property field
+    // TODO
+
+    // Search for dynamical properties, do not allow re-creation of an already existing property
+    // TODO
+
+    // Create proeprty
+    // TODO
+  }
 
   private def callAllowed( caller: EntityId, actionId: Symbol ) : Boolean = {
     // Check access rights.  By default allow any call by this entity itself.
@@ -256,7 +318,33 @@ class Entity extends Properties with LogMethods {
     })
   }
 
-  @transient private var actionMethods : Map[ Symbol, ActionMethod ] = null
+  private def ensureActionMethodsLoaded() {
+
+    createRoleIfNotFound('everyone,  Everyone )
+
+    if (actionMethods == null) actionMethods = findActionMethods()
+
+    // TODO: This will add duplicate capability entries for roles when the class is de-serialized, fix?
+  }
+
+  private def ensurePropertyFieldsLoaded() {
+
+    createRoleIfNotFound('propertyReader )
+    createRoleIfNotFound('propertyEditor )
+    createRoleIfNotFound('propertyCreator )
+
+    if (propertyFields == null) propertyFields = findPropertyFields()
+
+    // TODO: This will add duplicate capability entries for roles when the class is de-serialized, fix?
+  }
+
+  private def createRoleIfNotFound( role : Symbol, initialMembers : RoleMember * ) {
+    if (!hasRole(role)) {
+      addRole(role)
+      initialMembers foreach ( (member : RoleMember) => addRoleMember( role, member ) )
+    }
+  }
+
   private def findActionMethods() : Map[ Symbol, ActionMethod ] = {
     val thisClass = getClass()
     try {
@@ -267,20 +355,14 @@ class Entity extends Properties with LogMethods {
 
       actionMethodsList foreach { (m : Method) =>
         try {
-          val actionAnnotation : parameters = m.getAnnotation( classOf[parameters] )
-          val roleAnnotation : users = m.getAnnotation( classOf[users] )
-
-          val parameterMapping = commaSeparatedStringToSymbolList( actionAnnotation.value )
-          val roles = commaSeparatedStringToSymbolList( if( roleAnnotation==null) "" else roleAnnotation.value )
+          val parameterMapping = getAnnotatedSymbols( m.getAnnotation( classOf[parameters] ).value )
+          val roles            = getAnnotatedSymbols( m.getAnnotation( classOf[users] ).value  )
 
           if (parameterMapping.size == m.getParameterTypes.length) {
 
             val actionId = Symbol(m.getName)
 
-            if (!roles.isEmpty) {
-              val actionCallCapability = ActionCapability( actionId )
-              roles foreach { roleId : Symbol => addRoleCapability( roleId, actionCallCapability ) }
-            }
+            addRoleCapabilities( roles, ActionCapability( actionId ) )
 
             val entry = (actionId, new ActionMethod( this, m, parameterMapping ))
             actMethods = actMethods + entry
@@ -304,17 +386,56 @@ class Entity extends Properties with LogMethods {
     }
   }
 
-  private def ensureActionMethodsLoaded() {
+  private def findPropertyFields() : Map[ Symbol, PropertyField ] = {
+    val thisClass = getClass()
+    try {
+      val fields : List[ Field ] = List.fromArray( thisClass.getFields )
+      val propertyFieldsList = fields.filter{ (f : Field) => classOf[Property[_]].isAssignableFrom( f.getClass ) }
 
-    if (!hasRole('everyone)) {
-      addRole('everyone)
-      addRoleMember( 'everyone, Everyone )
+      var propFields : Map[Symbol,PropertyField] = Map()
+
+      propertyFieldsList foreach { (f : Field) =>
+        try {
+          val propertyId = Symbol(f.getName)
+
+          val readers = getAnnotatedSymbols( f.getAnnotation( classOf[readers] ).value )
+          val editors = getAnnotatedSymbols( f.getAnnotation( classOf[editors] ).value )
+
+          addRoleCapabilities( readers, ReadCapability( propertyId ) )
+          addRoleCapabilities( editors, EditCapability( propertyId ) )
+
+          val entry = (propertyId, new PropertyField( this, f ))
+          propFields = propFields + entry
+        }
+        catch {
+          case e : Exception => logWarning( "Problem when analysing action field '"+f.getName+"' in the Entty class "+thisClass.getName+": " + e.getMessage, e )
+        }
+      }
+
+      propFields
     }
-    
-    if (actionMethods == null) actionMethods = findActionMethods()
-
-    // TODO: This will add duplicate capability entries for roles when the class is de-serialized, fix?
+    catch {
+      case e : Exception => logWarning( "Problem when analysing methods in the Entty class "+thisClass.getName+": " + e.getMessage, e )
+      Map()
+    }
   }
+
+  private def addRoleCapabilities( roleIds : List[Symbol], capability : => Capability ) {
+    // Lazily create only one instance of the Capability
+    if (!roleIds.isEmpty) {
+      val c = capability
+      roleIds foreach { roleId : Symbol => addRoleCapability( roleId, c ) }
+    }
+
+  }
+
+  private def getAnnotatedSymbols( v : String ) : List[Symbol] = {
+
+    val value : String = if (v == null) "" else v
+    
+    commaSeparatedStringToSymbolList( value )
+  }
+
 
   private def callActionMethod( caller: EntityId, actionId: Symbol, parameters: Parameters ) : Boolean = {
     actionMethods.get( actionId ) match {
@@ -423,11 +544,6 @@ class Entity extends Properties with LogMethods {
 
   def addTrigger( property : Symbol,  trigger : Trigger, listener : EntityActionId, parameterSources : ParametersExpression)  = { null }
 */
-
-
-
-
-
 
 
 
