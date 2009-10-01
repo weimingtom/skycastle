@@ -4,12 +4,12 @@ import _root_.junit.framework.TestCase
 import org.junit._
 import Assert._
 import StringUtils._
+import org.scalatest.Suite
 
 /**
  *
  */
-@Test
-class PropertyTest extends TestCase {
+class PropertyTest extends Suite {
 
   class Dummy {
     val name = Property( "Igor", Property.notNull )
@@ -22,7 +22,6 @@ class PropertyTest extends TestCase {
     dummy = new Dummy
   }
 
-  @Test
   def testProperty {
 
     def f( s : String ) = s
@@ -38,7 +37,7 @@ class PropertyTest extends TestCase {
     assertEquals( 20f, dummy.force.value )
     assertEquals( "Hurgan", f( dummy.name ) )
 
-    assertThrowsException{
+    intercept(classOf[IllegalArgumentException]) {
       dummy.name := null
     }
   }

@@ -1,15 +1,15 @@
 package org.skycastle.entity
 
 
-import _root_.org.skycastle.entity.entitycontainer.EntityContainer
+import org.skycastle.entity.entitycontainer.EntityContainer
 import accesscontrol._
 import java.lang.reflect.{AnnotatedElement, Field, Method}
 import java.util.logging.{Logger, Level}
 import script.Script
 import util.ParameterChecker._
-import network.Message
-import util.{Property, LogMethods, Parameters, Properties}
-import org.skycastle.util.{Properties, Parameters}
+import org.skycastle.network.Message
+import org.skycastle.util.{Property, LogMethods, Parameters, Properties}
+import org.skycastle.util.{LogMethods, Properties, Parameters}
 
 /**
  * Represents some mutable object in the game (server or client).
@@ -115,6 +115,7 @@ class Entity extends Properties with LogMethods {
     }
   }
 
+  
   @users( "roleEditor"  )
   @parameters( "roleId"  )
   def removeRole( roleId : Symbol ) {

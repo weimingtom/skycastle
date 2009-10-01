@@ -5,6 +5,7 @@ import entity.EntityId
 import java.nio.ByteBuffer
 import org.junit._
 import Assert._
+import scalatest.Suite
 import util.Parameters
 
 /**
@@ -12,8 +13,7 @@ import util.Parameters
  * 
  * @author Hans Haggstrom
  */
-@Test
-class BinaryProtocolTest extends TestCase {
+class BinaryProtocolTest extends Suite {
 
   var protocol : BinaryProtocol = null
   var serializer : BinarySerializer = null
@@ -26,7 +26,6 @@ class BinaryProtocolTest extends TestCase {
     protocol.init( bridgeId )
   }
 
-  @Test
   def testEntityIdCoding {
     val clientBridgeId = EntityId( "clientBridge" )
     val serverBridgeId = EntityId( "serverBridge" )
@@ -44,7 +43,6 @@ class BinaryProtocolTest extends TestCase {
     assertEquals( List( "clientObject" ), clientObjectBackAtClient.path )
   }
 
-  @Test
   def testMessages {
 
     val order = Message( bridgeId, 
@@ -66,7 +64,6 @@ class BinaryProtocolTest extends TestCase {
                   order, mangledOrder2 )
   }
 
-  @Test
   def testTypes {
 
     assertSerializes( null)

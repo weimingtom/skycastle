@@ -13,237 +13,60 @@ class BuildSkycastle(info: ProjectInfo) extends DefaultProject(info)
   // Add some repositories we use
   val javaNetRepository = "java.net Maven2 Repository" at "http://download.java.net/maven/2/"
 
-  // Dependencies
-  val junitLib = "junit" % "junit" % "4.4"
-  val Lib = "" % "" % ""
-  val Lib = "" % "" % ""
-  val Lib = "" % "" % ""
-  val Lib = "" % "" % ""
-  val Lib = "" % "" % ""
+  //// Dependencies:
+
+  // Testing
+  val junitLib     = "junit"         % "junit"     % "4.4"
+  val scalaTestLib = "org.scalatest" % "scalatest" % "0.9.5"
+
+  // Darkstar Middleware
+  val darkstarVersion = "0.9.10"
+  val sgsServerApiLib = "com.projectdarkstar.server" % "sgs-server-api" % darkstarVersion
+  val sgsClientApiLib = "com.projectdarkstar.client" % "sgs-client-api" % darkstarVersion
+  val sgsClientLib    = "com.projectdarkstar.client" % "sgs-client"     % darkstarVersion
+  val sgsSharedLib    = "com.projectdarkstar.server" % "sgs-shared"     % "1.8"
+
+  // Darkstar client dependencies
+  val slfVersion = "1.5.6"
+  val slfApiLib = "org.slf4j" % "slf4j-api"   % slfVersion
+  val slfJdkLib = "org.slf4j" % "slf4j-jdk14" % slfVersion
+  val minaLib = "org.apache.mina" % "mina-core" % "1.1.7"
+
+  // Java Monkey Engine for 3D graphics
+  def makeJmeLib( artifact : String ) = "com.projectdarkstar.ext.com.jmonkeyengine" % artifact % "2.0-S1"
+  val jmeLib        = makeJmeLib( "jme" )
+  val jmeTerrainLib = makeJmeLib( "jme-terrain" )
+
+  // JME Dependencies
+  def makeLwjglLib( artifact : String ) = "com.projectdarkstar.ext.org.lwjgl" % artifact % "2.0rc2"
+  val lwjglLib      = makeLwjglLib( "lwjgl" )
+  val lwjglUtilLib  = makeLwjglLib( "lwjgl_util" )
+  val jinputLib = "com.projectdarkstar.ext.net.java.dev.jinput" % "jinput" % "SNAPSHOT"
+  val jorbisLib = "com.projectdarkstar.ext.jorbis"              % "jorbis" % "0.0.17"
+
+  // Geometry
+  val jtsLib = "com.vividsolutions" % "jts" % "1.8"
+
+  // A custom layout manager
+  val migLib = "com.miglayout" % "miglayout" % "3.6"
 
 
+  // TODO: Add the following as jars directly in the lib folder, as they are not in maven repositories
 
+  /*
+  // Primitive collections
+  val Lib = "trove" % "trove" % "2.0.4"
+*/
 
+/*
+  // Tablet support
+  val Lib = "jpen" % "jpen" % "2-081201"
+*/
 
-    <!-- Testing -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.specs</groupId>
-      <artifactId>specs</artifactId>
-      <version>1.2.5</version>
-      <scope>test</scope>
-    </dependency>
+/*
+  // Opening a webpage in a browser from Java
+*/
 
-    <!-- Scala -->
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>${scala.version}</version>
-    </dependency>
-
-    <!-- Darkstar Middleware -->
-    <dependency>
-      <groupId>com.projectdarkstar.server</groupId>
-      <artifactId>sgs-server-api</artifactId>
-      <version>${darkstar.version}</version>
-    </dependency>
-
-    <!--
-        <dependency>
-          <groupId>com.projectdarkstar.server</groupId>
-          <artifactId>sgs-server</artifactId>
-          <version>${darkstar.version}</version>
-        </dependency>
-
-        <dependency>
-          <groupId>com.projectdarkstar.server</groupId>
-          <artifactId>sgs-server-internal-api</artifactId>
-          <version>${darkstar.version}</version>
-        </dependency>
-    -->
-
-    <dependency>
-      <groupId>com.projectdarkstar.server</groupId>
-      <artifactId>sgs-shared</artifactId>
-      <version>1.8</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.projectdarkstar.client</groupId>
-      <artifactId>sgs-client-api</artifactId>
-      <version>${darkstar.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.projectdarkstar.client</groupId>
-      <artifactId>sgs-client</artifactId>
-      <version>${darkstar.version}</version>
-    </dependency>
-
-
-    <!-- Darkstar client dependencies -->
-    <dependency>
-      <groupId>org.apache.mina</groupId>
-      <artifactId>mina-core</artifactId>
-      <version>1.1.7</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.5.6</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>1.5.6</version>
-    </dependency>
-
-    <!-- Java Monkey Engine -->
-    <!--
-        <dependency>
-            <groupId>jme</groupId>
-            <artifactId>jme</artifactId>
-            <version>2.0</version>
-        </dependency>
-    -->
-    <dependency>
-      <groupId>com.projectdarkstar.ext.com.jmonkeyengine</groupId>
-      <artifactId>jme</artifactId>
-      <version>2.0-S1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.projectdarkstar.ext.com.jmonkeyengine</groupId>
-      <artifactId>jme-terrain</artifactId>
-      <version>2.0-S1</version>
-    </dependency>
-
-    <!-- JME Dependencies -->
-    <dependency>
-      <groupId>com.projectdarkstar.ext.org.lwjgl</groupId>
-      <artifactId>lwjgl</artifactId>
-      <version>2.0rc2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.projectdarkstar.ext.org.lwjgl</groupId>
-      <artifactId>lwjgl_util</artifactId>
-      <version>2.0rc2</version>
-    </dependency>
-    <!--
-    <dependency>
-      <groupId>com.projectdarkstar.ext.org.lwjgl</groupId>
-      <artifactId>lwjgl_util_applet</artifactId>
-      <version>2.0rc2</version>
-    </dependency>
--->
-<!--
-    <dependency>
-      <groupId>org.lwjgl</groupId>
-      <artifactId>lwjgl</artifactId>
-      <version>2.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.lwjgl</groupId>
-      <artifactId>lwjgl_util_applet</artifactId>
-      <version>2.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.lwjgl</groupId>
-      <artifactId>lwjgl_util</artifactId>
-      <version>2.0.1</version>
-    </dependency>
--->
-    <!--
-    <dependency>
-      <groupId>net.java.dev.jogl</groupId>
-      <artifactId>jogl</artifactId>
-      <version>1.1.1</version>
-    </dependency>
-    -->
-
-    <!--
-    <dependency>
-        <groupId>net.java.dev.gluegen</groupId>
-        <artifactId>gluegen-rt</artifactId>
-        <version>1.0b06</version>
-    </dependency>
-    -->
-    <dependency>
-      <groupId>net.java.dev.jinput</groupId>
-      <artifactId>jinput</artifactId>
-      <version>0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.projectdarkstar.ext.jorbis</groupId>
-      <artifactId>jorbis</artifactId>
-      <version>0.0.17</version>
-    </dependency>
-<!--
-    <dependency>
-      <groupId>jorbis</groupId>
-      <artifactId>jorbis</artifactId>
-      <version>0.0.17</version>
-    </dependency>
--->
-    <!-- Primitive collections -->
-    <dependency>
-      <groupId>trove</groupId>
-      <artifactId>trove</artifactId>
-      <version>2.0.4</version>
-    </dependency>
-
-    <!-- Geometry -->
-    <dependency>
-      <groupId>com.vividsolutions</groupId>
-      <artifactId>jts</artifactId>
-      <version>1.8</version>
-    </dependency>
-
-    <!-- Tablet support -->
-    <dependency>
-      <groupId>jpen</groupId>
-      <artifactId>jpen</artifactId>
-      <version>2-081201</version>
-    </dependency>
-
-    <!-- Noise functions and other fun stuff
-    <dependency>
-      <groupId>j3d-org</groupId>
-      <artifactId>j3d-org-java3d-all</artifactId>
-      <version>0.9</version>
-    </dependency>
-    -->
-
-    <!-- Opening a webpage in a browser from Java -->
-    <dependency>
-      <groupId>browserlauncher2</groupId>
-      <artifactId>browserlauncher2</artifactId>
-      <version>1.3</version>
-    </dependency>
-
-    <!-- A custom layout manager -->
-    <dependency>
-      <groupId>com.miglayout</groupId>
-      <artifactId>miglayout</artifactId>
-      <version>3.6</version>
-    </dependency>
-
-    <!-- Runtime Java compiler -->
-<!--
-    <dependency>
-      <groupId>janino</groupId>
-      <artifactId>janino</artifactId>
-      <version>2.5.15</version>
-    </dependency>
--->
-  </dependencies>
 
 }
 

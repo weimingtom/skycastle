@@ -4,17 +4,15 @@ package org.skycastle.util
 import _root_.junit.framework.TestCase
 import org.junit._
 import Assert._
+import org.scalatest.Suite
 import StringUtils._
 
 /**
  * 
  */
-@Test
-class StringUtilsTest extends TestCase {
+class StringUtilsTest extends Suite {
 
-  @Test
   def testIsIdentifier {
-
     assertTrue( isIdentifier( "foobar" ) )
     assertTrue( isIdentifier( "F1234" ) )
     assertTrue( isIdentifier( "$" ) )

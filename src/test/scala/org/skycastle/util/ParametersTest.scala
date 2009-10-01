@@ -4,16 +4,15 @@ package org.skycastle.util
 import _root_.junit.framework.TestCase
 import org.junit._
 import Assert._
+import org.scalatest.Suite
 
 /**
  * 
  * 
  * @author Hans Haggstrom
  */
-@Test
-class ParametersTest extends TestCase {
+class ParametersTest extends Suite {
 
-  @Test
   def testProperties {
 
     val prop = new Properties( 'foo -> 'baa, 'bar -> 12, 'd -> 3.15, 'zap -> "meh", 'ffff -> List( 1, 'two, "three", 4.0, new java.lang.Integer(5) ) )

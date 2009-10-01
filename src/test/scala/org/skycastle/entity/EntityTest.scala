@@ -8,6 +8,7 @@ import entitycontainer.SimpleEntityContainer
 
 import org.junit._
 import Assert._
+import scalatest.Suite
 import util.Parameters
 
 /**
@@ -15,8 +16,7 @@ import util.Parameters
  * 
  * @author Hans Haggstrom
  */
-@Test
-class EntityTest extends TestCase {
+class EntityTest extends Suite {
 
   class TestEntity extends Entity {
 
@@ -65,7 +65,6 @@ class EntityTest extends TestCase {
     testEntity.addRoleMember( 'tester, callerEntityid )
   }
 
-  @Test
   def testEntityGetsIdWhenAddedToContainer {
     val entity = new Entity()
     val entityContainer = new SimpleEntityContainer()
@@ -76,21 +75,18 @@ class EntityTest extends TestCase {
     assertEquals( entityContainer,  entity.container  )
   }
 
-  @Test
   def testRoles {
 
     // TODO: Easier tests for property editing and calling -> create role collection wrapper.
 
   }
 
-  @Test
   def testSetProperty {
     assertEquals(  "Pizza", testEntity.lunch )
     testEntity.call( Message( callerEntityid, testEntity.id, 'setProperty, Parameters( 'property -> 'lunch, 'value -> "Chinese" ) ) )
     assertEquals(  "Chinese", testEntity.lunch )
   }
 
-  @Test
   def testSetPropertyWithoutPermission {
     assertEquals(  "Pizza", testEntity.lunch )
     testEntity.call( Message( EntityId( "AnonymousCoward" ), testEntity.id, 'setProperty, Parameters( 'property -> 'lunch, 'value -> "Hot Grits" ) ) )
@@ -98,14 +94,12 @@ class EntityTest extends TestCase {
   }
 
 
-  @Test
   def testActionMethodsCallWithPrimitiveArgument {
     assertEquals( 0, testEntity.foo )
     testEntity.call( callerEntityid, 'setFoo, Parameters( 'newValue -> 1 ) )
     assertEquals( 1, testEntity.foo )
   }
 
-  @Test
   def testActionMethodCallWithArgumentList {
     assertEquals( Nil, testEntity.fooList )
     assertEquals( "", testEntity.bar )
@@ -114,7 +108,6 @@ class EntityTest extends TestCase {
     assertEquals( "news flash", testEntity.bar )
   }
 
-  @Test
   def testActionMethodCallWithSpecialArguemnts {
     assertEquals( null, testEntity.caller )
     assertEquals( null, testEntity.params )
