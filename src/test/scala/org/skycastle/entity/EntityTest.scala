@@ -2,21 +2,22 @@ package org.skycastle.entity
 
 
 import _root_.junit.framework.TestCase
-import network.Message
+import org.skycastle.network.Message
 import org.skycastle.entity.accesscontrol.users
 import entitycontainer.SimpleEntityContainer
 
 import org.junit._
 import Assert._
-import scalatest.Suite
 import util.Parameters
+import org.scalatest.{Suite, BeforeAndAfter}
+import org.skycastle.util.{Property, Parameters}
 
 /**
  * 
  * 
  * @author Hans Haggstrom
  */
-class EntityTest extends Suite {
+class EntityTest extends Suite with BeforeAndAfter {
 
   class TestEntity extends Entity {
 
@@ -28,6 +29,9 @@ class EntityTest extends Suite {
 
     @editors( "tester" )
     var lunch : String = "Pizza"
+
+    @editors( "tester" )
+    var dinner = Property( "Sphagetti" )
 
     @readers( "tester" )
     var breakfast : String = "Coffeine 100 mg"
@@ -58,7 +62,7 @@ class EntityTest extends Suite {
   var testEntity : TestEntity = null
   var callerEntityid : EntityId = null
 
-  override def setUp = {
+  override def beforeEach = {
     testEntity = new TestEntity()
     callerEntityid = EntityId( "entity_testCaller" )
     testEntity.addRole('tester )

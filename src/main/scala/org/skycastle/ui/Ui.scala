@@ -1,10 +1,8 @@
 package org.skycastle.ui
-import org.skycastle.util.Properties
-
-
-import content.composite.{CompositePart, CompositeEntity}
 import javax.swing.JComponent
-import util.{ErrorPrinter, Parameters}
+import org.skycastle.util.{ErrorPrinter, Parameters, Properties}
+import org.skycastle.content.composite.{CompositeEntity, CompositePart}
+
 /**
  * 
  * 

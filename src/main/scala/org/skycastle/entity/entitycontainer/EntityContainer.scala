@@ -1,9 +1,10 @@
 package org.skycastle.entity.entitycontainer
 
 
-import network.Message
-import util.{ClassUtils, Parameters}
-import util.ParameterChecker._
+import org.skycastle.network.Message
+import org.skycastle.util.ParameterChecker._
+import org.skycastle.util.{ClassUtils, Parameters}
+import org.skycastle.entity.{EntityActionId, EntityId, Entity}
 
 /**
  * Something that can contain and manage entities.

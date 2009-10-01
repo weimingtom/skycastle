@@ -1,25 +1,27 @@
 package org.skycastle.network.protocol.binary
 
 import _root_.junit.framework.TestCase
-import entity.EntityId
 import java.nio.ByteBuffer
 import org.junit._
 import Assert._
-import scalatest.Suite
 import util.Parameters
-
+import org.scalatest.{BeforeAndAfter, Suite}
+import org.skycastle.entity.EntityId
+import org.skycastle.network.{Transferable, Message}
+import org.skycastle.util.Parameters
 /**
  * Test binary serializers.
  * 
  * @author Hans Haggstrom
  */
-class BinaryProtocolTest extends Suite {
+class BinaryProtocolTest extends Suite with BeforeAndAfter {
 
   var protocol : BinaryProtocol = null
   var serializer : BinarySerializer = null
   var bridgeId : EntityId = null
 
-  override def setUp = {
+
+  override protected def beforeEach() = {
     bridgeId = EntityId( "unusedId70643" )
     protocol = new BinaryProtocol()
     serializer = new BinarySerializer( bridgeId )

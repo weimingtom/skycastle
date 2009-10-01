@@ -2,10 +2,10 @@ package org.skycastle.entity.entitycontainer
 
 
 import collection.mutable.HashMap
-import network.Message
-import util.Parameters
-import util.ParameterChecker._
-
+import org.skycastle.network.Message
+import org.skycastle.util.Parameters
+import org.skycastle.util.ParameterChecker._
+import org.skycastle.entity.{EntityLogger, Entity, EntityId}
 
 /**
  * A straightforward single-threaded, non-persistent EntityContainer.
@@ -50,7 +50,7 @@ class SimpleEntityContainer extends EntityContainer {
   def removeEntity(entityId: EntityId) {
     entities.get( entityId ) match {
       case (entity : Entity) =>
-        entity.onRemoved()
+        entity.deinitEntity()
         if (entityId != null) entities.removeKey( entityId )
       case None => EntityLogger.logWarning( "Attempt to remove non-existing entity '"+entityId+"', ignoring." )
       case x =>

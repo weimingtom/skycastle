@@ -39,4 +39,16 @@ object StringUtils {
     }
   }
 
+  /**
+   * Converts a list of comma separated tokens in a string to a list of Symbols.
+   */
+  def commaSeparatedStringToSymbolList( s : String) : List[Symbol] = {
+    List.fromString( s, ',' ).flatMap( {entry : String =>
+       val trimmedEntry = entry.trim()
+       if ( trimmedEntry.length > 0) {
+         List( Symbol( trimmedEntry ) )
+       }
+       else Nil
+    })
+  }
 }

@@ -1,11 +1,13 @@
 package org.skycastle.entity.entitycontainer.darkstar
 
-import _root_.org.skycastle.server.ManagedEntity
+import org.skycastle.server.ManagedEntity
 import com.sun.sgs.app.{TaskManager, DataManager, NameNotBoundException, AppContext}
 import java.lang.ClassCastException
-import network.Message
-import util.Parameters
-import util.ParameterChecker._
+import org.skycastle.network.Message
+import org.skycastle.util.Parameters
+import org.skycastle.util.ParameterChecker._
+import org.skycastle.entity.entitycontainer.EntityContainer
+import org.skycastle.entity.{EntityLogger, EntityId, Entity}
 
 /**
  * A singleton object for accessing the DarkstarEntityContainer
@@ -72,7 +74,7 @@ object DarkstarEntityContainer extends EntityContainer {
       case Some( entity : Entity ) =>
         entityId.managedObjectName match  {
           case Some( name ) => {
-            entity.onRemoved()
+            entity.deinitEntity()
             val managedObject = dataManager.getBinding( name )
             dataManager.removeBinding( name )
             dataManager.removeObject( managedObject )

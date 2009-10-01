@@ -2,7 +2,8 @@ package org.skycastle.entity.entitycontainer.darkstar
 
 import _root_.org.skycastle.util.Parameters
 import com.sun.sgs.app.Task
-import network.Message
+import org.skycastle.network.Message
+import org.skycastle.entity.{Entity, EntityLogger}
 
 /**
  * A Darkstar Task that calls an action on an entity.

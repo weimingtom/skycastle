@@ -1,19 +1,19 @@
 package org.skycastle.entity.expression
 
 import _root_.junit.framework.TestCase
-import entitycontainer.SimpleEntityContainer
 
 import num._
 import bool._
 import org.junit._
 import Assert._
+import org.scalatest.Suite
 
 /**
  * 
  * 
  * @author Hans Haggstrom
  */
-class ExpressionTest extends TestCase {
+class ExpressionTest extends Suite {
 
 
   def testExpressionCreation {
