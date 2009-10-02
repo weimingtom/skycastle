@@ -40,10 +40,14 @@ class EntityDslTest extends Suite {
 
     implicit def hostEntity : DslEntity = this
 
-    def p[T]( value : T ) : Property[T] = Property(value)
+    def prop[T]( value : T ) : Property[T] = Property(value)
 
     object D {
       def -:[T]( value : T ) : Property[T] = Property(value)
+    }
+
+    object o {
+      def > [T]( value : T ) : Property[T] = Property(value)
     }
 
   }
@@ -71,10 +75,10 @@ class EntityDslTest extends Suite {
     // Wastes some cycles each time an object is created to check the cache, but so does an on-the-fly
     // annotation approach too..
     // But caching fails kind of as the information is lost after the first initialization, so not available after deserializaiton..
-    val name      = p( "Igor")
+    val name      = prop( "Igor")
     val hitpoints = 10 -:D
-    val mana      = 100 -:D
-    val inventory =  List( 'torch, 'knife, 'rubberduck ) -:D
+    val mana      =o> 100
+    val inventory =o> List( 'torch, 'knife, 'rubberduck )
 
   }
 
