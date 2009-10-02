@@ -4,12 +4,12 @@ import _root_.junit.framework.TestCase
 import org.junit._
 import Assert._
 import StringUtils._
-import org.scalatest.Suite
+import org.scalatest.{BeforeAndAfter, Suite}
 
 /**
  *
  */
-class PropertyTest extends Suite {
+class PropertyTest extends Suite with BeforeAndAfter {
 
   class Dummy {
     val name = Property( "Igor", Property.notNull )
@@ -18,7 +18,9 @@ class PropertyTest extends Suite {
   }
 
   var dummy : Dummy = null
-  override def setUp = {
+
+
+  override protected def beforeEach() {
     dummy = new Dummy
   }
 
