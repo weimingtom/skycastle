@@ -3,6 +3,10 @@ package org.skycastle.entity.properties
 import org.skycastle.entity.accesscontrol.Role
 import org.skycastle.util.{TypedGetters, ClassUtils}
 
+object PropertyConversions {
+  implicit def propertyToValue[T]( prop : RichProperty[T] ) : T = prop.value
+}
+
 /**
  * Provides support for properties that can be listened to, that have access control, and that can be queried.
  * <p>
@@ -15,7 +19,7 @@ import org.skycastle.util.{TypedGetters, ClassUtils}
  * Optionally property value can be followed by access control specification, listener addition, etc.
  *
  * <pre>
- * 'propertyName :- propertyValue editor 'editorRole whenChanged listenerFunction
+ * 'propertyName :- propertyValue editor 'editorRole onChange listenerFunction
  * </pre>
  *
  * The property can be assigned to a val for easier access, or just defined in a subclass constructor or method.
@@ -30,15 +34,6 @@ import org.skycastle.util.{TypedGetters, ClassUtils}
  * propertyHandle := newValue
  * println propertyHandle
  * println propertyHandle.value
- * </pre>
- *
- * Symbols can be used to refer to the corresponding property inside the class extending this trait,
- * but for getting the value .value needs to be used in this case:
- *
- * <pre>
- * 'propertyName := newValue
- * println 'propertyName        // Will just print the symbol name instead of the property value
- * println 'propertyName.value  // Will print the property value
  * </pre>
  *
  *
@@ -110,10 +105,6 @@ trait RichProperties extends TypedGetters {
 
   private def hostObject = this
 
-}
-
-object PropertyConversions {
-  implicit def propertyToValue[T]( prop : RichProperty[T] ) : T = prop.value
 }
 
 

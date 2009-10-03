@@ -82,11 +82,13 @@ class RichPropertiesSpec extends Spec with ShouldMatchers with BeforeAndAfter {
         orc.addProperty( 'hitpoints, 80f )
       }
     }
+
+    ignore( "should support roles for access control" ) {
+      // TODO
+    }
+    
   }
 
-  ignore( "should support roles for access control" ) {
-    // TODO  
-  }
 
 
 }
