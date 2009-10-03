@@ -56,6 +56,38 @@ object ClassUtils {
         classUtilsLogger.logWarning( "Could not preload class '"+clazz.getName+"', skipping it. ("+e.getMessage + ")" , e )
     }
   }
+
+  def getType( x : Any ) : Class[_] = x match  {
+    case null       => classOf[AnyRef]
+    case v : AnyRef => v.getClass
+    case v : AnyVal => getValType( v )
+  }
+
+  def getValType(x: AnyVal): Class[_] = x match {
+    case _: Byte => java.lang.Byte.TYPE
+    case _: Short => java.lang.Short.TYPE
+    case _: Int => java.lang.Integer.TYPE
+    case _: Long => java.lang.Long.TYPE
+    case _: Float => java.lang.Float.TYPE
+    case _: Double => java.lang.Double.TYPE
+    case _: Char => java.lang.Character.TYPE
+    case _: Boolean => java.lang.Boolean.TYPE
+    case _: Unit => java.lang.Void.TYPE
+  }
+
+
+  def toAnyRef( x: AnyVal ) : AnyRef = x match {
+    case x: Byte => Byte.box(x)
+    case x: Short => Short.box(x)
+    case x: Int => Int.box(x)
+    case x: Long => Long.box(x)
+    case x: Float => Float.box(x)
+    case x: Double => Double.box(x)
+    case x: Char => Char.box(x)
+    case x: Boolean => Boolean.box(x)
+    case x: Unit => ()
+  }
+
 }
 
 

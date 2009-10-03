@@ -294,6 +294,7 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
 
       // TODO: Fix, looks like Scala doesn't store vars as java fields in the normal place at least. 
       println("thisClass = " + thisClass)
+      println("fields = " + fields)
       println("nonPropertyFields = " + nonPropertyFields)
       println("propertyFieldsList = " + propertyFieldsList)
 

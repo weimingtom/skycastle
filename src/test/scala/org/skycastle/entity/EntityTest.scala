@@ -10,6 +10,74 @@ import org.skycastle.util.{Property, Parameters}
 import org.junit._
 import Assert._
 
+
+class TestEntity extends Entity {
+
+  var foo : Int = 0
+  var bar : String = ""
+  var caller : EntityId= null
+  var params : Parameters= null
+  var fooList : List[String] = Nil
+
+
+  /*
+
+  Alternatives:
+
+  // role added in constructor. 
+  addRole( 'tester )
+
+  def tester = role member myMembers capability ActionCapability('testAction)  // Role with dynamically defined members and capabilities
+  val tester2 = role  capability ActionCapability('testAction2) // statically specified role
+
+  // Pretty flexible
+  // Will store editor data on a per instance basis though.  Or it could just accept role function reference.  But not that much data to store in any case, as Symbols are shared.  
+  'lunch := "Pizza" editor 'tester  // No direct reference possible
+  'lunch := "Pizza" editor tester  // Allows existence checked role
+  'lunch := "Pizza" editor tester onChange { newVal => doSomething() }
+  val lunch = 'lunch := "Pizza" editor tester  // Can be accessed easier from surrounding code.  Drawback is that id is repeated.
+
+  // assignment
+  lunch <= "Chinese"
+
+  // definition
+  'lunch := "Chinese"
+
+
+   */
+
+  @editors( "tester" )
+  var lunch : String = "Pizza"
+
+  @editors( "tester" )
+  var dinner = Property( "Sphagetti" )
+
+  @readers( "tester" )
+  var breakfast : String = "Coffeine 100 mg"
+
+  @users( "tester")
+  @parameters( "newValue" )
+  def setFoo( value : Int ) {
+    foo = value
+  }
+
+  @users( "tester")
+  @parameters( "bar, foo" )
+  def update( b : String, f: List[String] ) {
+    fooList = f
+    bar = b
+  }
+
+  @users( "tester")
+  @parameters( "$callerId, $parameters" )
+  def special( c : EntityId, p : Parameters ) {
+    caller= c
+    params= p
+  }
+
+
+}
+
 /**
  * 
  * 
@@ -17,45 +85,6 @@ import Assert._
  */
 class EntityTest extends Suite with BeforeAndAfter {
 
-  class TestEntity extends Entity {
-
-    var foo : Int = 0
-    var bar : String = ""
-    var caller : EntityId= null
-    var params : Parameters= null
-    var fooList : List[String] = Nil
-
-    @editors( "tester" )
-    var lunch : String = "Pizza"
-
-    @editors( "tester" )
-    var dinner = Property( "Sphagetti" )
-
-    @readers( "tester" )
-    var breakfast : String = "Coffeine 100 mg"
-
-    @users( "tester")
-    @parameters( "newValue" )
-    def setFoo( value : Int ) {
-      foo = value
-    }
-
-    @users( "tester")
-    @parameters( "bar, foo" )
-    def update( b : String, f: List[String] ) {
-      fooList = f
-      bar = b
-    }
-
-    @users( "tester")
-    @parameters( "$callerId, $parameters" )
-    def special( c : EntityId, p : Parameters ) {
-      caller= c
-      params= p
-    }
-
-
-  }
 
   var testEntity : TestEntity = null
   var callerEntityid : EntityId = null
@@ -83,13 +112,16 @@ class EntityTest extends Suite with BeforeAndAfter {
 
   }
 
+  def testManualSetProperty {
+    assertEquals(  "Pizza", testEntity.lunch )
+    testEntity.lunch = "Italian"
+    assertEquals(  "Italian", testEntity.lunch )
+  }
+
   def testSetProperty {
-    // TODO: Implement proper properties.
-/*
     assertEquals(  "Pizza", testEntity.lunch )
     testEntity.call( Message( callerEntityid, testEntity.id, 'setProperty, Parameters( 'property -> 'lunch, 'value -> "Chinese" ) ) )
     assertEquals(  "Chinese", testEntity.lunch )
-*/
   }
 
   def testSetPropertyWithoutPermission {

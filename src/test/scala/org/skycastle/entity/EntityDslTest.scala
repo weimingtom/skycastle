@@ -5,11 +5,12 @@ import Assert._
 import org.scalatest.Suite
 
 /**
- * Testing out Entity DSL ideas
+ * Spike for testing out Entity DSL ideas.
  */
 class EntityDslTest extends Suite {
+/*
 
-  case class Property[T]( private var _value : T ) {
+  case class Property[T]( private var _value : T, host : DslEntity ) {
     var listeners : List[ T => Unit ] = Nil
     def propertyInfo = "This is property with value " + value
 
@@ -17,7 +18,13 @@ class EntityDslTest extends Suite {
 
     def := ( newValue : T ) {
       _value = newValue
-      listeners foreach { x => x( newValue ) } 
+      listeners foreach { x => x( newValue ) }
+    }
+
+    def -- ( newValue : T )(implicit hostEntity : DslEntity ) {
+      _value = newValue
+      hostEntity.addProperty( this )
+      listeners foreach { x => x( newValue ) }
     }
 
     def addListener( listener : T => Unit ) = listeners = listener :: listeners
@@ -27,13 +34,24 @@ class EntityDslTest extends Suite {
 
   class DslEntity {
 
-    var properties : Map[PropertyId, Any] = Map()
+    var properties : Map[PropertyId, Property[_]] = Map()
 
-    def apply[T]( symbol : Symbol, default : T ) : T = {
+    def addProperty( name : Symbol, property : Property[_] ) {
+      if (properties.contains(name) ) throw new IllegalArgumentException( "Property '"+name+"' already exists." )
+      else properties = properties + name -> property
+    }
+
+    def apply[T]( symbol : Symbol, default : T ) : T = get( symbol, default)
+
+    def get[T]( symbol : Symbol, default : T ) : T = {
       properties.get(symbol) match {
-        case Some( v ) => v.asInstanceOf[T]
-        case None => default
+        case Some( v : Property[T] ) => v.value.asInstanceOf[T]
+        case _ => default
       }
+    }
+
+    def ?[T]( symbol : Symbol) : T = {
+      properties(symbol).value.asInstanceOf[T]
     }
 
     implicit def symbolToPropertyName( symbol : Symbol ) : PropertyId = PropertyId(symbol)
@@ -42,14 +60,14 @@ class EntityDslTest extends Suite {
 
     def prop[T]( value : T ) : Property[T] = Property(value)
 
-    object D {
-      def -:[T]( value : T ) : Property[T] = Property(value)
+
+
+    object p {
+      def > [T]( value : T ) : Property[T] = Property(value, hostEntity)
     }
 
-    object o {
-      def > [T]( value : T ) : Property[T] = Property(value)
+    object role {
     }
-
   }
 
   case class PropertyId( id : Symbol ) {
@@ -70,15 +88,27 @@ class EntityDslTest extends Suite {
     'mana      := 100
     'inventory := List( 'torch, 'knife, 'rubberduck )
 
-    // How to add allowed editors / viewers, documentation, ranges, types?, etc?
+    // How to add allowed editors / viewers, documentation, ranges, types?, etc?, setting value with message
     // They should only be stored in one place for all instances of a class.  Maybe cached creation..
     // Wastes some cycles each time an object is created to check the cache, but so does an on-the-fly
     // annotation approach too..
     // But caching fails kind of as the information is lost after the first initialization, so not available after deserializaiton..
-    val name      = prop( "Igor")
-    val hitpoints = 10 -:D
-    val mana      =o> 100
-    val inventory =o> List( 'torch, 'knife, 'rubberduck )
+/*
+    val name      = 'name      -- "Igor"
+    val hitpoints = 'hitpoints -- 50
+    val mana      = 'mana      -- 100
+    val inventory = 'inventory -- List( 'torch, 'knife, 'rubberduck )
+*/
+
+    def editor = role 
+
+    def name      = p> "noodles"
+    def hitpoints = p> 120
+    def mana      = p> 120
+    def inventory = p> List( 'torch, 'knife, 'rubberduck )
+/*
+    def eat = action :=
+*/
 
   }
 
@@ -105,6 +135,7 @@ class EntityDslTest extends Suite {
   }
 
 
+*/
 
 
 }
