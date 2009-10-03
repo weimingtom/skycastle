@@ -57,10 +57,10 @@ object ClassUtils {
     }
   }
 
-  def getType( x : Any ) : Class[_] = x match  {
-    case null       => classOf[AnyRef]
-    case v : AnyRef => v.getClass
-    case v : AnyVal => getValType( v )
+  def getType[T]( x : T ) : Class[T] = x match  {
+    case null       => classOf[Null].asInstanceOf[Class[T]]
+    case v : AnyRef => v.getClass.asInstanceOf[Class[T]]
+    case v : AnyVal => getValType( v ).asInstanceOf[Class[T]]
   }
 
   def getValType(x: AnyVal): Class[_] = x match {

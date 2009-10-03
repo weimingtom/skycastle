@@ -7,9 +7,11 @@ import entitycontainer.SimpleEntityContainer
 import org.scalatest.{Suite, BeforeAndAfter}
 import org.skycastle.util.{Property, Parameters}
 
+
 import org.junit._
 import Assert._
 
+import org.skycastle.entity.properties.PropertyConversions._
 
 class TestEntity extends Entity {
 
@@ -46,14 +48,10 @@ class TestEntity extends Entity {
 
    */
 
-  @editors( "tester" )
-  var lunch : String = "Pizza"
+  var lunch  = 'lunch  :- "Pizza"     // editor 'tester
+  var dinner = 'dinner :- "Sphagetti" // editor 'tester
 
-  @editors( "tester" )
-  var dinner = Property( "Sphagetti" )
-
-  @readers( "tester" )
-  var breakfast : String = "Coffeine 100 mg"
+  'breakfast :- "Coffeine 100 mg" // reader 'tester
 
   @users( "tester")
   @parameters( "newValue" )
@@ -86,6 +84,7 @@ class TestEntity extends Entity {
 class EntityTest extends Suite with BeforeAndAfter {
 
 
+
   var testEntity : TestEntity = null
   var callerEntityid : EntityId = null
 
@@ -113,28 +112,28 @@ class EntityTest extends Suite with BeforeAndAfter {
   }
 
   def testManualSetProperty {
-    assertEquals(  "Pizza", testEntity.lunch )
-    testEntity.lunch = "Italian"
-    assertEquals(  "Italian", testEntity.lunch )
+    assert(  "Pizza" === testEntity.lunch.value )
+    testEntity.lunch := "Italian"
+    assert(  "Italian" === testEntity.lunch.value )
   }
 
   def testSetProperty {
-    assertEquals(  "Pizza", testEntity.lunch )
+    assert(  "Pizza" === testEntity.lunch.value )
     testEntity.call( Message( callerEntityid, testEntity.id, 'setProperty, Parameters( 'property -> 'lunch, 'value -> "Chinese" ) ) )
-    assertEquals(  "Chinese", testEntity.lunch )
+    assert(  "Chinese" === testEntity.lunch.value )
   }
 
   def testSetPropertyWithoutPermission {
-    assertEquals(  "Pizza", testEntity.lunch )
+    assert(  "Pizza" === testEntity.lunch.value )
     testEntity.call( Message( EntityId( "AnonymousCoward" ), testEntity.id, 'setProperty, Parameters( 'property -> 'lunch, 'value -> "Hot Grits" ) ) )
-    assertEquals(  "Pizza", testEntity.lunch )
+    assert(  "Pizza" === testEntity.lunch.value )
   }
 
 
   def testActionMethodsCallWithPrimitiveArgument {
-    assertEquals( 0, testEntity.foo )
+    assert( 0 === testEntity.foo )
     testEntity.call( callerEntityid, 'setFoo, Parameters( 'newValue -> 1 ) )
-    assertEquals( 1, testEntity.foo )
+    assert( 1 === testEntity.foo )
   }
 
   def testActionMethodCallWithArgumentList {

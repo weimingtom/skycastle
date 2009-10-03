@@ -14,6 +14,8 @@ trait TypedGetters {
 
   def get( id : Symbol ) : Option[Any] = entries.get( id )
 
+  // TODO: Convert to fewer different methods with same functionality, and also use a small set of getters so that an implementor can override them if they have a slow entries method. 
+
   def get[T](id: Symbol, defaultValue: T) : T = entries.getOrElse(id, defaultValue).asInstanceOf[T]
 
 

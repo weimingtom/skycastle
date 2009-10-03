@@ -127,11 +127,6 @@ trait AccessControlMethods {
       } )
     }
 
-    println("caller = " + caller)
-    println("actionId = " + actionId)
-    println("parameters = " + parameters)
-    println("roles = " + roles.mkString("\n") )
-
     // Check access rights.  By default allow any call by this entity itself.
     // (the identity or privileges of original caller are not retained when an action invokes another action,
     // instead the identity of the entity that contains the calling action is used.)

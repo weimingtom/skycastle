@@ -14,84 +14,82 @@ import javax.swing.ImageIcon
  */
 
 object ResourceLoader {
-    def loadImage(resourcePath: String): BufferedImage = loadImage(resourcePath, null)
+  private val resourceLoaderLogger = new LogUtil("org.skycastle.util.ResourceLoader")
 
-    def loadImage(resourcePath: String, placeholder: BufferedImage): BufferedImage = {
-        loadResource[BufferedImage](resourcePath, "BufferedImage", ImageIO.read, placeholder)
+  def loadImage(resourcePath: String): BufferedImage = loadImage(resourcePath, null)
+
+  def loadImage(resourcePath: String, placeholder: BufferedImage): BufferedImage = {
+    loadResource[BufferedImage](resourcePath, "BufferedImage", ImageIO.read, placeholder)
+  }
+
+  def loadIcon(resourcePath: String): ImageIcon = {
+    new ImageIcon(loadImage(resourcePath))
+  }
+
+  def loadProperties(resourcePath: String): java.util.Properties = {
+    val properties = new java.util.Properties()
+
+    loadResource[java.util.Properties](resourcePath, "Properties", (stream) => {
+      properties.load(new InputStreamReader(stream))
+      properties
+    }, properties)
+  }
+
+  def loadXml(resourcePath: String, resourceDesc: String): Elem = {
+    loadXml(resourcePath, resourceDesc, null)
+  }
+
+  def loadXml(resourcePath: String, resourceDesc: String, default: Elem): Elem = {
+    loadResource[Elem](resourcePath, resourceDesc, scala.xml.XML.load, default)
+  }
+
+  // TODO: Change return policy to use Options..
+  def getResourceURL(resourcePath: String): URL = {
+
+    try
+    {
+      val classloader: ClassLoader = ResourceLoader.getClass().getClassLoader()
+      classloader.getResource(resourcePath)
     }
-
-    def loadIcon(resourcePath: String): ImageIcon = {
-        new ImageIcon(loadImage(resourcePath))
-    }
-
-    def loadProperties(resourcePath: String): java.util.Properties = {
-        val properties = new java.util.Properties()
-
-        loadResource[java.util.Properties](resourcePath, "Properties", (stream) => {
-            properties.load(new InputStreamReader(stream))
-            properties
-        }, properties)
-    }
-
-    def loadXml(resourcePath: String, resourceDesc: String): Elem = {
-        loadXml(resourcePath, resourceDesc, null)
-    }
-
-    def loadXml(resourcePath: String, resourceDesc: String, default: Elem): Elem = {
-        loadResource[Elem](resourcePath, resourceDesc, scala.xml.XML.load, default)
-    }
-
-    def getResourceURL( resourcePath: String ) : URL = {
-
-      try
-      {
-          val classloader: ClassLoader = ResourceLoader.getClass().getClassLoader()
-          classloader.getResource( resourcePath )
+    catch
+    {
+      case e: Throwable => {
+        resourceLoaderLogger.logError("Failed to get the URL for the resource '" + resourcePath + "' ", e)
+        return null
       }
-      catch
-      {
-          case e: Throwable => {
-              // TODO: Use logging
-              System.err.println("Failed to get the URL for the resource '" + resourcePath + "' " )
-              e.printStackTrace
+    }
 
-              return null
-          }
+  }
+
+  def loadResource[T](resourcePath: String, resourceDesc: String, loader: (InputStream) => T, default: => T): T = {
+    // TODO: Could return a future maybe - requires a spawn type future support for scala (scalax.Future seems promising)
+    // But then it should probably get the concrete default object.
+
+    try
+    {
+      val classloader: ClassLoader = ResourceLoader.getClass().getClassLoader()
+
+      if (resourcePath == null) default
+      else {
+        val stream: InputStream = classloader.getResourceAsStream(resourcePath)
+
+        if (stream == null) default
+        else loader(stream)
       }
-
     }
+    catch
+    {
+      case e: Throwable => {
+        val defaultVal = default
 
-    def loadResource[T](resourcePath: String, resourceDesc: String, loader: (InputStream) => T, default: => T): T = {
-        // TODO: Could return a future maybe - requires a spawn type future support for scala (scalax.Future seems promising)
-        // But then it should probably get the concrete default object.
+        resourceLoaderLogger.logWarning( ("Failed to load the resource '" + resourceDesc + "' " +
+                "from the location '" + resourcePath + "' on the classpath" +
+                (if (defaultVal != null) " (using default value instead)" else "") + " : " + e.toString()), e )
 
-        try
-        {
-            val classloader: ClassLoader = ResourceLoader.getClass().getClassLoader()
-
-            if (resourcePath == null) default
-            else {
-              val stream: InputStream = classloader.getResourceAsStream(resourcePath)
-
-              if (stream == null) default
-              else loader(stream)
-            }
-        }
-        catch
-        {
-            case e: Throwable => {
-                val defaultVal = default
-
-                // TODO: Use logging
-                System.err.println("Failed to load the resource '" + resourceDesc + "' " +
-                        "from the location '" + resourcePath + "' on the classpath" +
-                        (if (defaultVal != null) " (using default value instead)" else "") + " : " + e.toString())
-                e.printStackTrace
-
-                return defaultVal
-            }
-        }
+        return defaultVal
+      }
     }
+  }
 
 
 }

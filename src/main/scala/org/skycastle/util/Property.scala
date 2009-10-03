@@ -1,5 +1,6 @@
 package org.skycastle.util
 
+@deprecated
 object Property{
 
   val notNull = (v : AnyRef) => v != null
@@ -14,6 +15,7 @@ object Property{
 /**
  * A variable field that allows listening to changes and enforcing invariants.
  */
+@deprecated
 case class Property[T]( private var _value : T, invariant : T => Boolean ) {
 
   private var listeners : List[(T, T) => Unit] = Nil

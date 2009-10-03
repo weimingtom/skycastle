@@ -1,11 +1,12 @@
 package org.skycastle.client
 
 
-import content.account.client.ClientSideAccountEntity
-import entity.accesscontrol.{users, ActionCapability}
-import entity.{parameters, EntityId, Entity}
-import ui.{ScreenEntity, Ui}
-import util.Parameters
+import org.skycastle.content.account.client.ClientSideAccountEntity
+import org.skycastle.entity.accesscontrol.{users, ActionCapability}
+import org.skycastle.entity.{parameters, EntityId, Entity}
+import org.skycastle.ui.{ScreenEntity, Ui}
+import org.skycastle.util.Parameters
+
 /**
  * 
  * 
@@ -17,6 +18,7 @@ class ClientControllerEntity extends Entity {
 
   addRole( 'connect )
 
+  'uiId :- Symbol(null)
 
   def createUi() {
 
@@ -54,7 +56,7 @@ class ClientControllerEntity extends Entity {
 
     container.storeEntity( screen, null )
 
-    set( 'uiId, screen.id )
+    setProperty( 'uiId, screen.id )
     addRoleMember( 'connect, screen.id )
 
     screen

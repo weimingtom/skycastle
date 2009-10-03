@@ -4,6 +4,7 @@ package org.skycastle.entity
 import org.skycastle.entity.entitycontainer.EntityContainer
 import accesscontrol._
 import java.util.logging.{Logger, Level}
+import properties.RichProperties
 import script.Script
 import org.skycastle.util.ParameterChecker._
 import org.skycastle.network.Message
@@ -17,7 +18,7 @@ import java.lang.reflect.{Member, AnnotatedElement, Field, Method}
  */
 @serializable
 @SerialVersionUID(1)
-class Entity extends Properties with LogMethods with AccessControlMethods {
+class Entity extends RichProperties with LogMethods with AccessControlMethods {
 
 
   private var _id: EntityId = null
@@ -29,7 +30,6 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
   private var dynamicActions: Map[Symbol, Script] = Map()
 
   @transient private var actionMethods : Map[ Symbol, ActionMethod ] = null
-  @transient private var propertyFields : Map[ Symbol, PropertyField ] = null
 
   /**
    * The ID of the entity that is currently calling an action on this entity, or null if this entity is not processing
@@ -115,7 +115,6 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
 
   
 
-
   /**
    * Sets the value of a property.
    *
@@ -124,17 +123,8 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
    */
   @users( "propertyEditor"  )
   @parameters( "property, value"  )
-  def setProperty( property : Symbol, value : Any ) {
-    ensurePropertyFieldsLoaded()
-
-    // Search for Property fields
-    propertyFields.get( property ) match {
-      case Some( f ) => f.setValue( value )
-      case None => {
-        // Search for dynamical properties
-        // TODO
-      }
-    }
+  override def setProperty( property : Symbol, value : Any ) {
+    super.setProperty( property, value )
   }
 
   /**
@@ -146,18 +136,10 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
   @users( "propertyEditor, propertyReader"  )
   @parameters( "property"  )
   @callback
-  def getProperty( property : Symbol ) : Any = {
-    ensurePropertyFieldsLoaded()
-
-    // Search for Property fields
-    propertyFields.get( property ) match {
-      case Some( f ) => f.getValue
-      case None => {
-        // Search for dynamical properties
-        // TODO
-      }
-    }
+  override def getPropertyValue( property : Symbol ) : Option[Any] = {
+    super.getPropertyValue( property )
   }
+
 
   /**
    * Creates a new dynamical property.
@@ -167,18 +149,9 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
    * Also allows specifying property metadata, type, invariants, etc.
    */
   @users( "propertyCreator"  )
-  @parameters( "property, value"  )
-  def createProperty( property : Symbol, value : Any ) {
-    ensurePropertyFieldsLoaded()
-
-    // Search for Property fields, do not allow creation of a propety that would be shadowed by a property field
-    // TODO
-
-    // Search for dynamical properties, do not allow re-creation of an already existing property
-    // TODO
-
-    // Create proeprty
-    // TODO
+  @parameters( "property, value, kind"  )
+  def createProperty[T]( property : Symbol, value : T, kind : Class[T] )  {
+    super.addProperty( property, value, kind )
   }
 
 
@@ -193,7 +166,6 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
     currentAction = actionId
 
     try {
-      ensurePropertyFieldsLoaded()
       ensureActionMethodsLoaded()
 
       if (!callAllowed(caller, id, actionId, parameters)) {
@@ -232,11 +204,13 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
     if (actionMethods == null) actionMethods = findActionMethods()
   }
 
+/*
   private def ensurePropertyFieldsLoaded() {
     // TODO: We could use a common structure for these for all instances of a class of a specific type -> some object to cache them?
     // TODO: This will add duplicate capability entries for roles when the class is de-serialized, fix?
     if (propertyFields == null) propertyFields = findPropertyFields()
   }
+*/
 
   private def findActionMethods() : Map[ Symbol, ActionMethod ] = {
     val thisClass = getClass()
@@ -283,6 +257,7 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
     }
   }
 
+/*
   private def findPropertyFields() : Map[ Symbol, PropertyField ] = {
     val thisClass = getClass()
     try {
@@ -293,11 +268,6 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
       val nonPropertyFields = fields diff propertyFieldsList
 
       // TODO: Fix, looks like Scala doesn't store vars as java fields in the normal place at least. 
-      println("thisClass = " + thisClass)
-      println("fields = " + fields)
-      println("nonPropertyFields = " + nonPropertyFields)
-      println("propertyFieldsList = " + propertyFieldsList)
-
       warnAboutInvalidProperties( nonPropertyFields, classOf[readers] )
       warnAboutInvalidProperties( nonPropertyFields, classOf[editors] )
 
@@ -328,13 +298,16 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
       Map()
     }
   }
+*/
 
+/*
   private def warnAboutInvalidProperties( members : List[Field], annotation : Class[_ <: java.lang.annotation.Annotation] ) {
     members filter{ _.isAnnotationPresent( annotation ) } foreach { (f : Field ) =>
       logWarning( "The field '"+f.getName+"' in the Entity '"+this.getClass.getName+"' has the annotation '"+annotation+"', " +
                   "but it is not of type "+classOf[Property[_]]+", so it will not be treated as a property." )
     }
   }
+*/
 
   private def warnAboutInvalidActions( members : List[Method], annotation : Class[_ <: java.lang.annotation.Annotation] ) {
     members filter{ _.isAnnotationPresent( annotation ) } foreach { (m : Method) =>

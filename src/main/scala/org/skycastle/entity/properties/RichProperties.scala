@@ -1,7 +1,7 @@
 package org.skycastle.entity.properties
 
 import org.skycastle.entity.accesscontrol.Role
-import org.skycastle.util.ClassUtils
+import org.skycastle.util.{TypedGetters, ClassUtils}
 
 /**
  * Provides support for properties that can be listened to, that have access control, and that can be queried.
@@ -43,101 +43,144 @@ import org.skycastle.util.ClassUtils
  *
  *
  */
-trait RichProperties {
+// TODO: Some own exception type for illegal property accesses?
+trait RichProperties extends TypedGetters {
 
+  import PropertyConversions._
+  
   private var properties : Map[Symbol, RichProperty[_]] = Map()
 
-  case class ValueType[T]( kind : Class[T] )
 
-  case class PropertyMaker(id : Symbol) {
-    def :- [T] ( value : T ) : RichProperty[T] = {
-      val property = new RichProperty[T]( id, value, ClassUtils.getType( value ) )
-      properties = properties + id -> property
-      property
+  def entries : Map[Symbol, Any] = properties.mapElements( _.value ).asInstanceOf[Map[Symbol, Any]]
+  
+
+  def ~ (id : Symbol) : RichProperty[Any] = properties( id ).asInstanceOf[RichProperty[Any]]
+  def :+ ( id : Symbol ) : PropertyMaker = PropertyMaker( id )
+
+  def getProperty( name : Symbol ) : Option[RichProperty[Any]] = properties.get( name ).asInstanceOf[Option[RichProperty[Any]]]
+
+  def getPropertyValue( name : Symbol ) : Option[Any] = {
+    properties.get( name ) match {
+      case Some(p) => Some(p.value)
+      case None => None
     }
   }
 
-  class RichProperty[T](id : Symbol, var _value : T, var kind : Class[_] ) {
-    private var editors    : List[Role]         = Nil
-    private var readers    : List[Role]         = Nil
-    private var listeners  : List[T => Unit]    = Nil
-    private var invariants : List[T => Boolean] = Nil
+  def apply( name : Symbol ) : RichProperty[Any] = properties( name ).asInstanceOf[RichProperty[Any]]
 
-    def editor( editor : Role ) : RichProperty[T]= {
-      editors = editor :: editors
-      this
+  def setProperty( name : Symbol, value : Any ) {
+    getProperty( name ) match {
+      case Some(p) => p := value
+      case None => throw new IllegalArgumentException( "No property named '"+name.name+"' found in '"+this.toString+"'." )
     }
+  }
 
-    def reader( reader : Role ) : RichProperty[T]= {
-      readers = reader :: readers
-      this
+  def addProperty[T]( id : Symbol, value : T ) : RichProperty[T] = {
+    addProperty( id, value, ClassUtils.getType( value ) )
+  }
+
+  def addProperty[T]( id : Symbol, value : T, kind : Class[T] ) : RichProperty[T] = {
+    if (properties.contains( id )) throw new IllegalArgumentException( "Can not add property, the property '"+id.name+"' already exists in 'this.toString'." )
+
+    val property = new RichProperty[T]( id, value, kind )
+    properties = properties + id -> property
+    property
+  }
+
+  def removeProperty[T]( id : Symbol ) {
+    if (properties.contains( id )) {
+      properties = properties - id
     }
+  }
 
-    def setType( c : Class[_] ) : RichProperty[T]= {
-      require( c != null )
-      kind = c
-      this
-    }
+  def hasProperty( id : Symbol ) : Boolean = properties.contains( id )
 
-    def onChange( listener : T => Unit ) : RichProperty[T] = {
-      listeners = listeners ::: List(listener)
-      this
-    }
+  def getProperties : Map[Symbol, RichProperty[_]] = properties
 
-    def invariant( check : T => Boolean ) : RichProperty[T]= {
-      if (!check( _value ))
-        throw new IllegalArgumentException( "Invalid value '"+_value+"' of property when adding an invariant " +
-                                            "to property '"+id.name+"' of object '"+hostObject.toString+"'" )
-      invariants = invariants ::: List( check )
-      this
-    }
+  implicit def symbolToPropertyMaker( id : Symbol ) = PropertyMaker( id )
 
-    def value : T = _value
+  case class PropertyMaker(id : Symbol) {
+    def :- [T] ( value : T ) : RichProperty[T] = addProperty( id, value )
+    def :/ [T] ( kind : Class[T] ) : PropertyKindMaker[T] = PropertyKindMaker[T]( id, kind )
+  }
 
-    def := ( newValue : T) = setValue( newValue )
-    
-    def setValue( newValue : T) {
-      if ( !kind.isAssignableFrom( ClassUtils.getType( newValue ) ) )
-        throw new IllegalArgumentException( "Invalid value type when trying to assign value '"+newValue+"' " +
-                                            "to property '"+id.name+"' of object '"+hostObject.toString+"'.  The property value should be of type " + kind.getName )
-      if (invariants exists { !_(newValue) })
-        throw new IllegalArgumentException( "Invalid value when trying to assign value '"+newValue+"' " +
-                                            "to property '"+id.name+"' of object '"+hostObject.toString+"'" )
-
-      _value = newValue
-    }
-
+  case class PropertyKindMaker[T](id : Symbol, kind : Class[T]) {
+    def :- ( value : T ) : RichProperty[T] = addProperty( id, value, kind )
   }
 
   private def hostObject = this
 
-  implicit def symbolToPropertyMaker( id : Symbol ) = PropertyMaker( id )
+}
 
+object PropertyConversions {
   implicit def propertyToValue[T]( prop : RichProperty[T] ) : T = prop.value
-
-/*
-  implicit def symbolToProperty[T]( id : Symbol ) : RichProperty[T] = {
-    properties( id ).asInstanceOf[RichProperty[T]]
-  }
-*/
-
 }
 
 
-class RichPropertiesTest extends RichProperties {
+class RichProperty[T]( _id : Symbol, var _value : T, _kind : Class[T] ) {
+  private var editors    : List[Role]         = Nil
+  private var readers    : List[Role]         = Nil
+  private var listeners  : List[T => Unit]    = Nil
+  private var invariants : List[T => Boolean] = Nil
 
-  'hitpoints :- 100 invariant {_ > 0} onChange println
-  'name      :- null setType classOf[String]
+  checkKind( _value )
 
-  val mana = 'mana :- 50
+  def editor( editor : Role ) : RichProperty[T]= {
+    editors = editor :: editors
+    this
+  }
 
-  mana := 75
+  def reader( reader : Role ) : RichProperty[T]= {
+    readers = reader :: readers
+    this
+  }
 
-/*
-  'hitpoints := 50
-*/
+  def onChange( listener : T => Unit ) : RichProperty[T] = {
+    listeners = listeners ::: List(listener)
+    this
+  }
 
+  def invariant( invariant : T => Boolean ) : RichProperty[T]= {
+    checkInvariant( invariant )
+    invariants = invariants ::: List( invariant )
+    this
+  }
+
+  def id : Symbol = _id
   
+  def kind  : Class[T] = _kind
+
+  def value : T = _value
+
+  def := ( newValue : T) = setValue( newValue )
+
+  def setValue( newValue : T) {
+    checkKind( newValue )
+    checkInvariants( newValue )
+
+    _value = newValue
+
+    listeners foreach (_(_value))
+  }
+
+  private def checkKind( newValue : T ) {
+    if ( !kind.isAssignableFrom( ClassUtils.getType( newValue ) ) )
+      throw new IllegalArgumentException( "Invalid value type when trying to assign value '"+newValue+"' " +
+                                          "to property '"+id.name+"'.  The property value should be of type " + kind.getName )
+  }
+
+  private def checkInvariants( newValue : T ) {
+    if (invariants exists { !_(newValue) })
+      throw new IllegalArgumentException( "Invalid value when trying to assign value '"+newValue+"' " +
+                                          "to property '"+id.name+"'." )
+  }
+
+  private def checkInvariant( invariant : T => Boolean ) {
+    if (!invariant( _value ))
+      throw new IllegalStateException( "Invalid value '"+_value+"' of property when adding an invariant " +
+                                          "to property '"+id.name+"'." )
+  }
+
 }
 
 
