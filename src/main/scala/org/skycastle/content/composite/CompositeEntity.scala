@@ -1,9 +1,11 @@
 package org.skycastle.content.composite
 
 
-import entity.accesscontrol.{users, ActionCapability}
-import entity.{parameters, Entity}
-import util.{ClassUtils, Parameters}
+import org.skycastle.entity.accesscontrol.{users, ActionCapability}
+import org.skycastle.entity.{parameters, Entity}
+import org.skycastle.entity.Entity
+import org.skycastle.util.{PropertyGetters, ClassUtils}
+
 /**
  * An entity that is composed from several parametrized parts of some types, and where some parts
  * again may be composed of child parts.
@@ -45,7 +47,7 @@ abstract class CompositeEntity extends Entity {
 
   @users( "editor" )
   @parameters( "componentType, id, parent, $parameters" )
-  def addComponent( componentType: String, id: Symbol, parent: Symbol, parameters: Parameters ) {
+  def addComponent( componentType: String, id: Symbol, parent: Symbol, parameters: PropertyGetters ) {
     //logTrace( "Adding component of type " + componentType+ " with id "+id+", parent "+parent+", and parameters " + parameters )
 
     if (componentType == null) {
@@ -68,7 +70,7 @@ abstract class CompositeEntity extends Entity {
 
       val entry = (id, component)
       components = components + entry
-      component.init(id, parent, parameters, this)
+      component.init(id, parent, parameters.toParameters, this)
 
       // Add to parent
       components.get(parent) match {
@@ -86,10 +88,10 @@ abstract class CompositeEntity extends Entity {
 
   @users( "editor" )
   @parameters( "id, $parameters" )
-  def updateComponent( id: Symbol, parameters: Parameters ) {
+  def updateComponent( id: Symbol, parameters: PropertyGetters ) {
     components.get(id) match {
       case Some(component : CompositePart) => {
-        component.update(parameters, this)
+        component.update(parameters.toParameters, this)
       }
       case None => {
         logWarning("Component '" + id + "' not found when trying to update it.  The update parameters were " + parameters + ". Ignoring the update.")

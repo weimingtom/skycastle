@@ -1,18 +1,18 @@
 package org.skycastle.ui.components
 
 
-import content.composite.CompositeEntity
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing.event.{DocumentEvent, DocumentListener}
 import javax.swing.JTextField
-import util.Parameters
+import org.skycastle.content.composite.CompositeEntity
+import org.skycastle.ui.Ui
+import org.skycastle.util.Parameters
 
 /**
  * 
  * 
  * @author Hans Haggstrom
  */
-import org.skycastle.util.Properties
 
 @serializable
 @SerialVersionUID(1)
@@ -31,7 +31,7 @@ class FieldUi extends Ui {
     field.getDocument.addDocumentListener( new DocumentListener {
 
       def updateParameters() {
-        parameters.set( 'text, field.getText )
+        parameters.setProperty( 'text, field.getText )
       }
 
       def changedUpdate(e: DocumentEvent) = updateParameters()
@@ -44,7 +44,7 @@ class FieldUi extends Ui {
 
   protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
 
-    if (changedParameters.has('text)) {
+    if (changedParameters.hasProperty('text)) {
       view.setText( parameters.getString( 'text, "") )
     }
 

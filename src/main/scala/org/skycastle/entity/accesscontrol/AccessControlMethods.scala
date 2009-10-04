@@ -122,7 +122,7 @@ trait AccessControlMethods {
     def actionCallAllowed : Boolean = roles.exists( _.allowsCall( caller, actionId ) )
     def propertyMethodAllowed( method : Symbol, predicate : (Role, Symbol) => Boolean ) : Boolean = {
       actionId == method &&
-      ( parameters.getAs[Symbol]( 'property ) match {
+      ( parameters.getProperty( 'property ) match {
         case Some(property : Symbol) => roles.exists( { predicate( _, property) } )
         case _ => false
       } )

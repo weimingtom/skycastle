@@ -19,7 +19,7 @@ case class ActionMethod( host : Entity, method : Method, parameterMapping : List
       // Handle special parameter mappings:
       if ( sourceParamName == ActionMethodConstants.CALLER_ID ) caller
       else if ( sourceParamName == ActionMethodConstants.PARAMETERS ) parameters
-      else parameters.getOrElse[Object]( sourceParamName, null.asInstanceOf[Object] )
+      else parameters.getProperty[Object]( sourceParamName, null.asInstanceOf[Object] )
     }).toArray
 
     method.invoke( host, invocationParameters : _* )

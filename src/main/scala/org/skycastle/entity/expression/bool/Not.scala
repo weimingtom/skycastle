@@ -1,6 +1,6 @@
 package org.skycastle.entity.expression.bool
 
-import org.skycastle.util.Properties
+import org.skycastle.util.PropertyGetters
 
 
 /**
@@ -11,7 +11,7 @@ import org.skycastle.util.Properties
 
 final case class Not( expression : BoolExpression ) extends BoolExpression {
 
-  def getBoolean(entity: Properties) = !expression.getBoolean( entity )
+  def getBoolean(entity: PropertyGetters) = !expression.getBoolean( entity )
 
 
   override def toString = "not " + expression.toString

@@ -1,8 +1,8 @@
 package org.skycastle.content.composite
 
 
-import java.util.logging.Logger
-import util.{LogUtil, LogMethods}
+import org.skycastle.util.LogUtil
+
 /**
  * 
  * 

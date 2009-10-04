@@ -1,10 +1,11 @@
 package org.skycastle.ui.components
 
 
-import content.composite.CompositeEntity
+import org.skycastle.content.composite.CompositeEntity
 import javax.swing.JPanel
 import net.miginfocom.swing.MigLayout
-import util.Parameters
+import org.skycastle.util.Parameters
+import org.skycastle.ui.Ui
 
 /**
  *
@@ -25,13 +26,13 @@ class PanelUi extends Ui {
   def createOwnView(composite: CompositeEntity) = new JPanel(layout)
 
   protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
-    if (changedParameters.has('layout))
+    if (changedParameters.hasProperty('layout))
       layout.setLayoutConstraints(changedParameters.getString('layout, ""))
 
-    if (changedParameters.has('columnLayout))
+    if (changedParameters.hasProperty('columnLayout))
       layout.setLayoutConstraints(changedParameters.getString('columnLayout, ""))
 
-    if (changedParameters.has('rowLayout))
+    if (changedParameters.hasProperty('rowLayout))
       layout.setLayoutConstraints(changedParameters.getString('rowLayout, ""))
   }
 }

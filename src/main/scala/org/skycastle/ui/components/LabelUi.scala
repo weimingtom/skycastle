@@ -1,9 +1,11 @@
 package org.skycastle.ui.components
 
 
-import content.composite.CompositeEntity
 import javax.swing.{JPanel, JLabel}
 import util.Parameters
+import org.skycastle.content.composite.CompositeEntity
+import org.skycastle.util.Parameters
+import org.skycastle.ui.Ui
 
 /**
  * 
@@ -21,7 +23,7 @@ class LabelUi extends Ui {
 
   protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
 
-    if (changedParameters.has('text)) {
+    if (changedParameters.hasProperty('text)) {
       view.setText( parameters.getString( 'text, "") )
     }
 

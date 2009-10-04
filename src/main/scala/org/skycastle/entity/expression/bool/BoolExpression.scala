@@ -1,9 +1,9 @@
 package org.skycastle.entity.expression.bool
 
 
-import num.NumExpression
-import org.skycastle.util.Properties
-
+import org.skycastle.util.PropertyGetters
+import org.skycastle.entity.expression.{BinaryExpression, Expression}
+import org.skycastle.entity.expression.num.NumExpression
 
 /**
  * 
@@ -14,7 +14,7 @@ import org.skycastle.util.Properties
 trait  BoolExpression extends Expression {
 
 
-  def getValue(entity: Properties) = getBoolean( entity )
+  def getValue(entity: PropertyGetters) = getBoolean( entity )
 
   /**
    * The boolean value of this entity, mostly for use in triggers and such that do
@@ -22,7 +22,7 @@ trait  BoolExpression extends Expression {
    *
    * Will be false if the value is not a boolean.
    */
-  def getBoolean( entity : Properties  ) : Boolean
+  def getBoolean( entity : PropertyGetters  ) : Boolean
 
   final def and ( expression : BoolExpression ) = And( this, expression )
   final def or ( expression : BoolExpression ) = Or( this, expression )
@@ -35,44 +35,44 @@ trait  BoolExpression extends Expression {
 
 final case class And( exp1 : BoolExpression, exp2 : BoolExpression ) extends BoolExpression with BinaryExpression {
   val symbol = "and"
-  override def getBoolean(entity: Properties) = exp1.getBoolean( entity ) && exp2.getBoolean( entity )
+  override def getBoolean(entity: PropertyGetters) = exp1.getBoolean( entity ) && exp2.getBoolean( entity )
 }
 
 final case class Or( exp1 : BoolExpression, exp2 : BoolExpression ) extends BoolExpression with BinaryExpression {
   val symbol = "or"
-  override def getBoolean(entity: Properties) = exp1.getBoolean( entity ) || exp2.getBoolean( entity )
+  override def getBoolean(entity: PropertyGetters) = exp1.getBoolean( entity ) || exp2.getBoolean( entity )
 }
 
 
 final case class SameAs( exp1 : Expression, exp2 : Expression ) extends BoolExpression with BinaryExpression {
   val symbol = "=="
-  override def getBoolean(entity: Properties) = exp1.getValue( entity ) == exp2.getValue( entity )
+  override def getBoolean(entity: PropertyGetters) = exp1.getValue( entity ) == exp2.getValue( entity )
 }
 
 final case class NotSameAs( exp1 : Expression, exp2 : Expression ) extends BoolExpression with BinaryExpression {
   val symbol = "!="
-  override def getBoolean(entity: Properties) = exp1.getValue( entity ) != exp2.getValue( entity )
+  override def getBoolean(entity: PropertyGetters) = exp1.getValue( entity ) != exp2.getValue( entity )
 }
 
 
 final case class Smaller( exp1 : NumExpression, exp2 : NumExpression ) extends BoolExpression with BinaryExpression {
   val symbol = "<"
-  override def getBoolean(entity: Properties) = exp1.getNumber( entity ) < exp2.getNumber( entity )
+  override def getBoolean(entity: PropertyGetters) = exp1.getNumber( entity ) < exp2.getNumber( entity )
 }
 
 final case class SmallerOrEqual( exp1 : NumExpression, exp2 : NumExpression ) extends BoolExpression with BinaryExpression {
   val symbol = "<="
-  override def getBoolean(entity: Properties) = exp1.getNumber( entity ) <= exp2.getNumber( entity )
+  override def getBoolean(entity: PropertyGetters) = exp1.getNumber( entity ) <= exp2.getNumber( entity )
 }
 
 final case class Greater( exp1 : NumExpression, exp2 : NumExpression ) extends BoolExpression with BinaryExpression {
   val symbol = ">"
-  override def getBoolean(entity: Properties) = exp1.getNumber( entity ) > exp2.getNumber( entity )
+  override def getBoolean(entity: PropertyGetters) = exp1.getNumber( entity ) > exp2.getNumber( entity )
 }
 
 final case class GreaterOrEqual( exp1 : NumExpression, exp2 : NumExpression ) extends BoolExpression with BinaryExpression {
   val symbol = ">="
-  override def getBoolean(entity: Properties) = exp1.getNumber( entity ) >= exp2.getNumber( entity )
+  override def getBoolean(entity: PropertyGetters) = exp1.getNumber( entity ) >= exp2.getNumber( entity )
 }
 
 

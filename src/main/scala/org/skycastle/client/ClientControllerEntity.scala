@@ -22,7 +22,7 @@ class ClientControllerEntity extends Entity {
 
   def createUi() {
 
-    val clientUiId = getOrElse( 'uiId, null, classOf[EntityId] )
+    val clientUiId = getProperty( 'uiId, null, classOf[EntityId] )
     val screen : ScreenEntity = container.getEntity( clientUiId ) match {
       case Some( screen : ScreenEntity ) => screen
       case _ => buildClientScreen()

@@ -1,5 +1,6 @@
 package org.skycastle.entity.expression
-import org.skycastle.util.Properties
+
+import org.skycastle.util.{PropertyGetters}
 
 /**
  * 
@@ -9,7 +10,7 @@ import org.skycastle.util.Properties
 
 final case class Const( value : Any ) extends Expression {
 
-  def getValue(entity: Properties) = value
+  def getValue(entity: PropertyGetters) = value
 
   override def toString = value.toString
 }

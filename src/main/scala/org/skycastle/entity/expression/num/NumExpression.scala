@@ -1,8 +1,9 @@
 package org.skycastle.entity.expression.num
 
 
-import bool.{Smaller, Greater, SmallerOrEqual, GreaterOrEqual}
-import org.skycastle.util.Properties
+import org.skycastle.entity.expression.bool.{Smaller, Greater, SmallerOrEqual, GreaterOrEqual}
+import org.skycastle.util.PropertyGetters
+import org.skycastle.entity.expression.{BinaryExpression, Expression}
 
 /**
  * 
@@ -13,7 +14,7 @@ import org.skycastle.util.Properties
 trait NumExpression extends Expression {
 
 
-  def getValue(entity: Properties) = getNumber( entity )
+  def getValue(entity: PropertyGetters) = getNumber( entity )
 
 
   /**
@@ -22,7 +23,7 @@ trait NumExpression extends Expression {
    *
    * Will be Math.NAN_DOUBLE if the value is not a number.
    */
-  def getNumber( entity : Properties  ) : Double
+  def getNumber( entity : PropertyGetters  ) : Double
 
 
   final def + ( expression : NumExpression ) = Add( this, expression )
@@ -41,22 +42,22 @@ trait NumExpression extends Expression {
 
 final case class Add( exp1 : NumExpression, exp2 : NumExpression ) extends NumExpression with BinaryExpression {
   val symbol = "+"
-  override def getNumber(entity: Properties) = exp1.getNumber( entity ) + exp2.getNumber( entity )
+  override def getNumber(entity: PropertyGetters) = exp1.getNumber( entity ) + exp2.getNumber( entity )
 }
 
 final case class Sub( exp1 : NumExpression, exp2 : NumExpression ) extends NumExpression with BinaryExpression {
   val symbol = "-"
-  override def getNumber(entity: Properties) = exp1.getNumber( entity ) - exp2.getNumber( entity )
+  override def getNumber(entity: PropertyGetters) = exp1.getNumber( entity ) - exp2.getNumber( entity )
 }
 
 final case class Mul( exp1 : NumExpression, exp2 : NumExpression ) extends NumExpression with BinaryExpression {
   val symbol = "*"
-  override def getNumber(entity: Properties) = exp1.getNumber( entity ) * exp2.getNumber( entity )
+  override def getNumber(entity: PropertyGetters) = exp1.getNumber( entity ) * exp2.getNumber( entity )
 }
 
 final case class Div( exp1 : NumExpression, exp2 : NumExpression ) extends NumExpression with BinaryExpression {
   val symbol = "/"
-  override def getNumber(entity: Properties) = exp1.getNumber( entity ) / exp2.getNumber( entity )
+  override def getNumber(entity: PropertyGetters) = exp1.getNumber( entity ) / exp2.getNumber( entity )
 }
 
 

@@ -1,5 +1,5 @@
 package org.skycastle.entity.expression.num
-import org.skycastle.util.Properties
+import org.skycastle.util.PropertyGetters
 
 
 
@@ -11,7 +11,7 @@ import org.skycastle.util.Properties
 
 final case class Num( value : Number ) extends NumExpression {
 
-  def getNumber(entity: Properties) = value.doubleValue
+  def getNumber(entity: PropertyGetters) = value.doubleValue
 
   override def toString = value.doubleValue.toString
 }

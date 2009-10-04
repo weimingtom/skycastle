@@ -1,5 +1,5 @@
 package org.skycastle.entity.expression.bool
-import org.skycastle.util.Properties
+import org.skycastle.util.PropertyGetters
 
 
 
@@ -11,8 +11,8 @@ import org.skycastle.util.Properties
 
 class BoolProp(propertyName : Symbol, default : BoolExpression)  extends BoolExpression {
 
-  def getBoolean (entity: Properties) = {
-    entity.get( propertyName ) match {
+  def getBoolean (entity: PropertyGetters) = {
+    entity.getProperty( propertyName ) match {
       case Some(value) => {
         if ( value.isInstanceOf[Boolean] ) value.asInstanceOf[Boolean]
         else if ( value.isInstanceOf[java.lang.Boolean] ) value.asInstanceOf[java.lang.Boolean].booleanValue

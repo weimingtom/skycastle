@@ -3,7 +3,7 @@ package org.skycastle.content.ui
 /**
  * Shows a table with data from some source.
  *
- * The data items should implement the TypedGetters trait (that is Parameters or Entities will both work).
+ * The data items should implement the PropertyGetters trait (that is Parameters or Entities will both work).
  * EntityId:s will normally be looked up and treated as Entities.
  * Other types of data is treated as a Property with a single value field of String type.
  *

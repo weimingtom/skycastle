@@ -1,5 +1,5 @@
 package org.skycastle.entity.expression.num
-import org.skycastle.util.Properties
+import org.skycastle.util.PropertyGetters
 
 /**
  * 
@@ -9,8 +9,8 @@ import org.skycastle.util.Properties
 
 final case class NumProp(propertyName : Symbol, default : NumExpression) extends NumExpression {
 
-  def getNumber (entity: Properties) = {
-    entity.get( propertyName ) match {
+  def getNumber (entity: PropertyGetters) = {
+    entity.getProperty( propertyName ) match {
       case Some(value) => {
         if ( value.isInstanceOf[Number] ) value.asInstanceOf[Number].doubleValue
         else if ( value.isInstanceOf[Byte] ) value.asInstanceOf[Byte].toDouble

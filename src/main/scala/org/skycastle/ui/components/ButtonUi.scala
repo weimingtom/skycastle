@@ -1,11 +1,12 @@
 package org.skycastle.ui.components
 
 
-import content.composite.{CompositePart, CompositeEntity}
-import entity.EntityId
+import org.skycastle.content.composite.{CompositePart, CompositeEntity}
+import org.skycastle.entity.EntityId
 import java.awt.event.{ActionEvent, ActionListener}
 import javax.swing.JButton
-import util.Parameters
+import org.skycastle.util.Parameters
+import org.skycastle.ui.Ui
 
 /**
  * 
@@ -57,17 +58,17 @@ class ButtonUi extends Ui {
 
 
   protected def updateViewProperties(view: ViewType, changedParameters: Parameters)  {
-    if (changedParameters.has('text))
+    if (changedParameters.hasProperty('text))
       view.setText( changedParameters.getString('text, "") )
 
-    if (changedParameters.has('calledEntity))
-      calledEntity = changedParameters.getAs[EntityId]('calledEntity, null)
+    if (changedParameters.hasProperty('calledEntity))
+      calledEntity = changedParameters.getProperty[EntityId]('calledEntity, null)
 
-    if (changedParameters.has('calledAction))
-      calledAction = changedParameters.getAs[Symbol]('calledAction, null)
+    if (changedParameters.hasProperty('calledAction))
+      calledAction = changedParameters.getProperty[Symbol]('calledAction, null)
     
-    if (changedParameters.has('actionParameters))
-      actionParameters = changedParameters.getAs[Map[Symbol,Symbol]]('actionParameters, Map[Symbol,Symbol]())
+    if (changedParameters.hasProperty('actionParameters))
+      actionParameters = changedParameters.getProperty[Map[Symbol,Symbol]]('actionParameters, Map[Symbol,Symbol]())
 
   }
 }

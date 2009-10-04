@@ -1,5 +1,6 @@
 package org.skycastle.entity.expression
-import org.skycastle.util.Properties
+
+import org.skycastle.util.{PropertyGetters}
 
 /**
  * 
@@ -9,8 +10,8 @@ import org.skycastle.util.Properties
 
 case class Prop( propertyName : Symbol, default : Expression ) extends Expression {
 
-  def getValue(entity: Properties) = {
-    entity.get( propertyName ) match {
+  def getValue(entity: PropertyGetters) = {
+    entity.getProperty( propertyName ) match {
       case Some(x) => x
       case None => default.getValue( entity )
     }

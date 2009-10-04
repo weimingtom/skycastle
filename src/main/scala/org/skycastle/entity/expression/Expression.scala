@@ -2,8 +2,7 @@ package org.skycastle.entity.expression
 
 
 import bool.{NotSameAs, SameAs}
-import org.skycastle.util.Properties
-
+import org.skycastle.util.{PropertyGetters}
 
 /**
  * Used to calculate some (usually simple) expression that is based on constants and properties of an Entity.
@@ -15,7 +14,7 @@ import org.skycastle.util.Properties
 //       more efficient network transfer, but may eat some CPU cycles  
 trait Expression {
 
-  def getValue( entity : Properties ) : Any
+  def getValue( entity : PropertyGetters ) : Any
 
   final def notSameAs ( expression : Expression ) = NotSameAs( this, expression )
   final def sameAs ( expression : Expression ) = SameAs( this, expression )

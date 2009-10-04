@@ -1,9 +1,11 @@
 package org.skycastle.ui.example
 
 
-import entity.script.{ActionCall, ActionSequenceScript}
-import entity.EntityId
-import util.{Parameters, SimpleFrame}
+import org.skycastle.entity.script.{ActionCall, ActionSequenceScript}
+import org.skycastle.entity.EntityId
+import org.skycastle.util.{Parameters, SimpleFrame}
+import org.skycastle.ui.ScreenEntity
+
 /**
  * 
  * 

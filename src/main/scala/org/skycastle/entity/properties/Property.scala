@@ -4,12 +4,12 @@ import org.skycastle.entity.accesscontrol.{ReadCapability, EditCapability, Role}
 import org.skycastle.util.ClassUtils
 
 /**
- * Import  org.skycastle.entity.properties.PropertyConversions._  to automatically have RichProperties converted
+ * Import  org.skycastle.entity.properties.PropertyConversions._  to automatically have Properties converted
  * to the object they contain when used in expressions and such.
  */
 // TODO: In Scala 2.8, place this in the package instead.
 object PropertyConversions {
-  implicit def propertyToValue[T]( prop : RichProperty[T] ) : T = prop.value
+  implicit def propertyToValue[T]( prop : Property[T] ) : T = prop.value
 
   val notNullInvariant = { v : Any => v != null }
 }
@@ -19,35 +19,35 @@ object PropertyConversions {
  * Property with name and type that contains a value.
  * Allows listening to value changes, and specifying access roles for the property. 
  */
-class RichProperty[T]( _id : Symbol, var _value : T, _kind : Class[T] ) {
+class Property[T]( _id : Symbol, var _value : T, _kind : Class[T] ) {
   private var listeners  : List[T => Unit]    = Nil
   private var invariants : List[T => Boolean] = Nil
 
   checkKind( _value )
 
-  def editor( editor : Role ) : RichProperty[T]= {
+  def editor( editor : Role ) : Property[T]= {
     editor.addCapability( EditCapability( id ) )
     this
   }
 
-  def reader( reader : Role ) : RichProperty[T]= {
+  def reader( reader : Role ) : Property[T]= {
     reader.addCapability( ReadCapability( id ) )
     this
   }
 
-  def onChange( listener : T => Unit ) : RichProperty[T] = {
+  def onChange( listener : T => Unit ) : Property[T] = {
     listeners = listeners ::: List(listener)
     this
   }
 
-  def invariant( invariant : T => Boolean ) : RichProperty[T]= {
+  def invariant( invariant : T => Boolean ) : Property[T]= {
     checkInvariant( invariant )
     invariants = invariants ::: List( invariant )
     this
   }
 
   // TODO: Make properties notNull by default, and require a marker to make them nullable.
-  def notNull : RichProperty[T]= {
+  def notNull : Property[T]= {
     invariant( PropertyConversions.notNullInvariant )
     this
   }

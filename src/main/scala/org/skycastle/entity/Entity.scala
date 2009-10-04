@@ -2,13 +2,13 @@ package org.skycastle.entity
 
 
 import org.skycastle.entity.entitycontainer.EntityContainer
-import accesscontrol._
+import org.skycastle.entity.accesscontrol._
 import java.util.logging.{Logger, Level}
-import properties.RichProperties
-import script.Script
+import org.skycastle.entity.script.Script
 import org.skycastle.util.ParameterChecker._
 import org.skycastle.network.Message
-import org.skycastle.util._
+import org.skycastle.util.{StringUtils, Parameters, LogMethods}
+import org.skycastle.entity.properties._
 import java.lang.reflect.{Member, AnnotatedElement, Field, Method}
 
 /**
@@ -18,7 +18,7 @@ import java.lang.reflect.{Member, AnnotatedElement, Field, Method}
  */
 @serializable
 @SerialVersionUID(1)
-class Entity extends RichProperties with LogMethods with AccessControlMethods {
+class Entity extends Properties with LogMethods with AccessControlMethods {
 
 
   private var _id: EntityId = null
@@ -137,7 +137,7 @@ class Entity extends RichProperties with LogMethods with AccessControlMethods {
   @parameters( "property"  )
   @callback
   override def getPropertyValue( property : Symbol ) : Option[Any] = {
-    super.getPropertyValue( property )
+    super.getProperty( property )
   }
 
 

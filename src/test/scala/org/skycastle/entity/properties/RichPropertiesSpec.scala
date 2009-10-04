@@ -6,11 +6,11 @@ import org.skycastle.entity.properties.PropertyConversions._
 import org.skycastle.entity.accesscontrol.Role
 
 /**
- * Specification / test for RichProperties 
+ * Specification / test for Properties
  */
 class RichPropertiesSpec extends Spec with ShouldMatchers with BeforeAndAfter {
 
-  class Orc() extends RichProperties {
+  class Orc() extends Properties {
     'name :- "Igor"
     'mana :- 50
     val hitpoints = 'hitpoints :- 100 invariant {_ > 0}
@@ -18,7 +18,7 @@ class RichPropertiesSpec extends Spec with ShouldMatchers with BeforeAndAfter {
   var orc : Orc = null
   override protected def beforeEach() { orc = new Orc() }
   
-  describe( "RichProperties" ) {
+  describe( "Properties" ) {
 
     it( "should cast properties to their value type as needed" ) {
       val hp : Int = orc.hitpoints

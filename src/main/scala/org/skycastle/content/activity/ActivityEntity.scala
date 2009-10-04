@@ -3,7 +3,7 @@ package org.skycastle.content.activity
 
 import org.skycastle.entity.accesscontrol.{users, RoleMembersFunction, RoleMember}
 import org.skycastle.entity.{parameters, EntityId, Entity}
-import org.skycastle.util.{Properties, Parameters}
+import org.skycastle.util.{ Parameters}
 /**
  * An activity is something users can join into and experience together with others.
  * 

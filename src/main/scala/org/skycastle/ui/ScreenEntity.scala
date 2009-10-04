@@ -2,13 +2,12 @@ package org.skycastle.ui
 
 
 import components.{FieldUi, LabelUi, PanelUi, ButtonUi}
-import content.composite.CompositeEntity
-import entity.accesscontrol.ActionCapability
-import entity.Entity
+import org.skycastle.content.composite.CompositeEntity
+import org.skycastle.entity.accesscontrol.ActionCapability
+import org.skycastle.entity.Entity
 import java.awt.Dimension
 import javax.swing.{JLabel, JFrame, JComponent}
-import util.{Parameters}
-import org.skycastle.util.Properties
+import org.skycastle.util.PropertyGetters
 
 /**
  * A set of UI:s laid out into an ui screen.

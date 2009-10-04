@@ -1,8 +1,10 @@
 package org.skycastle.ui.example
 
 
-import entity.EntityId
-import util.{SimpleFrame, Parameters}
+import org.skycastle.entity.EntityId
+import org.skycastle.util.{SimpleFrame, Parameters}
+import org.skycastle.ui.ScreenEntity
+
 /**
  * 
  * 

@@ -1,10 +1,9 @@
 package org.skycastle.client
-import org.skycastle.util.Properties
 
 
-import entity.accesscontrol.{ActionCapability, Capability}
-import entity.{Entity, EntityId}
-import ui.ScreenEntity
+import org.skycastle.entity.accesscontrol.{ActionCapability, Capability}
+import org.skycastle.entity.{Entity, EntityId}
+import org.skycastle.ui.ScreenEntity
 
 /**
  * Holds data about a server on a client.

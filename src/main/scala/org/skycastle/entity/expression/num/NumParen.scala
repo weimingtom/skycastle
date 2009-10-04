@@ -1,5 +1,5 @@
 package org.skycastle.entity.expression.num
-import org.skycastle.util.Properties
+import org.skycastle.util.PropertyGetters
 
 
 /**
@@ -9,7 +9,7 @@ import org.skycastle.util.Properties
 */
 final case class NumParen ( expression : NumExpression ) extends NumExpression {
 
-  def getNumber(entity: Properties) = expression.getNumber( entity )
+  def getNumber(entity: PropertyGetters) = expression.getNumber( entity )
 
   override def toString = "( " + expression.toString + " )"
 }

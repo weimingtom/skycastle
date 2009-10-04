@@ -1,5 +1,5 @@
 package org.skycastle.entity.expression.bool
-import org.skycastle.util.Properties
+import org.skycastle.util.PropertyGetters
 
 /**
  * 
@@ -8,7 +8,7 @@ import org.skycastle.util.Properties
  */
 
 final case class TrueExpr() extends BoolExpression {
-  def getBoolean(entity: Properties) = true
+  def getBoolean(entity: PropertyGetters) = true
 
   override def toString = "true"
 }

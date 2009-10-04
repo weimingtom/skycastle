@@ -1,8 +1,6 @@
 package org.skycastle.content.composite
 
-import org.skycastle.util.Properties
-import util.{ErrorPrinter, Parameters}
-import org.skycastle.util.Properties
+import org.skycastle.util._
 
 /**
  * A part of a CompositeEntity.
@@ -12,13 +10,13 @@ import org.skycastle.util.Properties
 class CompositePart {
 
   /**
-   * Whether child componets can be added to this component.   Override if necessary.
+   * Whether child components can be added to this component.   Override if necessary.
    */
   val childrenSupported : Boolean = false
 
   var id: Symbol = null
   var parent: Symbol = null
-  var parameters: Properties = null
+  var parameters: SimpleProperties = null
 
   private var children: List[Symbol] = Nil
 
@@ -26,7 +24,7 @@ class CompositePart {
   /**
    * Called just after a component has been created, and before it is added to any parent component.
    */
-  def onInit(parameters: Properties, composite : CompositeEntity) {}
+  def onInit(parameters: SimpleProperties, composite : CompositeEntity) {}
 
   /**
    * Called when a component is updated with changed parameters.
@@ -55,7 +53,7 @@ class CompositePart {
   final def init( id_ : Symbol, parent_ : Symbol, parameters_ : Parameters, composite : CompositeEntity) {
     id = id_
     parent = parent_
-    parameters = new Properties( parameters_ )
+    parameters = new SimpleProperties( parameters_ )
 
     try {
       onInit(parameters, composite)
@@ -109,9 +107,9 @@ class CompositePart {
   
 
 
-
+// TODO: Rename to avoid overloading with scala specified update method
   final def update(changedParameters: Parameters, composite : CompositeEntity) {
-    parameters.updateProperties(changedParameters)
+    parameters.setProperties(changedParameters)
 
     try {
       onUpdate(changedParameters,  composite)
