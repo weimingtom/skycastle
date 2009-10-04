@@ -3,7 +3,6 @@ package org.skycastle.ui
 
 import components.{FieldUi, LabelUi, PanelUi, ButtonUi}
 import org.skycastle.content.composite.CompositeEntity
-import ActionRight
 import org.skycastle.entity.Entity
 import java.awt.Dimension
 import javax.swing.{JLabel, JFrame, JComponent}

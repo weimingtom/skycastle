@@ -173,7 +173,7 @@ trait AccessControlMethods {
   protected def callAllowed( caller: EntityId, called :EntityId, actionId: Symbol, parameters : Parameters  ) : Boolean = {
 
     def callerIsSelf : Boolean = caller == called
-    def actionCallAllowed : Boolean = roles.exists( _.allowsCall( caller, actionId ) )
+    def actionCallAllowed : Boolean = roles.exists( _.canCall( caller, actionId ) )
     def propertyMethodAllowed( method : Symbol, predicate : (Role, Symbol) => Boolean ) : Boolean = {
       actionId == method &&
       ( parameters.getProperty( 'property ) match {
@@ -187,8 +187,8 @@ trait AccessControlMethods {
     // instead the identity of the entity that contains the calling action is used.)
     callerIsSelf ||
       actionCallAllowed ||
-      propertyMethodAllowed('getProperty, { _.allowsRead( caller, _ ) } ) ||
-      propertyMethodAllowed('setProperty, { _.allowsWrite( caller, _ ) } )
+      propertyMethodAllowed('getProperty, { _.canRead( caller, _ ) } ) ||
+      propertyMethodAllowed('setProperty, { _.canWrite( caller, _ ) } )
   }
 
 
