@@ -36,6 +36,8 @@ import org.skycastle.entity.accesscontrol.{ReadCapability, EditCapability, Role}
  *
  */
 // TODO: Some own exception type for illegal property accesses?
+// TODO: Rename to Properties instead, remove old properties
+// TODO: Change creation so that invariants, roles and such are specified before :-, so that they can't be added later in other places.
 trait RichProperties extends TypedGetters {
 
   import PropertyConversions._

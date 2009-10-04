@@ -1,22 +1,22 @@
 package org.skycastle.server
 
 import com.sun.sgs.app._
-import content.account.client.ClientSideAccountEntity
-import content.account.server.{ServerSideAccountEntity, AccountManagedObject}
-import content.activities.activitybrowser.ActivityBrowser
-import content.activities.chat.Conversation
-import content.activities.textedit.TexteditActivity
-import content.activity.ActivityEntity
-import content.factory.SimpleEntityFactory
-import entity.entitycontainer.darkstar.DarkstarEntityContainer
-import entity.tilemap.{TilemapEntity}
-import entity.{Entity, EntityId}
+import org.skycastle.content.account.client.ClientSideAccountEntity
+import org.skycastle.content.account.server.{ServerSideAccountEntity, AccountManagedObject}
+import org.skycastle.content.activities.activitybrowser.ActivityBrowser
+import org.skycastle.content.activities.chat.Conversation
+import org.skycastle.content.activities.textedit.TexteditActivity
+import org.skycastle.content.activity.ActivityEntity
+import org.skycastle.content.factory.SimpleEntityFactory
+import org.skycastle.entity.entitycontainer.darkstar.DarkstarEntityContainer
+import org.skycastle.entity.tilemap.{TilemapEntity}
+import org.skycastle.entity.{Entity, EntityId}
 import java.util.Properties
-import network.negotiator.ProtocolNegotiator
-import network.protocol.binary.{BinarySerializer, BinaryProtocol}
-import network.protocol.Protocol
-import network.{NetworkConnection, Message}
-import skycastle.util.{ClassUtils, TimerUtil, Parameters}
+import org.skycastle.network.negotiator.ProtocolNegotiator
+import org.skycastle.network.protocol.binary.{BinarySerializer, BinaryProtocol}
+import org.skycastle.network.protocol.Protocol
+import org.skycastle.network.{NetworkConnection, Message}
+import org.skycastle.util.{ClassUtils, TimerUtil, Parameters}
 /**
  * Server side entrypoint for server initialization & connecting users
  *

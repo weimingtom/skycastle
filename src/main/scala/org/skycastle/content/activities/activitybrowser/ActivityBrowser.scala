@@ -1,12 +1,12 @@
 package org.skycastle.content.activities.activitybrowser
 
 
-import activity.ActivityEntity
-import entity.accesscontrol.users
-import entity.{parameters, EntityId, Entity}
-import factory.EntityFactory
-import util.{Parameters}
-import util.ParameterChecker._
+import org.skycastle.util.ParameterChecker._
+import org.skycastle.entity.{Entity, EntityId, parameters}
+import org.skycastle.content.factory.EntityFactory
+import org.skycastle.content.activity.ActivityEntity
+import org.skycastle.util.Parameters
+import org.skycastle.entity.accesscontrol.users
 
 /**
  * Allows users to browse through a list of ongoing games, join one, or start a new one.

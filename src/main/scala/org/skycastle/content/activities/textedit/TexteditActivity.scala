@@ -1,10 +1,11 @@
 package org.skycastle.content.activities.textedit
 
 
-import activity.ActivityEntity
-import entity.accesscontrol.users
-import entity.{EntityId, parameters}
-import util.Parameters
+import org.skycastle.util.Parameters
+import org.skycastle.content.activity.ActivityEntity
+import org.skycastle.entity.{EntityId, parameters}
+import org.skycastle.entity.accesscontrol.users
+
 /**
  * Simple Activity for editing a text collaboratively.
  *

@@ -1,7 +1,7 @@
 package org.skycastle.content.ui
 
 
-import entity.Entity
+import org.skycastle.entity.Entity
 
 /**
  * Baseclass for user interface entities.

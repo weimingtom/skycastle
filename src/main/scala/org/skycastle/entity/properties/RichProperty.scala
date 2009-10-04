@@ -10,6 +10,8 @@ import org.skycastle.util.ClassUtils
 // TODO: In Scala 2.8, place this in the package instead.
 object PropertyConversions {
   implicit def propertyToValue[T]( prop : RichProperty[T] ) : T = prop.value
+
+  val notNullInvariant = { v : Any => v != null }
 }
 
 
@@ -41,6 +43,12 @@ class RichProperty[T]( _id : Symbol, var _value : T, _kind : Class[T] ) {
   def invariant( invariant : T => Boolean ) : RichProperty[T]= {
     checkInvariant( invariant )
     invariants = invariants ::: List( invariant )
+    this
+  }
+
+  // TODO: Make properties notNull by default, and require a marker to make them nullable.
+  def notNull : RichProperty[T]= {
+    invariant( PropertyConversions.notNullInvariant )
     this
   }
 

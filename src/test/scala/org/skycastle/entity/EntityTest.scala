@@ -16,43 +16,15 @@ import org.skycastle.entity.properties.PropertyConversions._
 class TestEntity extends Entity {
 
   var foo : Int = 0
+  var fooList : List[String] = Nil
   var bar : String = ""
   var caller : EntityId= null
   var params : Parameters= null
-  var fooList : List[String] = Nil
-
-
-  /*
-
-  Alternatives:
-
-  // role added in constructor. 
-  addRole( 'tester )
-
-  def tester = role member myMembers capability ActionCapability('testAction)  // Role with dynamically defined members and capabilities
-  val tester2 = role  capability ActionCapability('testAction2) // statically specified role
-
-  // Pretty flexible
-  // Will store editor data on a per instance basis though.  Or it could just accept role function reference.  But not that much data to store in any case, as Symbols are shared.  
-  'lunch := "Pizza" editor 'tester  // No direct reference possible
-  'lunch := "Pizza" editor tester  // Allows existence checked role
-  'lunch := "Pizza" editor tester onChange { newVal => doSomething() }
-  val lunch = 'lunch := "Pizza" editor tester  // Can be accessed easier from surrounding code.  Drawback is that id is repeated.
-
-  // assignment
-  lunch <= "Chinese"
-
-  // definition
-  'lunch := "Chinese"
-
-
-   */
 
   val chef = addRole('chef )
 
-
-  var lunch  = 'lunch  :- "Pizza"     editor chef
-  var dinner = 'dinner :- "Sphagetti" editor chef
+  val lunch  = 'lunch  :- "Pizza"     editor chef
+  val dinner = 'dinner :- "Sphagetti" editor chef
 
   'breakfast :- "Coffeine 100 mg" reader chef
 
@@ -80,21 +52,19 @@ class TestEntity extends Entity {
 }
 
 /**
- * 
+ * Test Entity.
  * 
  * @author Hans Haggstrom
  */
 class EntityTest extends Suite with BeforeAndAfter {
-
-
-
+  
   var testEntity : TestEntity = null
-  var callerEntityid : EntityId = null
+  var callerEntityId : EntityId = null
 
   override def beforeEach = {
     testEntity = new TestEntity()
-    callerEntityid = EntityId( "entity_testCaller" )
-    testEntity.addRoleMember( 'chef, callerEntityid )
+    callerEntityId = EntityId( "entity_testCaller" )
+    testEntity.addRoleMember( 'chef, callerEntityId )
   }
 
   def testEntityGetsIdWhenAddedToContainer {
@@ -110,6 +80,7 @@ class EntityTest extends Suite with BeforeAndAfter {
   def testRoles {
 
     // TODO: Easier tests for property editing and calling -> create role collection wrapper.
+    // TODO: Some role testing could be moved to the access control package also
 
   }
 
@@ -121,7 +92,7 @@ class EntityTest extends Suite with BeforeAndAfter {
 
   def testSetProperty {
     assert(  "Pizza" === testEntity.lunch.value )
-    testEntity.call( Message( callerEntityid, testEntity.id, 'setProperty, Parameters( 'property -> 'lunch, 'value -> "Chinese" ) ) )
+    testEntity.call( Message( callerEntityId, testEntity.id, 'setProperty, Parameters( 'property -> 'lunch, 'value -> "Chinese" ) ) )
     assert(  "Chinese" === testEntity.lunch.value )
   }
 
@@ -134,14 +105,14 @@ class EntityTest extends Suite with BeforeAndAfter {
 
   def testActionMethodsCallWithPrimitiveArgument {
     assert( 0 === testEntity.foo )
-    testEntity.call( callerEntityid, 'setFoo, Parameters( 'newValue -> 1 ) )
+    testEntity.call( callerEntityId, 'setFoo, Parameters( 'newValue -> 1 ) )
     assert( 1 === testEntity.foo )
   }
 
   def testActionMethodCallWithArgumentList {
     assertEquals( Nil, testEntity.fooList )
     assertEquals( "", testEntity.bar )
-    testEntity.call( callerEntityid, 'update, Parameters( 'bar -> "news flash", 'foo -> List("bear", "badger") ) )
+    testEntity.call( callerEntityId, 'update, Parameters( 'bar -> "news flash", 'foo -> List("bear", "badger") ) )
     assertEquals( List("bear", "badger"), testEntity.fooList )
     assertEquals( "news flash", testEntity.bar )
   }
@@ -150,8 +121,8 @@ class EntityTest extends Suite with BeforeAndAfter {
     assertEquals( null, testEntity.caller )
     assertEquals( null, testEntity.params )
     val params = Parameters( 'bar -> "foo", 'foo -> 1 )
-    testEntity.call( callerEntityid, 'special, params )
-    assertEquals( callerEntityid, testEntity.caller )
+    testEntity.call( callerEntityId, 'special, params )
+    assertEquals( callerEntityId, testEntity.caller )
     assertEquals( params, testEntity.params )
   }
 

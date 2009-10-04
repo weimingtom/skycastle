@@ -1,9 +1,9 @@
 package org.skycastle.network.negotiator
 
 import java.nio.ByteBuffer
-import protocol.binary.BinaryProtocol
-import protocol.{ProtocolLogger, Protocol}
-import util.{StringUtils, Parameters}
+import org.skycastle.network.protocol.binary.BinaryProtocol
+import org.skycastle.network.protocol.{ProtocolLogger, Protocol}
+import org.skycastle.util.{StringUtils, Parameters}
 
 /**
  * Takes care of negotiating a protocol to use with the other party.

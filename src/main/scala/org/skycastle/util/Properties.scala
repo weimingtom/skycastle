@@ -11,9 +11,10 @@ object Properties {
 
 /**
  * A class that provides mutable Property support.
- * 
+ * @deprecated replaced by new entity property system.  Maybe make it a TypedSetters trait?
  * @author Hans Haggstrom
  */
+@deprecated
 case class Properties() extends TypedGetters {
 
   def this( parameters : Parameters ) {
