@@ -5,7 +5,7 @@ import accesscontrol.{Role, users}
 import org.skycastle.network.Message
 import entitycontainer.SimpleEntityContainer
 import org.scalatest.{Suite, BeforeAndAfter}
-import org.skycastle.util.{Property, Parameters}
+import org.skycastle.util.Parameters
 
 
 import org.junit._
