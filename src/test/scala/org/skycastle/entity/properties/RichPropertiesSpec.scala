@@ -90,11 +90,11 @@ class RichPropertiesSpec extends Spec with ShouldMatchers with BeforeAndAfter {
 
       orc ~+ 'secretData :- "attack at dawn" editor bossRole reader agentRole
 
-      bossRole.hasWriteCapability( 'secretData ) should be (true)
-      bossRole.hasReadCapability( 'secretData ) should be (true)
+      bossRole.canWrite( 'secretData ) should be (true)
+      bossRole.canRead( 'secretData ) should be (true)
 
-      agentRole.hasWriteCapability( 'secretData ) should be (false)
-      agentRole.hasReadCapability( 'secretData ) should be (true)
+      agentRole.canWrite( 'secretData ) should be (false)
+      agentRole.canRead( 'secretData ) should be (true)
     }
     
   }

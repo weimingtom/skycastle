@@ -1,5 +1,7 @@
 package org.skycastle.entity.accesscontrol
 
+import org.skycastle.entity.EntityId
+
 /**
  * Something that can be granted a users.  Ultimately boils down to collections of EntityId:s
  *

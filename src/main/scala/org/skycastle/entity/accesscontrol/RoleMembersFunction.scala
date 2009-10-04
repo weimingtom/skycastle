@@ -1,5 +1,7 @@
 package org.skycastle.entity.accesscontrol
 
+import org.skycastle.entity.EntityId
+
 /**
  * 
  * 

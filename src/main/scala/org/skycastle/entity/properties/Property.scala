@@ -1,6 +1,6 @@
 package org.skycastle.entity.properties
 
-import org.skycastle.entity.accesscontrol.{ReadCapability, EditCapability, Role}
+import org.skycastle.entity.accesscontrol.{ReadRight, EditRight, Role}
 import org.skycastle.util.ClassUtils
 
 /**
@@ -26,12 +26,12 @@ class Property[T]( _id : Symbol, var _value : T, _kind : Class[T] ) {
   checkKind( _value )
 
   def editor( editor : Role ) : Property[T]= {
-    editor.addCapability( EditCapability( id ) )
+    editor.addRight( EditRight( id ) )
     this
   }
 
   def reader( reader : Role ) : Property[T]= {
-    reader.addCapability( ReadCapability( id ) )
+    reader.addRight( ReadRight( id ) )
     this
   }
 

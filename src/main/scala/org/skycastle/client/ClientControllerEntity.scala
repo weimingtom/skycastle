@@ -2,7 +2,7 @@ package org.skycastle.client
 
 
 import org.skycastle.content.account.client.ClientSideAccountEntity
-import org.skycastle.entity.accesscontrol.{users, ActionCapability}
+import org.skycastle.entity.accesscontrol.{users, CallRight}
 import org.skycastle.entity.{parameters, EntityId, Entity}
 import org.skycastle.ui.{ScreenEntity, Ui}
 import org.skycastle.util.Parameters

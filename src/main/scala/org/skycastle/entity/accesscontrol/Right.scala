@@ -1,11 +1,11 @@
 package org.skycastle.entity.accesscontrol
 
 /**
- * Represents different capabilities that a role cna have for an Entity.
+ * Represents different capabilities that a role can have for an Entity.
  * 
  * @author Hans Haggstrom
  */
-abstract class Capability {
+abstract class Right {
   def allowsCall( action : Symbol ) : Boolean = false
   def allowsRead( property : Symbol ) : Boolean = false
   def allowsWrite( property : Symbol ) : Boolean = false
@@ -14,35 +14,35 @@ abstract class Capability {
 /**
  * The capability to call a specific action on an Entity.
  */
-case class ActionCapability( actionId : Symbol ) extends Capability {
+case class CallRight( actionId : Symbol ) extends Right {
   override def allowsCall(action: Symbol) = action == actionId
 }
 
 /**
  * The capability to call any action on the entity.
  */
-case object AllActionCapability extends Capability {
+case object AllCallRight extends Right {
   override def allowsCall(action: Symbol) = true
 }
 
 /**
  * The capability to read a specific property of an Entity.
  */
-case class ReadCapability( propertyId : Symbol ) extends Capability {
+case class ReadRight( propertyId : Symbol ) extends Right {
   override def allowsRead(property: Symbol) = property == propertyId
 }
 
 /**
  * The capability to write a specific property of an Entity.
  */
-case class WriteCapability( propertyId : Symbol ) extends Capability {
+case class WriteRight( propertyId : Symbol ) extends Right {
   override def allowsWrite(property: Symbol) = property == propertyId
 }
 
 /**
  * The capability to edit (both read and write) a specific property of an Entity.
  */
-case class EditCapability( propertyId : Symbol ) extends Capability {
+case class EditRight( propertyId : Symbol ) extends Right {
   override def allowsRead(property: Symbol) = property == propertyId
   override def allowsWrite(property: Symbol) = property == propertyId
 }

@@ -1,6 +1,6 @@
 package org.skycastle.entity.properties
 
-import org.skycastle.entity.accesscontrol.{ReadCapability, EditCapability, Role}
+import org.skycastle.entity.accesscontrol.{ReadRight, EditRight, Role}
 import org.skycastle.util.{PropertySetters, PropertyGetters, ClassUtils}
 
 

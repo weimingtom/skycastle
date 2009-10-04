@@ -11,7 +11,9 @@ import org.skycastle.entity.{CallException, EntityId, parameters}
  */
 // TODO: More compact representation for the access rights.
 // Capabilities are probably added less than new Member types,
-// so we could hide the Capability object from outside view and just provide the needed methods..?
+// so we could hide the Right object from outside view and just provide the needed methods..?
+// That way it is easier to optimize the used structures internally, and the API comes simpler too.
+// TODO: Rename Right to Right
 trait AccessControlMethods {
 
   /**
@@ -42,10 +44,11 @@ trait AccessControlMethods {
     }
   }
 
-  def addRoleWithMembers( roleId : Symbol, members : RoleMember * ) {
-    addRole( roleId )
+  def addRoleWithMembers( roleId : Symbol, members : RoleMember * ) : Role = {
+    val role = addRole( roleId )
 
     if (hasRole(roleId)) members foreach { addRoleMember( roleId, _ ) }
+    role
   }
 
 
@@ -83,86 +86,86 @@ trait AccessControlMethods {
 
   @users( "roleEditor"  )
   @parameters( "roleId, actionId"  )
-  def addRoleActionCapability( roleId : Symbol, allowedAction : Symbol ) {
-    addRoleCapability( roleId, ActionCapability( allowedAction ) )
+  def addCallRight( roleId : Symbol, allowedAction : Symbol ) {
+    addRoleCapability( roleId, CallRight( allowedAction ) )
   }
 
   @users( "roleEditor"  )
   @parameters( "roleId, actionId"  )
-  def removeRoleActionCapability( roleId : Symbol, allowedAction : Symbol ) {
-    removeRoleCapability( roleId, ActionCapability( allowedAction ) )
+  def removeCallRight( roleId : Symbol, allowedAction : Symbol ) {
+    removeRoleCapability( roleId, CallRight( allowedAction ) )
   }
 
   @users( "roleEditor"  )
   @parameters( "roleId, propertyId"  )
-  def addPropertyEditRight( roleId : Symbol, propertyId : Symbol ) {
+  def addEditRight( roleId : Symbol, propertyId : Symbol ) {
     requireNotNull(roleId, 'roleId)
     requireNotNull(propertyId, 'propertyId)
 
-    addRoleCapability( roleId, EditCapability( propertyId ) )
+    addRoleCapability( roleId, EditRight( propertyId ) )
   }
 
   @users( "roleEditor"  )
   @parameters( "roleId, propertyId"  )
-  def removePropertyEditRight( roleId : Symbol, propertyId : Symbol ) {
+  def removeEditRight( roleId : Symbol, propertyId : Symbol ) {
     requireNotNull(roleId, 'roleId)
     requireNotNull(propertyId, 'propertyId)
 
-    removeRoleCapability( roleId, EditCapability( propertyId ) )
+    removeRoleCapability( roleId, EditRight( propertyId ) )
   }
 
   @users( "roleEditor"  )
   @parameters( "roleId, propertyId"  )
-  def addPropertyReadRight( roleId : Symbol, propertyId : Symbol ) {
+  def addReadRight( roleId : Symbol, propertyId : Symbol ) {
     requireNotNull(roleId, 'roleId)
     requireNotNull(propertyId, 'propertyId)
 
-    addRoleCapability( roleId, ReadCapability( propertyId ) )
+    addRoleCapability( roleId, ReadRight( propertyId ) )
   }
 
   @users( "roleEditor"  )
   @parameters( "roleId, propertyId"  )
-  def removePropertyReadRight( roleId : Symbol, propertyId : Symbol ) {
+  def removeReadRight( roleId : Symbol, propertyId : Symbol ) {
     requireNotNull(roleId, 'roleId)
     requireNotNull(propertyId, 'propertyId)
 
-    removeRoleCapability( roleId, ReadCapability( propertyId ) )
+    removeRoleCapability( roleId, ReadRight( propertyId ) )
   }
 
   @users( "roleEditor"  )
   @parameters( "roleId, propertyId"  )
-  def addPropertyWriteRight( roleId : Symbol, propertyId : Symbol ) {
+  def addWriteRight( roleId : Symbol, propertyId : Symbol ) {
     requireNotNull(roleId, 'roleId)
     requireNotNull(propertyId, 'propertyId)
 
-    addRoleCapability( roleId, WriteCapability( propertyId ) )
+    addRoleCapability( roleId, WriteRight( propertyId ) )
   }
 
   @users( "roleEditor"  )
   @parameters( "roleId, propertyId"  )
-  def removePropertyWriteRight( roleId : Symbol, propertyId : Symbol ) {
+  def removeWriteRight( roleId : Symbol, propertyId : Symbol ) {
     requireNotNull(roleId, 'roleId)
     requireNotNull(propertyId, 'propertyId)
 
-    removeRoleCapability( roleId, WriteCapability( propertyId ) )
+    removeRoleCapability( roleId, WriteRight( propertyId ) )
   }
 
-  def addRoleCapability( roleId : Symbol, capability : Capability ) {
+  def addRoleCapability( roleId : Symbol, capability : Right ) {
     requireNotNull(roleId, 'roleId)
     requireNotNull(capability, 'capability)
 
     getRole(roleId) match {
-      case Some(role:Role) => role.addCapability( capability )
+      case Some(role:Role) => role.addRight( capability )
       case None => throwWarning( "Can not add capability '"+capability+"' to role '"+roleId+"', no such role found." )
     }
   }
 
-  def removeRoleCapability( roleId : Symbol, capability : Capability ) {
+  def removeRoleCapability( roleId : Symbol, capability : Right ) {
     requireNotNull(roleId, 'roleId)
     requireNotNull(capability, 'capability)
 
     getRole(roleId) match {
-      case Some(role:Role) => role.removeCapability( capability )
+      case Some(role:Role) => role.removeRight( capability )
       case None => throwWarning( "Can not remove capability '"+capability+"' from role '"+roleId+"', no such role found." )
     }
   }

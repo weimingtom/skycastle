@@ -1,7 +1,7 @@
 package org.skycastle.content.composite
 
 
-import org.skycastle.entity.accesscontrol.{users, ActionCapability}
+import org.skycastle.entity.accesscontrol.{users, CallRight}
 import org.skycastle.entity.{parameters, Entity}
 import org.skycastle.entity.Entity
 import org.skycastle.util.{PropertyGetters, ClassUtils}

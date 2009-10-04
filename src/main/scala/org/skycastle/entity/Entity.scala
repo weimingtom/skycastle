@@ -43,12 +43,22 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
 
   // Add roles that are used by the various default Entity methods.
   // OPTIMIZE: These add some size to an Entity, could be good if their explicit definition could be avoided.
-  addRole('roleEditor )
-  addRole('propertyReader )
-  addRole('propertyEditor )
-  addRole('propertyCreator )
-  addRole('logListener )
-  addRoleWithMembers('everyone,  Everyone )
+  /** Allowed to edit the role members and access rights. */
+  val roleEditorRole      = addRole('roleEditor )
+
+  /** Allowed to read all properties. */
+  val propertyReaderRole  = addRole('propertyReader )
+
+  /** Allowed to read and write all properties. */
+  val propertyEditorRole  = addRole('propertyEditor )
+
+  /** Allowed to create and remove properties. */
+  val propertyCreatorRole = addRole('propertyCreator )
+
+  /** Allowed to listen to log output from action calls to this object. */
+  val logListenerRole     = addRole('logListener )
+
+  addRoleWithMembers('everyone,  Everyone ) // TODO: Some kind of special code for this role?
 
 
   /**
@@ -60,7 +70,6 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
   /**
    * Used for accessing operations involving the system that keeps track and stores all entities.
    * Initialized when the Entity is added to an EntityContainer.
-   * (TODO: Can we use scala to indicate that it should only be changed by the entity container somehow?  E.g. private[entitycontainer]?)
    */
   def container : EntityContainer = _container
 
@@ -204,13 +213,6 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
     if (actionMethods == null) actionMethods = findActionMethods()
   }
 
-/*
-  private def ensurePropertyFieldsLoaded() {
-    // TODO: We could use a common structure for these for all instances of a class of a specific type -> some object to cache them?
-    // TODO: This will add duplicate capability entries for roles when the class is de-serialized, fix?
-    if (propertyFields == null) propertyFields = findPropertyFields()
-  }
-*/
 
   private def findActionMethods() : Map[ Symbol, ActionMethod ] = {
     val thisClass = getClass()
@@ -233,7 +235,7 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
 
             val actionId = Symbol(m.getName)
 
-            addRoleCapabilities( roles, ActionCapability( actionId ) )
+            addRoleCapabilities( roles, CallRight( actionId ) )
 
             val entry = (actionId, new ActionMethod( this, m, parameterMapping ))
             actMethods = actMethods + entry
@@ -257,57 +259,6 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
     }
   }
 
-/*
-  private def findPropertyFields() : Map[ Symbol, PropertyField ] = {
-    val thisClass = getClass()
-    try {
-      val fields : List[ Field ] = List.fromArray( thisClass.getFields )
-      val propertyFieldsList = fields.filter{ (f : Field) => classOf[Property[_]].isAssignableFrom( f.getClass ) }
-
-      // Some user friendly checking
-      val nonPropertyFields = fields diff propertyFieldsList
-
-      // TODO: Fix, looks like Scala doesn't store vars as java fields in the normal place at least. 
-      warnAboutInvalidProperties( nonPropertyFields, classOf[readers] )
-      warnAboutInvalidProperties( nonPropertyFields, classOf[editors] )
-
-      var propFields : Map[Symbol,PropertyField] = Map()
-
-      propertyFieldsList foreach { (f : Field) =>
-        try {
-          val propertyId = Symbol(f.getName)
-
-          val readers = getAnnotatedSymbols( f.getAnnotation( classOf[readers] ).value )
-          val editors = getAnnotatedSymbols( f.getAnnotation( classOf[editors] ).value )
-
-          addRoleCapabilities( readers, ReadCapability( propertyId ) )
-          addRoleCapabilities( editors, EditCapability( propertyId ) )
-
-          val entry = (propertyId, new PropertyField( this, f ))
-          propFields = propFields + entry
-        }
-        catch {
-          case e : Exception => logWarning( "Problem when analysing action field '"+f.getName+"' in the Entty class "+thisClass.getName+": " + e.getMessage, e )
-        }
-      }
-
-      propFields
-    }
-    catch {
-      case e : Exception => logWarning( "Problem when analysing methods in the Entty class "+thisClass.getName+": " + e.getMessage, e )
-      Map()
-    }
-  }
-*/
-
-/*
-  private def warnAboutInvalidProperties( members : List[Field], annotation : Class[_ <: java.lang.annotation.Annotation] ) {
-    members filter{ _.isAnnotationPresent( annotation ) } foreach { (f : Field ) =>
-      logWarning( "The field '"+f.getName+"' in the Entity '"+this.getClass.getName+"' has the annotation '"+annotation+"', " +
-                  "but it is not of type "+classOf[Property[_]]+", so it will not be treated as a property." )
-    }
-  }
-*/
 
   private def warnAboutInvalidActions( members : List[Method], annotation : Class[_ <: java.lang.annotation.Annotation] ) {
     members filter{ _.isAnnotationPresent( annotation ) } foreach { (m : Method) =>
@@ -317,8 +268,8 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
   }
 
 
-  private def addRoleCapabilities( roleIds : List[Symbol], capability : => Capability ) {
-    // Lazily create only one instance of the Capability
+  private def addRoleCapabilities( roleIds : List[Symbol], capability : => Right ) {
+    // Lazily create only one instance of the Right
     if (!roleIds.isEmpty) {
       val c = capability
       roleIds foreach { roleId : Symbol => addRoleCapability( roleId, c ) }

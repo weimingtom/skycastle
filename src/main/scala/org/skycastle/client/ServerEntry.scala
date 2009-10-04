@@ -1,7 +1,7 @@
 package org.skycastle.client
 
 
-import org.skycastle.entity.accesscontrol.{ActionCapability, Capability}
+import org.skycastle.entity.accesscontrol.{CallRight, Right}
 import org.skycastle.entity.{Entity, EntityId}
 import org.skycastle.ui.ScreenEntity
 
