@@ -37,6 +37,8 @@ object Parameters {
 @SerialVersionUID( 1 )
 final case class Parameters(val entries : Map[Symbol, Any]) extends PropertyGetters {
 
+  def getProperties = entries
+
   def ++ ( otherParameters : Parameters ) : Parameters = {
     val newEntries = getProperties ++ otherParameters.getProperties
     Parameters( newEntries )

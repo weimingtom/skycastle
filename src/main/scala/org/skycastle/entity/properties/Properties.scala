@@ -35,34 +35,36 @@ import org.skycastle.util.{PropertySetters, PropertyGetters, ClassUtils}
  *
  *
  */
-// TODO: Some own exception type for illegal property accesses?
 // TODO: Change creation so that invariants, roles and such are specified before :-, so that they can't be added later in other places.
-trait Properties extends PropertyGetters with PropertySetters {
 // TODO: Add PropertyEditors or some such interface with add/remove property helpers
-  
+// TODO: Rename to something reflecting the typed parameters with listeners etc.  TypedProperties?  RichProperties?
+// TODO: Some own exception type for illegal property accesses?
+trait Properties extends PropertyGetters with PropertySetters {
+
   import PropertyConversions._
   
   private var myProperties : Map[Symbol, Property[_]] = Map()
 
-  def getProperties : Map[Symbol, Any] = myProperties.mapElements( _.value ).asInstanceOf[Map[Symbol, Any]]
-  def getProperty( name : Symbol ) : Option[Any] = {
+  override def getProperties : Map[Symbol, Any] = myProperties.mapElements( _.value ).asInstanceOf[Map[Symbol, Any]]
+  override def getProperty( name : Symbol ) : Option[Any] = {
     myProperties.get( name ) match {
       case Some(p) => Some(p.value)
       case None => None
     }
   }
-  def hasProperty( id : Symbol ) : Boolean = myProperties.contains( id )
+  override def hasProperty( id : Symbol ) : Boolean = myProperties.contains( id )
 
-  def setProperty( name : Symbol, value : Any ) {
-    getProperty( name ) match {
+  override def setProperty( name : Symbol, value : Any ) {
+    property( name ) match {
       case Some(p : Property[Any]) => p.setValue( value )
       case None => throw new IllegalArgumentException( "No property named '"+name.name+"' found in '"+this.toString+"'." )
+      case p => throw new IllegalStateException( "A property '"+p+"' named '"+name.name+"' found in '"+this.toString+"', but it was not of type Property[Any]" )
     }
   }
 
 
   def ~ (id : Symbol) : Property[Any] = myProperties( id ).asInstanceOf[Property[Any]]
-  def :+ ( id : Symbol ) : PropertyMaker = PropertyMaker( id )
+  def ~+ ( id : Symbol ) : PropertyMaker = PropertyMaker( id )
 
 /*
   // TODO: Is this a bit extreme?  We may want to use apply for something else too..
@@ -80,7 +82,8 @@ trait Properties extends PropertyGetters with PropertySetters {
     if (myProperties.contains( id )) throw new IllegalArgumentException( "Can not add property, the property '"+id.name+"' already exists in 'this.toString'." )
 
     val property = new Property[T]( id, value, kind )
-    myProperties = myProperties + id -> property
+    val entry = id -> property
+    myProperties = myProperties + entry 
     property
   }
 
@@ -91,15 +94,14 @@ trait Properties extends PropertyGetters with PropertySetters {
   }
 
 
-
   implicit def symbolToPropertyMaker( id : Symbol ) = PropertyMaker( id )
 
-  case class PropertyMaker private (id : Symbol) {
+  case class PropertyMaker private[Properties] (id : Symbol) {
     def :- [T] ( value : T ) : Property[T] = addProperty( id, value )
-    def :/ [T] ( kind : Class[T] ) : PropertyKindMaker[T] = PropertyKindMaker[T]( id, kind )
+    def :< [T] ( kind : Class[T] ) : PropertyKindMaker[T] = PropertyKindMaker[T]( id, kind )
   }
 
-  case class PropertyKindMaker[T] private (id : Symbol, kind : Class[T]) {
+  case class PropertyKindMaker[T] private[Properties] (id : Symbol, kind : Class[T]) {
     def :- ( value : T ) : Property[T] = addProperty( id, value, kind )
   }
 

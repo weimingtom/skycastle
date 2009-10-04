@@ -37,7 +37,7 @@ case class SimpleProperties() extends PropertyGetters with PropertySetters {
 
   def clearProperties = properties = Map()
   def getProperties : Map[Symbol, Any] = properties
-  def setProperty(id: Symbol, value: Any) = properties = properties + id -> value
+  def setProperty(id: Symbol, value: Any) = properties = properties + (id -> value)
 
 }
 

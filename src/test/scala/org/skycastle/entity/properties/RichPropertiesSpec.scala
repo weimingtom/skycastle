@@ -26,7 +26,7 @@ class RichPropertiesSpec extends Spec with ShouldMatchers with BeforeAndAfter {
     }
 
     it( "should allow reading values of properties defined in a decendant class constructor" ) {
-      orc('mana) should equal (50)
+      orc~'mana should equal (50)
     }
     
     it( "should allow property change" ) {
@@ -51,21 +51,21 @@ class RichPropertiesSpec extends Spec with ShouldMatchers with BeforeAndAfter {
 
     it( "should enforce type of property values" ) {
       intercept[java.lang.IllegalArgumentException] {
-        orc('mana) := "walking upside down in the sky"
+        orc~'mana := "walking upside down in the sky"
       }
     }
 
     it ("should allow adding new properties") {
       orc.addProperty( 'stamina, 80f )
-      orc( 'stamina ) should be (80f)
+      orc~'stamina should be (80f)
     }
 
     it ("should allow adding new properties with shortcut notations") {
-      orc :+ 'level :- 4
-      orc :+ 'stamina :- 80 invariant { x : Int => x < orc.hitpoints.value }
+      orc~+'level :- 4
+      orc~+'stamina :- 80 invariant { x : Int => x < orc.hitpoints.value }
 
-      orc( 'level ) should be (4)
-      orc ( 'stamina ) should be (80f)
+      orc~'level  should be (4)
+      orc~'stamina should be (80f)
     }
 
     it ("should have shorthand notation for accessing properties") {
@@ -74,7 +74,7 @@ class RichPropertiesSpec extends Spec with ShouldMatchers with BeforeAndAfter {
     }
 
     it ("should allow specifying the type of a property") {
-      orc :+ 'favouriteObject :/ classOf[Object] :- "abccb"
+      orc~+'favouriteObject :< classOf[Object] :- "abccb"
       (orc~'favouriteObject).kind should equal (classOf[Object])
     }
 
@@ -88,7 +88,7 @@ class RichPropertiesSpec extends Spec with ShouldMatchers with BeforeAndAfter {
       val bossRole = Role( 'secretBoss )
       val agentRole = Role( 'secretAgent )
 
-      orc :+ 'secretData :- "attack at dawn" editor bossRole reader agentRole
+      orc ~+ 'secretData :- "attack at dawn" editor bossRole reader agentRole
 
       bossRole.hasWriteCapability( 'secretData ) should be (true)
       bossRole.hasReadCapability( 'secretData ) should be (true)

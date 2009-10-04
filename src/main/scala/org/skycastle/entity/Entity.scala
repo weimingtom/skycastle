@@ -136,7 +136,7 @@ class Entity extends Properties with LogMethods with AccessControlMethods {
   @users( "propertyEditor, propertyReader"  )
   @parameters( "property"  )
   @callback
-  override def getPropertyValue( property : Symbol ) : Option[Any] = {
+  override def getProperty( property : Symbol ) : Option[Any] = {
     super.getProperty( property )
   }
 

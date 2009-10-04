@@ -32,8 +32,6 @@ trait PropertyGetters {
     else defaultValue
   }
 
-
-
   def getBoolean (id: Symbol, defaultValue: Boolean  ) : Boolean  = getProperty[Boolean] (id, defaultValue)
   def getByte    (id: Symbol, defaultValue: Byte     ) : Byte     = getProperty[Number]  (id, defaultValue).byteValue
   def getShort   (id: Symbol, defaultValue: Short    ) : Short    = getProperty[Number]  (id, defaultValue).shortValue
@@ -45,7 +43,12 @@ trait PropertyGetters {
   def getSymbol  (id: Symbol, defaultValue: Symbol   ) : Symbol   = getProperty[Symbol]  (id, defaultValue)
   def getEntityId(id: Symbol, defaultValue: EntityId ) : EntityId = getProperty[EntityId](id, defaultValue)
 
-  def getAsString(id: Symbol, defaultValue: String) : String = getProperty(id, defaultValue).toString
+  def getAsString(id: Symbol, defaultValue: String) : String = {
+    getProperty(id) match {
+      case Some(v) => v.toString
+      case None => defaultValue
+    }
+  }
 
   def toKeyValueString( keyValueSeparator : String, entrySeparator : String ) : String = {
     StringUtils.mapToString( getProperties, keyValueSeparator, entrySeparator )

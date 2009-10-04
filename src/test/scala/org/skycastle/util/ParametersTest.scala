@@ -25,7 +25,7 @@ class ParametersTest extends Suite {
     assertEquals( true, prop.hasProperty( 'bar ) )
     assertEquals( false, prop.hasProperty( 'barbar ) )
     
-    prop.set( 'foo, "sheep" )
+    prop.setProperty( 'foo, "sheep" )
     assertEquals( "sheep", prop.getProperty( 'foo, null ) )
 
   }
