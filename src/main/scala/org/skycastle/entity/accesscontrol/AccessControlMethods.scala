@@ -26,14 +26,15 @@ trait AccessControlMethods {
 
   @users( "roleEditor"  )
   @parameters( "roleId"  )
-  def addRole( roleId : Symbol ) {
-    requireNotNull(roleId, 'roleId)
+  def addRole( roleId : Symbol ) : Role = {
+    requireIsIdentifier(roleId, 'roleId)
 
-    // TODO: Check users id syntax?  No special chars, java style identifier?
-    if (roleId != null) {
-      getRole(roleId) match {
-        case Some(role) => throwWarning( "Can not add role '"+roleId+"', it already exists." )
-        case None => roles = roles ::: List( new Role( roleId ) )
+    getRole(roleId) match {
+      case Some(role) => throwWarning( "Can not add role '"+roleId+"', it already exists." )
+      case None => {
+        val role = new Role( roleId )
+        roles = roles ::: List( role )
+        role
       }
     }
   }
@@ -136,7 +137,9 @@ trait AccessControlMethods {
       propertyMethodAllowed('setProperty, { _.allowsWrite( caller, _ ) } )
   }
 
-  private def throwWarning( message : String ) {
+
+
+  private def throwWarning( message : String ) : Nothing = {
     throw CallException( message )
   }
 

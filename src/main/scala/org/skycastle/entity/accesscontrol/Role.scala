@@ -1,5 +1,6 @@
 package org.skycastle.entity.accesscontrol
 
+import org.skycastle.entity.EntityId
 
 
 /**
@@ -7,6 +8,9 @@ package org.skycastle.entity.accesscontrol
  * 
  * @author Hans Haggstrom
  */
+// TODO: Refactor so that users just call add/remove member, add/removeCallCapability(action),
+// add/remove edit/read/write capability for (property), and corresponding getters.
+// That way it is easier to optimize the used structures internally, and the API comes simpler too.
 @serializable
 @SerialVersionUID(1)
 final case class Role( roleId : Symbol ) {

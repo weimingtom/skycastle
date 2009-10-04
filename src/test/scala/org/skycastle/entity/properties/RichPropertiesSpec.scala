@@ -3,6 +3,7 @@ package org.skycastle.entity.properties
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.{BeforeAndAfter, Spec, Suite}
 import org.skycastle.entity.properties.PropertyConversions._
+import org.skycastle.entity.accesscontrol.Role
 
 /**
  * Specification / test for RichProperties 
@@ -83,8 +84,17 @@ class RichPropertiesSpec extends Spec with ShouldMatchers with BeforeAndAfter {
       }
     }
 
-    ignore( "should support roles for access control" ) {
-      // TODO
+    it( "should support roles for access control" ) {
+      val bossRole = Role( 'secretBoss )
+      val agentRole = Role( 'secretAgent )
+
+      orc :+ 'secretData :- "attack at dawn" editor bossRole reader agentRole
+
+      bossRole.hasWriteCapability( 'secretData ) should be (true)
+      bossRole.hasReadCapability( 'secretData ) should be (true)
+
+      agentRole.hasWriteCapability( 'secretData ) should be (false)
+      agentRole.hasReadCapability( 'secretData ) should be (true)
     }
     
   }

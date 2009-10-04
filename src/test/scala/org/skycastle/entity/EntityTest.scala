@@ -1,8 +1,8 @@
 package org.skycastle.entity
 
 
+import accesscontrol.{Role, users}
 import org.skycastle.network.Message
-import org.skycastle.entity.accesscontrol.users
 import entitycontainer.SimpleEntityContainer
 import org.scalatest.{Suite, BeforeAndAfter}
 import org.skycastle.util.{Property, Parameters}
@@ -48,25 +48,28 @@ class TestEntity extends Entity {
 
    */
 
-  var lunch  = 'lunch  :- "Pizza"     // editor 'tester
-  var dinner = 'dinner :- "Sphagetti" // editor 'tester
+  val chef = addRole('chef )
 
-  'breakfast :- "Coffeine 100 mg" // reader 'tester
 
-  @users( "tester")
+  var lunch  = 'lunch  :- "Pizza"     editor chef
+  var dinner = 'dinner :- "Sphagetti" editor chef
+
+  'breakfast :- "Coffeine 100 mg" reader chef
+
+  @users( "chef")
   @parameters( "newValue" )
   def setFoo( value : Int ) {
     foo = value
   }
 
-  @users( "tester")
+  @users( "chef")
   @parameters( "bar, foo" )
   def update( b : String, f: List[String] ) {
     fooList = f
     bar = b
   }
 
-  @users( "tester")
+  @users( "chef")
   @parameters( "$callerId, $parameters" )
   def special( c : EntityId, p : Parameters ) {
     caller= c
@@ -91,8 +94,7 @@ class EntityTest extends Suite with BeforeAndAfter {
   override def beforeEach = {
     testEntity = new TestEntity()
     callerEntityid = EntityId( "entity_testCaller" )
-    testEntity.addRole('tester )
-    testEntity.addRoleMember( 'tester, callerEntityid )
+    testEntity.addRoleMember( 'chef, callerEntityid )
   }
 
   def testEntityGetsIdWhenAddedToContainer {

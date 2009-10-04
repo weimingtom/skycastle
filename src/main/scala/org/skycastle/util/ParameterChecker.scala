@@ -29,6 +29,14 @@ object ParameterChecker {
     test( StringUtils.isIdentifier( s ), s, parameterName, "be a valid identifier" )
   }
 
+  /**
+   * Should be a valid identifier (letter or underscore or dollar followed by the same or numbers).
+   */
+  def requireIsIdentifier( symbol : Symbol, parameterName : Symbol ) {
+    requireNotNull(symbol, parameterName )
+    test( StringUtils.isIdentifier( symbol.name ), symbol, parameterName, "be a Symbol containing a valid identifier" )
+  }
+
     /**
      * Some collection should be the specified size.
      */
