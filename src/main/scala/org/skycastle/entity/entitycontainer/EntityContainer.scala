@@ -104,10 +104,17 @@ trait EntityContainer {
   }
 
 
-  // TODO: Add interfaces for scheduled action callbacks etc.
+  /**
+   * Asynchronously invokes the specified action on the specified entity, assuming the calling entity has the access rights for it,
+   * after the specified duration.
+   */
+  def call( message : Message, delay_ms: Long )
 
-
-
+  /**
+   * Asynchronously invokes the specified action on the specified entity, assuming the calling entity has the access rights for it,
+   * after the specified duration, and repeating at the specified interval.
+   */
+  def call( message : Message, delay_ms: Long, repeatDelay_ms: Long ): RepeatingCallHandle
 
 
 
