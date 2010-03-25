@@ -8,10 +8,9 @@ import org.scalatest
 import org.skycastle.util.Parameters
 
 
-
-import org.skycastle.entity.properties.PropertyConversions._
-import scalatest.junit.AssertionsForJUnit
-import scalatest.{BeforeAndAfter, FunSuite}
+import org.junit._
+import Assert._
+import scalatest.{BeforeAndAfter, Suite}
 
 class TestEntity extends Entity {
 
@@ -56,7 +55,7 @@ class TestEntity extends Entity {
  * 
  * @author Hans Haggstrom
  */
-class EntityTest extends FunSuite with AssertionsForJUnit with BeforeAndAfter {
+class EntityTest extends Suite with BeforeAndAfter {
   
   var testEntity : TestEntity = null
   var callerEntityId : EntityId = null
