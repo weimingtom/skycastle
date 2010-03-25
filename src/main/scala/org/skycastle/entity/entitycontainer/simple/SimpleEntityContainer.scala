@@ -1,11 +1,20 @@
 package org.skycastle.entity.entitycontainer
 
 
-import collection.mutable.HashMap
 import org.skycastle.network.Message
 import org.skycastle.util.Parameters
 import org.skycastle.util.ParameterChecker._
 import org.skycastle.entity.{EntityLogger, Entity, EntityId}
+import collection.mutable.{PriorityQueue, HashMap}
+import simple.SimpleRepeatingCallHandle
+
+private final case class ScheduledMessage(time: Long, message: Message, repeatDelay: Long, handle: Long) extends Ordered[ScheduledMessage] {
+  // Ensure top of the queue will have item with smallest time.
+  override def compare(that: ScheduledMessage) = if (time < that.time) 1 else if (time > that.time) -1 else 0
+
+  def repeating: Boolean = repeatDelay > 0
+  def next: Option[ScheduledMessage] = if (repeating) Some(ScheduledMessage(time + repeatDelay, message, repeatDelay, handle)) else None
+}
 
 /**
  * A straightforward single-threaded, non-persistent EntityContainer.
@@ -17,7 +26,10 @@ class SimpleEntityContainer extends EntityContainer {
   private val entities = new HashMap[EntityId, Entity]()
   private val namedEntities = new HashMap[String, EntityId]()
   private var nextFreeId : Long = 1L
-  private var queuesActionCalls : List[Message] = Nil
+  private var queuedActionCalls : List[Message] = Nil
+  private val scheduledActionCalls : PriorityQueue[ScheduledMessage] = new PriorityQueue[ScheduledMessage]();
+  private var nextFreeTaskHandle : Long = 1L
+  private var currentTime : Long = 0L
 
   private def nextId() : Long = {
     val id = nextFreeId
@@ -82,19 +94,44 @@ class SimpleEntityContainer extends EntityContainer {
 
 
   def call(message : Message)  {
-    queuesActionCalls = queuesActionCalls ::: List( message )
+    queuedActionCalls = queuedActionCalls ::: List( message )
   }
 
+  def call(message: Message, delay_ms: Long) {
+    if (delay_ms <= 0) call(message)
+    else scheduledActionCalls += new ScheduledMessage(currentTime + delay_ms, message, 0, 0)
+  }
 
+  def call(message: Message, delay_ms: Long, repeatDelay_ms: Long): RepeatingCallHandle = {
+    val handle = nextFreeTaskHandle
+    nextFreeTaskHandle += 1
+    scheduledActionCalls += new ScheduledMessage(currentTime + delay_ms, message, repeatDelay_ms, handle)
+    new SimpleRepeatingCallHandle(this, handle)
+  }
 
   /**
    * Should be called regularily to execute queued action calls and tasks.
    */
   def update( currentTime_ms : Long ) {
 
+    currentTime = currentTime_ms
+
+    // Process any scheduled actions
+    var rescheduledMessages: List[ScheduledMessage] = Nil
+    while (!scheduledActionCalls.isEmpty && scheduledActionCalls.max.time <= currentTime_ms) {
+      val scheduledMessage: ScheduledMessage = scheduledActionCalls.dequeue
+
+      queuedActionCalls += scheduledMessage.message
+
+      scheduledMessage.next match {
+        case Some(sm) => rescheduledMessages += sm
+      }
+    }
+    scheduledActionCalls ++= rescheduledMessages
+
     // Only process the actions that have collected before this update
-    val actionsToDo = queuesActionCalls
-    queuesActionCalls = Nil
+    val actionsToDo = queuedActionCalls
+    queuedActionCalls = Nil
 
     // Execute all calls
     actionsToDo foreach { call : Message =>
@@ -110,6 +147,7 @@ class SimpleEntityContainer extends EntityContainer {
         case _ => EntityLogger.logError( "Can not process action call " +call+ ", entity "+headEntityId +" not found." )
       }
     }
+
   }
 
   /**
@@ -123,5 +161,13 @@ class SimpleEntityContainer extends EntityContainer {
     }
   }
 
+  /**
+   * Stops a repeating task with the specified handle.
+   */
+  def stopTask(handleToRemove: Long) {
+    val retained: Iterable[ScheduledMessage] = scheduledActionCalls.filter {(sm: ScheduledMessage) => sm.handle != handleToRemove}
+    scheduledActionCalls.clear
+    scheduledActionCalls ++= retained
+  }
 }
 

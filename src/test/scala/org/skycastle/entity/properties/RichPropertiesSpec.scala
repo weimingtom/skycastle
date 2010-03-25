@@ -1,10 +1,9 @@
 package org.skycastle.entity.properties
 
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.{BeforeAndAfter, Spec, Suite}
 import org.skycastle.entity.properties.PropertyConversions._
 import org.skycastle.entity.accesscontrol.Role
-
+import org.scalatest.{BeforeAndAfter, Spec}
+import org.scalatest.matchers.ShouldMatchers
 /**
  * Specification / test for Properties
  */

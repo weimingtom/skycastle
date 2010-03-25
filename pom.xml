@@ -15,8 +15,8 @@
 
   <!-- Some main library version properties -->
   <properties>
-    <scala.version>2.7.6</scala.version>
-    <darkstar.version>0.9.10</darkstar.version>
+    <scala.version>2.7.7</scala.version>
+    <reddwarf.version>0.10.1</reddwarf.version>
   </properties>
 
 
@@ -28,28 +28,13 @@
       <url>http://download.java.net/maven/2/</url>
       <layout>default</layout>
     </repository>
-
+    
     <repository>
       <id>scala-tools.org</id>
       <name>Scala-Tools Maven2 Repository</name>
       <url>http://scala-tools.org/repo-releases</url>
     </repository>
 
-    <!-- A mirror of third party libraries that are not available from any official repository -->
-    <repository>
-      <id>skycastle-central-repository</id>
-      <url>http://zzorn.xiiris.com:8081/nexus/content/groups/public</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>skycastle-snapshots-repository</id>
-      <url>http://zzorn.xiiris.com:8081/nexus/content/groups/public-snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
   </repositories>
 
   <!-- Places to retrieve maven plugins from -->
@@ -71,10 +56,11 @@
       <version>4.4</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.specs</groupId>
-      <artifactId>specs</artifactId>
-      <version>1.2.5</version>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest</artifactId>
+      <version>1.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -85,11 +71,11 @@
       <version>${scala.version}</version>
     </dependency>
 
-    <!-- Darkstar Middleware -->
+    <!-- RedDwarf Middleware (formerly known as DarkStar or sgs) -->
     <dependency>
-      <groupId>com.projectdarkstar.server</groupId>
+      <groupId>org.reddwarfserver.server</groupId>
       <artifactId>sgs-server-api</artifactId>
-      <version>${darkstar.version}</version>
+      <version>${reddwarf.version}</version>
     </dependency>
 
     <!--
@@ -107,21 +93,21 @@
     -->
 
     <dependency>
-      <groupId>com.projectdarkstar.server</groupId>
+      <groupId>org.reddwarfserver.server</groupId>
       <artifactId>sgs-shared</artifactId>
-      <version>1.8</version>
+      <version>1.12</version>
     </dependency>
 
     <dependency>
-      <groupId>com.projectdarkstar.client</groupId>
+      <groupId>org.reddwarfserver.client</groupId>
       <artifactId>sgs-client-api</artifactId>
-      <version>${darkstar.version}</version>
+      <version>${reddwarf.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>com.projectdarkstar.client</groupId>
+      <groupId>org.reddwarfserver.client</groupId>
       <artifactId>sgs-client</artifactId>
-      <version>${darkstar.version}</version>
+      <version>${reddwarf.version}</version>
     </dependency>
 
 

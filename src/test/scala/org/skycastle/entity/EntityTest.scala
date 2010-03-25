@@ -1,17 +1,17 @@
 package org.skycastle.entity
 
 
-import accesscontrol.{Role, users}
+import accesscontrol.{users}
 import org.skycastle.network.Message
 import entitycontainer.SimpleEntityContainer
-import org.scalatest.{Suite, BeforeAndAfter}
+import org.scalatest
 import org.skycastle.util.Parameters
 
 
-import org.junit._
-import Assert._
 
 import org.skycastle.entity.properties.PropertyConversions._
+import scalatest.junit.AssertionsForJUnit
+import scalatest.{BeforeAndAfter, FunSuite}
 
 class TestEntity extends Entity {
 
@@ -56,12 +56,13 @@ class TestEntity extends Entity {
  * 
  * @author Hans Haggstrom
  */
-class EntityTest extends Suite with BeforeAndAfter {
+class EntityTest extends FunSuite with AssertionsForJUnit with BeforeAndAfter {
   
   var testEntity : TestEntity = null
   var callerEntityId : EntityId = null
 
-  override def beforeEach = {
+
+  override protected def beforeEach() = {
     testEntity = new TestEntity()
     callerEntityId = EntityId( "entity_testCaller" )
     testEntity.addRoleMember( 'chef, callerEntityId )
@@ -71,10 +72,10 @@ class EntityTest extends Suite with BeforeAndAfter {
     val entity = new Entity()
     val entityContainer = new SimpleEntityContainer()
 
-    assertNull( entity.id )
+    assert( entity.id == null)
     entityContainer.storeEntity( entity, null )
-    assertNotNull( entity.id )
-    assertEquals( entityContainer,  entity.container  )
+    assert( entity.id != null)
+    assert( entityContainer === entity.container  )
   }
 
   def testRoles {
@@ -110,20 +111,20 @@ class EntityTest extends Suite with BeforeAndAfter {
   }
 
   def testActionMethodCallWithArgumentList {
-    assertEquals( Nil, testEntity.fooList )
-    assertEquals( "", testEntity.bar )
+    assert( Nil === testEntity.fooList )
+    assert( "" === testEntity.bar )
     testEntity.call( callerEntityId, 'update, Parameters( 'bar -> "news flash", 'foo -> List("bear", "badger") ) )
-    assertEquals( List("bear", "badger"), testEntity.fooList )
-    assertEquals( "news flash", testEntity.bar )
+    assert( List("bear", "badger") === testEntity.fooList )
+    assert( "news flash" === testEntity.bar )
   }
 
   def testActionMethodCallWithSpecialArguemnts {
-    assertEquals( null, testEntity.caller )
-    assertEquals( null, testEntity.params )
+    assert( testEntity.caller === null )
+    assert( testEntity.params === null )
     val params = Parameters( 'bar -> "foo", 'foo -> 1 )
     testEntity.call( callerEntityId, 'special, params )
-    assertEquals( callerEntityId, testEntity.caller )
-    assertEquals( params, testEntity.params )
+    assert( callerEntityId === testEntity.caller )
+    assert( params === testEntity.params )
   }
 
 }

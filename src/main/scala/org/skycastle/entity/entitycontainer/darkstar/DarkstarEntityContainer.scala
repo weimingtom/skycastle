@@ -1,13 +1,13 @@
 package org.skycastle.entity.entitycontainer.darkstar
 
 import org.skycastle.server.ManagedEntity
-import com.sun.sgs.app.{TaskManager, DataManager, NameNotBoundException, AppContext}
 import java.lang.ClassCastException
 import org.skycastle.network.Message
 import org.skycastle.util.Parameters
 import org.skycastle.util.ParameterChecker._
-import org.skycastle.entity.entitycontainer.EntityContainer
 import org.skycastle.entity.{EntityLogger, EntityId, Entity}
+import com.sun.sgs.app._
+import org.skycastle.entity.entitycontainer.{RepeatingCallHandle, EntityContainer}
 
 /**
  * A singleton object for accessing the DarkstarEntityContainer
@@ -136,11 +136,23 @@ object DarkstarEntityContainer extends EntityContainer {
 
 
   def call(message : Message) {
-
     val taskManager : TaskManager = AppContext.getTaskManager
 
     taskManager.scheduleTask( ActionCallTask( message ) )
   }
+
+  def call(message: Message, delay_ms: Long) {
+    val taskManager : TaskManager = AppContext.getTaskManager
+
+    taskManager.scheduleTask( ActionCallTask( message ), delay_ms )
+  }
+
+  def call(message: Message, delay_ms: Long, repeatDelay_ms: Long): RepeatingCallHandle = {
+    val taskManager : TaskManager = AppContext.getTaskManager
+
+    new DarkstarRepeatingCallHandle(taskManager.schedulePeriodicTask(ActionCallTask(message), delay_ms, repeatDelay_ms))
+  }
+
 }
 
 

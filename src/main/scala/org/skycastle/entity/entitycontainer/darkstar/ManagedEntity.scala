@@ -31,7 +31,8 @@ case class ManagedEntity[T <: Entity]( entity : T ) extends ManagedObject with E
   def getNamedEntityForUpdate(name: String)                   = DarkstarEntityContainer.getNamedEntityForUpdate( name )
   def removeBinding(name: String)                             = DarkstarEntityContainer.removeBinding( name )
   
-  def call( message : Message )                               = DarkstarEntityContainer.call( message )
-
+  def call(message : Message)                                       = DarkstarEntityContainer.call(message)
+  def call(message: Message, delay_ms: Long, repeatDelay_ms: Long)  = DarkstarEntityContainer.call(message, delay_ms, repeatDelay_ms);
+  def call(message: Message, delay_ms: Long)                        = DarkstarEntityContainer.call(message, delay_ms)
 }
 

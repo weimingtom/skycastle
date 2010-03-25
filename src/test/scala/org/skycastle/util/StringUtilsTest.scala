@@ -1,11 +1,10 @@
 package org.skycastle.util
 
 
-import _root_.junit.framework.TestCase
 import org.junit._
 import Assert._
 import org.scalatest.Suite
-import StringUtils._
+import org.skycastle.util.StringUtils._
 
 /**
  * 
