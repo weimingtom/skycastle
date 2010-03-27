@@ -50,13 +50,13 @@
   <dependencies>
 
     <!-- Testing -->
-    <dependency>
+<!--    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.4</version>
       <scope>test</scope>
     </dependency>
-
+-->
     <dependency>
       <groupId>org.scalatest</groupId>
       <artifactId>scalatest</artifactId>
@@ -310,25 +310,6 @@
                       <arg>-target:jvm-1.5</arg>
                     </args>
           -->
-        </configuration>
-      </plugin>
-
-      <!-- Scala eclipse plugin  TODO: Does it work? Remove? -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <downloadSources>true</downloadSources>
-          <buildcommands>
-            <buildcommand>ch.epfl.lamp.sdt.core.scalabuilder</buildcommand>
-          </buildcommands>
-          <additionalProjectnatures>
-            <projectnature>ch.epfl.lamp.sdt.core.scalanature</projectnature>
-          </additionalProjectnatures>
-          <classpathContainers>
-            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-            <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
-          </classpathContainers>
         </configuration>
       </plugin>
 

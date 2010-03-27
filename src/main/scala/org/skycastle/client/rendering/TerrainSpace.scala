@@ -2,7 +2,6 @@ package org.skycastle.client.rendering
 
 
 import _root_.org.skycastle.entity.EntityId
-import util.ResourceLoader
 import com.jme.bounding.{BoundingSphere, BoundingBox}
 import com.jme.image.Texture
 import com.jme.math.Vector3f
@@ -14,6 +13,7 @@ import javax.swing.ImageIcon
 import com.jme.system.DisplaySystem
 
 import com.jmex.terrain.TerrainBlock
+import org.skycastle.util.ResourceLoader
 
 /**
  * A Space that has a terrain as ground.

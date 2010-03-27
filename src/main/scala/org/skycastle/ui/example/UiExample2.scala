@@ -43,7 +43,7 @@ object UiExample2 {
       'parent -> 'root,
       'text -> "Press Me",
       'tooltip -> "A test button",
-      'invokedEntity -> EntityId("entity-432455"),
+      'invokedEntity -> EntityId("entity432455"),
       'invokedMethod -> "testAction"
       ) ),
       ActionCall( 'removeComponent, Parameters(

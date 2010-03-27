@@ -56,7 +56,8 @@ class ClientControllerEntity extends Entity {
 
     container.storeEntity( screen, null )
 
-    setProperty( 'uiId, screen.id )
+    //setProperty( 'uiId, screen.id )
+    setProperty( 'uiId, 'startupUi )
     addRoleMember( 'connect, screen.id )
 
     screen
